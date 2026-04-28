@@ -1,0 +1,52 @@
+{
+  "name": "@my-app/annotation-system",
+  "version": "1.0.0",
+  "description": "A lightweight Figma-like annotation and comment collaboration system for Next.js",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./api/annotations": {
+      "types": "./dist/api/annotations.d.ts",
+      "import": "./dist/api/annotations.mjs",
+      "require": "./dist/api/annotations.js"
+    },
+    "./api/comments": {
+      "types": "./dist/api/comments.d.ts",
+      "import": "./dist/api/comments.mjs",
+      "require": "./dist/api/comments.js"
+    }
+  },
+  "files": [
+    "dist",
+    "INTEGRATION.md",
+    "lib",
+    "api",
+    "components",
+    "hooks"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "node ./scripts/build.mjs",
+    "dev": "node --watch ./scripts/build.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "lucide-react": "^0.564.0",
+    "date-fns": "^4.1.0"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "next": "^14.0.0 || ^15.0.0 || ^16.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/react": "^18.0.0 || ^19.0.0",
+    "@types/node": "^20.0.0"
+  }
+}

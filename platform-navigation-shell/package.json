@@ -1,0 +1,55 @@
+{
+  "name": "@my-app/platform-navigation-system",
+  "version": "1.0.0",
+  "description": "Reusable backend-style platform navigation shell for Next.js admin systems",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./lib/config": {
+      "types": "./dist/lib/config.d.ts",
+      "import": "./dist/lib/config.mjs",
+      "require": "./dist/lib/config.js"
+    },
+    "./lib/icons": {
+      "types": "./dist/lib/icons.d.ts",
+      "import": "./dist/lib/icons.mjs",
+      "require": "./dist/lib/icons.js"
+    }
+  },
+  "files": [
+    "dist",
+    "components",
+    "DESIGN.md",
+    "INTEGRATION.md",
+    "lib",
+    "assets",
+    "skills",
+    "templates"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "node ./scripts/build.mjs",
+    "dev": "node --watch ./scripts/build.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.564.0",
+    "tailwind-merge": "^3.3.1"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "next": "^14.0.0 || ^15.0.0 || ^16.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.0.0 || ^19.0.0",
+    "typescript": "^5.0.0"
+  }
+}

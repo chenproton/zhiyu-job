@@ -1,0 +1,9 @@
+{
+  "name": "platform-navigation-shell",
+  "version": "0.0.1",
+  "description": "Reusable backend-style platform navigation shell with code assets, templates, and integration docs.",
+  "interface": {
+    "displayName": "Platform Navigation Shell",
+    "description": "Use this plugin when a platform app needs the shared management-console navigation structure."
+  }
+}
