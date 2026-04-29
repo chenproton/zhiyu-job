@@ -3,7 +3,7 @@ import { jsx as _jsx, jsxs as _jsxs, Fragment as _Fragment } from "react/jsx-run
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { AnnotationEditor } from './AnnotationEditor.mjs';
 import { CommentPanel } from './CommentPanel.mjs';
-export function AnnotationLayer({ annotations, comments, mode, loading, zIndex = 500, theme, onCreateAnnotation, onUpdateAnnotation, onDeleteAnnotation, onCreateComment, onDeleteComment, onRefreshComments, }) {
+export function AnnotationLayer({ annotations, comments, mode, loading, zIndex = 2147483647, theme, onCreateAnnotation, onUpdateAnnotation, onDeleteAnnotation, onCreateComment, onDeleteComment, onRefreshComments, }) {
     const [editorPosition, setEditorPosition] = useState(null);
     const [selectedAnnotation, setSelectedAnnotation] = useState(null);
     const [isDragging, setIsDragging] = useState(false);
@@ -12,7 +12,7 @@ export function AnnotationLayer({ annotations, comments, mode, loading, zIndex =
     const [showPanel, setShowPanel] = useState(false);
     const [currentComments, setCurrentComments] = useState([]);
     const containerRef = useRef(null);
-    const primaryColor = theme?.primary ?? '#ef4444';
+    const primaryColor = theme?.primary ?? '#ff0000';
     useEffect(() => {
         if (selectedAnnotation) {
             setCurrentComments(comments[selectedAnnotation.id] || []);
@@ -139,12 +139,12 @@ export function AnnotationLayer({ annotations, comments, mode, loading, zIndex =
         }
         return { x: annotation.x, y: annotation.y };
     };
-    return (_jsxs(_Fragment, { children: [_jsxs("div", { ref: containerRef, onClick: handleContainerClick, className: "absolute inset-0 pointer-events-none min-h-screen", style: {
+    return (_jsxs(_Fragment, { children: [_jsxs("div", { ref: containerRef, onClick: handleContainerClick, className: "fixed inset-0 pointer-events-none", style: {
                     pointerEvents: mode === 'edit' ? 'auto' : 'none',
                     zIndex,
-                }, children: [loading && (_jsx("div", { className: "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none", style: { zIndex: zIndex + 500 }, children: _jsxs("div", { className: "bg-card/90 backdrop-blur-sm rounded-lg px-4 py-3 shadow-lg flex items-center gap-2", children: [_jsx("div", { className: "w-4 h-4 border-2 border-muted-foreground/30 border-t-muted-foreground rounded-full animate-spin" }), _jsx("span", { className: "text-sm text-muted-foreground", children: "\u6B63\u5728\u52A0\u8F7D\u6807\u6CE8..." })] }) })), mode === 'edit' && !loading && !editorPosition && (_jsx("div", { className: "fixed bottom-24 left-1/2 -translate-x-1/2 bg-foreground text-background px-4 py-2 rounded-full shadow-lg text-sm pointer-events-none", style: { zIndex: zIndex + 100 }, children: "\u70B9\u51FB\u9875\u9762\u4EFB\u610F\u4F4D\u7F6E\u521B\u5EFA\u6807\u6CE8" })), annotations.map((annotation, index) => {
+                }, children: [loading && (_jsx("div", { className: "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none", style: { zIndex: zIndex + 500 }, children: _jsxs("div", { className: "bg-white/90 backdrop-blur-sm rounded-lg px-4 py-3 shadow-lg flex items-center gap-2", children: [_jsx("div", { className: "w-4 h-4 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" }), _jsx("span", { className: "text-sm text-gray-600", children: "Loading annotations..." })] }) })), mode === 'edit' && !loading && !editorPosition && (_jsx("div", { className: "fixed bottom-24 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-4 py-2 rounded-full shadow-lg text-sm pointer-events-none", style: { zIndex: zIndex + 100 }, children: "Click anywhere to create an annotation" })), annotations.map((annotation, index) => {
                         const pos = getAnnotationDisplayPosition(annotation);
-                        return (_jsx("div", { className: `ann-dot absolute rounded-full text-white flex items-center justify-center cursor-pointer transition-transform hover:scale-125 shadow-lg ${mode === 'edit' ? 'cursor-grab active:cursor-grabbing' : ''} ${selectedAnnotation?.id === annotation.id ? 'ring-4 ring-white scale-110' : ''}`, style: {
+                        return (_jsxs("div", { className: `ann-dot absolute rounded-full text-white flex items-center justify-center cursor-pointer transition-transform hover:scale-125 ${mode === 'edit' ? 'cursor-grab active:cursor-grabbing' : ''} ${selectedAnnotation?.id === annotation.id ? 'ring-4 ring-white scale-110' : ''}`, style: {
                                 left: `${pos.x}%`,
                                 top: `${pos.y}%`,
                                 transform: 'translate(-50%, -50%)',
@@ -153,6 +153,7 @@ export function AnnotationLayer({ annotations, comments, mode, loading, zIndex =
                                 backgroundColor: primaryColor,
                                 width: theme?.dotSize ?? 32,
                                 height: theme?.dotSize ?? 32,
-                            }, onClick: (e) => handleAnnotationClick(annotation, e), onMouseDown: (e) => handleDragStart(annotation.id, e), onTouchStart: (e) => handleDragStart(annotation.id, e), title: annotation.content, role: "button", "aria-label": `Annotation ${index + 1}: ${annotation.content}`, tabIndex: 0, children: _jsx("span", { className: "text-xs font-bold", children: index + 1 }) }, annotation.id));
+                                boxShadow: `0 0 0 3px rgba(255,255,255,0.8), 0 0 20px 4px ${primaryColor}80`,
+                            }, onClick: (e) => handleAnnotationClick(annotation, e), onMouseDown: (e) => handleDragStart(annotation.id, e), onTouchStart: (e) => handleDragStart(annotation.id, e), title: annotation.content, role: "button", "aria-label": `Annotation ${index + 1}: ${annotation.content}`, tabIndex: 0, children: [_jsx("span", { className: "absolute inset-0 rounded-full animate-ping opacity-60", style: { backgroundColor: primaryColor } }), _jsx("span", { className: "relative text-xs font-bold drop-shadow-md", children: index + 1 })] }, annotation.id));
                     })] }), editorPosition && mode === 'edit' && (_jsx("div", { className: "ann-editor absolute inset-0 pointer-events-none", style: { zIndex: zIndex + 500 }, children: _jsx(AnnotationEditor, { x: editorPosition.x, y: editorPosition.y, theme: theme, onSave: handleEditorSave, onCancel: () => setEditorPosition(null) }) })), showPanel && selectedAnnotation && (_jsx(CommentPanel, { annotation: selectedAnnotation, comments: currentComments, zIndex: zIndex, theme: theme, onAddComment: handleAddComment, onDeleteComment: handleDeleteComment, onClose: handleClosePanel, onEditAnnotation: handleEditAnnotation, onDeleteAnnotation: handleDeleteAnnotation, mode: mode }))] }));
 }

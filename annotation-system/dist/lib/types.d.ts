@@ -1,6 +1,7 @@
 export type Annotation = {
     id: string;
     page: string;
+    context?: string;
     x: number;
     y: number;
     content: string;
@@ -40,13 +41,15 @@ export interface AnnotationTheme {
 export interface AnnotationSystemProps {
     /** 页面标识，默认自动读取 pathname */
     page?: string;
+    /** 上下文标识，用于同一路由下区分不同层级（如弹窗），默认 "default" */
+    context?: string;
     /** API 路由前缀，默认 "/api" */
     apiBasePath?: string;
     /** 默认模式，默认 "view" */
     defaultMode?: AnnotationMode;
     /** 当前用户名，默认从 localStorage 读取 */
     currentUser?: string;
-    /** z-index 基础值，默认 500 */
+    /** z-index 基础值，默认 2147483647（永远在最上层） */
     zIndex?: number;
     /** 主题配置 */
     theme?: AnnotationTheme;
@@ -56,6 +59,7 @@ export interface AnnotationSystemProps {
 /** useAnnotations Hook 配置 */
 export interface UseAnnotationsConfig {
     page: string;
+    context?: string;
     apiBasePath: string;
     defaultMode: AnnotationMode;
     currentUser?: string;

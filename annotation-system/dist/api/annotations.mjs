@@ -5,10 +5,11 @@ export async function GET(request) {
     try {
         const { searchParams } = new URL(request.url);
         const page = searchParams.get('page');
+        const context = searchParams.get('context') || 'default';
         if (!page) {
             return NextResponse.json({ error: 'Page parameter required' }, { status: 400 });
         }
-        const annotations = await adapter.getAnnotationsByPage(page);
+        const annotations = await adapter.getAnnotationsByPage(page, context);
         return NextResponse.json(annotations);
     }
     catch (error) {
@@ -18,11 +19,11 @@ export async function GET(request) {
 }
 export async function POST(request) {
     try {
-        const { page, x, y, content, imageUrl } = await request.json();
+        const { page, context, x, y, content, imageUrl } = await request.json();
         if (!page || typeof x !== 'number' || typeof y !== 'number' || !content) {
             return NextResponse.json({ error: 'Invalid parameters' }, { status: 400 });
         }
-        const annotation = await adapter.createAnnotation({ page, x, y, content, imageUrl });
+        const annotation = await adapter.createAnnotation({ page, context, x, y, content, imageUrl });
         return NextResponse.json(annotation, { status: 201 });
     }
     catch (error) {

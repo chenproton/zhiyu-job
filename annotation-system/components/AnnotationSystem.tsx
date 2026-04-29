@@ -9,13 +9,15 @@ import type { AnnotationSystemProps } from '../lib/types';
 
 export function AnnotationSystem({
   page: pageProp,
+  context = 'default',
   apiBasePath = '/api',
   defaultMode = 'view',
   currentUser,
-  zIndex = 500,
+  zIndex = 2147483647,
   theme,
   onModeChange,
-}: AnnotationSystemProps) {
+  hideController = false,
+}: AnnotationSystemProps & { hideController?: boolean }) {
   const pathname = usePathname();
   const [currentPath, setCurrentPath] = useState(pathname || '');
 
@@ -52,6 +54,7 @@ export function AnnotationSystem({
     refreshComments,
   } = useAnnotations({
     page,
+    context,
     apiBasePath,
     defaultMode,
     currentUser,
@@ -60,6 +63,24 @@ export function AnnotationSystem({
   useEffect(() => {
     onModeChange?.(mode);
   }, [mode, onModeChange]);
+
+  // 当隐藏控制器时，仍然支持键盘快捷键切换模式
+  useEffect(() => {
+    if (!hideController) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      const key = e.key.toLowerCase();
+      if (key === 'e') {
+        setMode('edit');
+      } else if (key === 'v') {
+        setMode('view');
+      } else if (key === 'o') {
+        setMode('off');
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [hideController, setMode]);
 
   const handleRefreshComments = (annotationId: string) => {
     refreshComments(annotationId);
@@ -81,15 +102,17 @@ export function AnnotationSystem({
         onDeleteComment={deleteComment}
         onRefreshComments={handleRefreshComments}
       />
-      <AnnotationController
-        mode={mode}
-        setMode={setMode}
-        user={user}
-        setUser={setUser}
-        annotationCount={annotations.length}
-        zIndex={zIndex}
-        theme={theme}
-      />
+      {!hideController && (
+        <AnnotationController
+          mode={mode}
+          setMode={setMode}
+          user={user}
+          setUser={setUser}
+          annotationCount={annotations.length}
+          zIndex={zIndex}
+          theme={theme}
+        />
+      )}
     </>
   );
 }

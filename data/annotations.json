@@ -1,4 +1,23 @@
 {
-  "annotations": [],
+  "annotations": [
+    {
+      "page": "/positions",
+      "context": "default",
+      "x": 23.645833333333332,
+      "y": 24.32723358449946,
+      "content": "dsa",
+      "id": "a3430e42-1507-4342-8421-3a97663b93c9",
+      "createdAt": 1777445616257
+    },
+    {
+      "page": "/positions/position-1/edit",
+      "context": "default",
+      "x": 35.833333333333336,
+      "y": 30.893433799784713,
+      "content": "ds",
+      "id": "11196991-5e2f-4295-8ede-da12700635ee",
+      "createdAt": 1777445646513
+    }
+  ],
   "comments": []
 }

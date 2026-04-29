@@ -25,7 +25,7 @@ export function AnnotationLayer({
   comments,
   mode,
   loading,
-  zIndex = 500,
+  zIndex = 2147483647,
   theme,
   onCreateAnnotation,
   onUpdateAnnotation,
@@ -43,7 +43,7 @@ export function AnnotationLayer({
   const [currentComments, setCurrentComments] = useState<Comment[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const primaryColor = theme?.primary ?? '#ef4444';
+  const primaryColor = theme?.primary ?? '#ff0000';
 
   useEffect(() => {
     if (selectedAnnotation) {
@@ -191,7 +191,7 @@ export function AnnotationLayer({
       <div
         ref={containerRef}
         onClick={handleContainerClick}
-        className="absolute inset-0 pointer-events-none min-h-screen"
+        className="fixed inset-0 pointer-events-none"
         style={{
           pointerEvents: mode === 'edit' ? 'auto' : 'none',
           zIndex,
@@ -202,19 +202,19 @@ export function AnnotationLayer({
             className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
             style={{ zIndex: zIndex + 500 }}
           >
-            <div className="bg-card/90 backdrop-blur-sm rounded-lg px-4 py-3 shadow-lg flex items-center gap-2">
-              <div className="w-4 h-4 border-2 border-muted-foreground/30 border-t-muted-foreground rounded-full animate-spin" />
-              <span className="text-sm text-muted-foreground">正在加载标注...</span>
+            <div className="bg-white/90 backdrop-blur-sm rounded-lg px-4 py-3 shadow-lg flex items-center gap-2">
+              <div className="w-4 h-4 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
+              <span className="text-sm text-gray-600">Loading annotations...</span>
             </div>
           </div>
         )}
 
         {mode === 'edit' && !loading && !editorPosition && (
           <div
-            className="fixed bottom-24 left-1/2 -translate-x-1/2 bg-foreground text-background px-4 py-2 rounded-full shadow-lg text-sm pointer-events-none"
+            className="fixed bottom-24 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-4 py-2 rounded-full shadow-lg text-sm pointer-events-none"
             style={{ zIndex: zIndex + 100 }}
           >
-            点击页面任意位置创建标注
+            Click anywhere to create an annotation
           </div>
         )}
 
@@ -223,7 +223,7 @@ export function AnnotationLayer({
           return (
             <div
               key={annotation.id}
-              className={`ann-dot absolute rounded-full text-white flex items-center justify-center cursor-pointer transition-transform hover:scale-125 shadow-lg ${
+              className={`ann-dot absolute rounded-full text-white flex items-center justify-center cursor-pointer transition-transform hover:scale-125 ${
                 mode === 'edit' ? 'cursor-grab active:cursor-grabbing' : ''
               } ${selectedAnnotation?.id === annotation.id ? 'ring-4 ring-white scale-110' : ''}`}
               style={{
@@ -235,6 +235,7 @@ export function AnnotationLayer({
                 backgroundColor: primaryColor,
                 width: theme?.dotSize ?? 32,
                 height: theme?.dotSize ?? 32,
+                boxShadow: `0 0 0 3px rgba(255,255,255,0.8), 0 0 20px 4px ${primaryColor}80`,
               }}
               onClick={(e) => handleAnnotationClick(annotation, e)}
               onMouseDown={(e) => handleDragStart(annotation.id, e)}
@@ -244,7 +245,12 @@ export function AnnotationLayer({
               aria-label={`Annotation ${index + 1}: ${annotation.content}`}
               tabIndex={0}
             >
-              <span className="text-xs font-bold">{index + 1}</span>
+              {/* 脉冲动画光环 */}
+              <span
+                className="absolute inset-0 rounded-full animate-ping opacity-60"
+                style={{ backgroundColor: primaryColor }}
+              />
+              <span className="relative text-xs font-bold drop-shadow-md">{index + 1}</span>
             </div>
           );
         })}

@@ -39,9 +39,10 @@ function createJsonFileAdapter(options = {}) {
         fs_1.default.writeFileSync(DATA_PATH, JSON.stringify(store, null, 2));
     }
     return {
-        async getAnnotationsByPage(page) {
+        async getAnnotationsByPage(page, context) {
             const s = loadStore();
-            return s.annotations.filter((a) => a.page === page);
+            const ctx = context || 'default';
+            return s.annotations.filter((a) => a.page === page && (a.context || 'default') === ctx);
         },
         async getAnnotationById(id) {
             const s = loadStore();

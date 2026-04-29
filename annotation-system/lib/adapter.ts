@@ -7,8 +7,8 @@ import type { Annotation, Comment } from './types';
  * 都可以通过实现此接口接入标注系统。
  */
 export interface AnnotationAdapter {
-  /** 获取指定页面的所有标注 */
-  getAnnotationsByPage(page: string): Promise<Annotation[]>;
+  /** 获取指定页面和上下文的所有标注 */
+  getAnnotationsByPage(page: string, context?: string): Promise<Annotation[]>;
 
   /** 根据 ID 获取单个标注 */
   getAnnotationById(id: string): Promise<Annotation | undefined>;

@@ -45,9 +45,10 @@ export function createJsonFileAdapter(
   }
 
   return {
-    async getAnnotationsByPage(page: string): Promise<Annotation[]> {
+    async getAnnotationsByPage(page: string, context?: string): Promise<Annotation[]> {
       const s = loadStore();
-      return s.annotations.filter((a) => a.page === page);
+      const ctx = context || 'default';
+      return s.annotations.filter((a) => a.page === page && (a.context || 'default') === ctx);
     },
 
     async getAnnotationById(id: string): Promise<Annotation | undefined> {

@@ -16,7 +16,7 @@ function setLocalStorageItem(key, value) {
     }
 }
 function useAnnotations(config) {
-    const { page, apiBasePath, defaultMode, currentUser: propUser } = config;
+    const { page, context, apiBasePath, defaultMode, currentUser: propUser } = config;
     const [annotations, setAnnotations] = (0, react_1.useState)([]);
     const [comments, setComments] = (0, react_1.useState)({});
     const [mode, setModeState] = (0, react_1.useState)(() => {
@@ -46,7 +46,7 @@ function useAnnotations(config) {
             return;
         setLoading(true);
         setError(null);
-        fetch(`${apiBasePath}/annotations?page=${encodeURIComponent(page)}`)
+        fetch(`${apiBasePath}/annotations?page=${encodeURIComponent(page)}&context=${encodeURIComponent(context || 'default')}`)
             .then((res) => {
             if (!res.ok)
                 throw new Error('Failed to fetch annotations');
@@ -58,7 +58,7 @@ function useAnnotations(config) {
             setError('Failed to load annotations');
         })
             .finally(() => setLoading(false));
-    }, [page, apiBasePath]);
+    }, [page, context, apiBasePath]);
     const setMode = (0, react_1.useCallback)((newMode) => {
         setModeState(newMode);
     }, []);
@@ -66,7 +66,7 @@ function useAnnotations(config) {
         if (!page)
             return;
         setError(null);
-        fetch(`${apiBasePath}/annotations?page=${encodeURIComponent(page)}`)
+        fetch(`${apiBasePath}/annotations?page=${encodeURIComponent(page)}&context=${encodeURIComponent(context || 'default')}`)
             .then((res) => {
             if (!res.ok)
                 throw new Error('Failed to fetch annotations');
@@ -77,7 +77,7 @@ function useAnnotations(config) {
             console.error('Error refreshing annotations:', err);
             setError('Failed to refresh annotations');
         });
-    }, [page, apiBasePath]);
+    }, [page, context, apiBasePath]);
     const refreshComments = (0, react_1.useCallback)((annotationId) => {
         setError(null);
         fetch(`${apiBasePath}/comments?annotationId=${encodeURIComponent(annotationId)}`)
@@ -102,7 +102,7 @@ function useAnnotations(config) {
             const response = await fetch(`${apiBasePath}/annotations`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ page, x, y, content, imageUrl }),
+                body: JSON.stringify({ page, context, x, y, content, imageUrl }),
             });
             if (!response.ok)
                 throw new Error('Failed to create annotation');
@@ -112,7 +112,7 @@ function useAnnotations(config) {
             console.error('Error creating annotation:', err);
             setError('Failed to create annotation');
         }
-    }, [page, apiBasePath, refreshAnnotations]);
+    }, [page, context, apiBasePath, refreshAnnotations]);
     const updateAnnotation = (0, react_1.useCallback)(async (id, updates) => {
         try {
             const response = await fetch(`${apiBasePath}/annotations`, {
