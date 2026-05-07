@@ -36,8 +36,13 @@ SSH_PORT="${SSH_PORT:-22}"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REMOTE_DIR="$REMOTE_BASE/$SITE_NAME"
 
-# 基础 SSH 命令
-SSH_OPTS="-o StrictHostKeyChecking=no -o ConnectTimeout=10 -p $SSH_PORT"
+# 基础 SSH 命令（增加保活参数，防止长连接超时）
+SSH_OPTS="-o StrictHostKeyChecking=no -o ConnectTimeout=15 -o ServerAliveInterval=60 -o ServerAliveCountMax=3 -p $SSH_PORT"
+
+# 构建远程 SSH 命令的辅助函数
+remote_exec() {
+  ssh $SSH_OPTS "$REMOTE_USER@$REMOTE_HOST" "$@"
+}
 
 # ==================== 主入口 ====================
 
@@ -71,9 +76,10 @@ fi
 
 # 1. 上传代码
 echo ""
-echo "[1/4] 上传代码到服务器..."
+echo "[1/3] 上传代码到服务器..."
 rsync -avz --delete \
   -e "ssh $SSH_OPTS" \
+  --timeout=300 \
   --exclude='node_modules' \
   --exclude='.git' \
   --exclude='.next' \
@@ -82,20 +88,27 @@ rsync -avz --delete \
   "$SCRIPT_DIR/" \
   "$REMOTE_USER@$REMOTE_HOST:$REMOTE_DIR/"
 
-# 2. 远程编译
+# 2. 远程编译 + 启动（合并为一次 SSH 连接，减少超时概率）
 echo ""
-echo "[2/4] 服务器编译..."
-ssh $SSH_OPTS "$REMOTE_USER@$REMOTE_HOST" bash -s << EOF
+echo "[2/3] 服务器编译并启动服务..."
+ssh $SSH_OPTS "$REMOTE_USER@$REMOTE_HOST" \
+  "export SITE_NAME='$SITE_NAME'; export PORT='$PORT'; export REMOTE_DIR='$REMOTE_DIR'; bash -s" \
+  << 'REMOTE_EOF'
   set -e
-  export PATH="\$HOME/.local/share/pnpm:\$PATH"
+  export PATH="$HOME/.local/share/pnpm:$PATH"
   cd "$REMOTE_DIR"
 
+  # 安装 pnpm（如果不存在）
   if ! command -v pnpm &> /dev/null; then
     echo "正在安装 pnpm..."
     npm install -g pnpm
   fi
+
+  # 安装依赖
+  echo "安装依赖..."
   pnpm install
 
+  # 构建子项目
   if [ -d "annotation-system" ]; then
     echo "构建 annotation-system..."
     cd annotation-system && npm run build && cd ..
@@ -105,40 +118,46 @@ ssh $SSH_OPTS "$REMOTE_USER@$REMOTE_HOST" bash -s << EOF
     cd platform-navigation-shell && npm run build && cd ..
   fi
 
+  # 构建 Next.js
   echo "Next.js 编译中..."
   pnpm build
-EOF
 
-# 3. 启动/重启
-echo ""
-echo "[3/4] 启动服务..."
-ssh $SSH_OPTS "$REMOTE_USER@$REMOTE_HOST" bash -s << EOF
-  set -e
-  export PATH="\$HOME/.local/share/pnpm:\$PATH"
-  cd "$REMOTE_DIR"
+  # 创建日志目录
+  mkdir -p logs
 
+  # 启动/重启服务
   if ! command -v pm2 &> /dev/null; then
     echo "安装 PM2..."
     npm install -g pm2
   fi
 
+  # 确保 PM2 开机自启（仅首次需要，重复执行无副作用）
+  pm2 startup systemd &>/dev/null || true
+
   if pm2 list | grep -q "$SITE_NAME"; then
     echo "重启 $SITE_NAME ..."
-    pm2 restart "$SITE_NAME"
+    pm2 restart ecosystem.config.js
   else
     echo "首次启动 $SITE_NAME (端口 $PORT)..."
-    PORT=$PORT pm2 start pnpm --name "$SITE_NAME" -- start
-    pm2 save
+    pm2 start ecosystem.config.js
   fi
-EOF
 
-# 4. 状态检查
+  pm2 save
+  echo "PM2 进程已保存，重启后将自动恢复"
+REMOTE_EOF
+
+# 3. 状态检查
 echo ""
-echo "[4/4] 检查服务状态..."
-ssh $SSH_OPTS "$REMOTE_USER@$REMOTE_HOST" "pm2 show $SITE_NAME 2>/dev/null | grep -E 'status|memory|uptime' || echo '状态检查完成'"
+echo "[3/3] 检查服务状态..."
+sleep 2
+remote_exec "pm2 show $SITE_NAME 2>/dev/null | grep -E 'name|status|memory|uptime' || echo '⚠️ 未找到进程，请检查日志'"
 
 echo ""
 echo "✅ $SITE_NAME 部署完成"
 echo "   访问地址: http://$REMOTE_HOST:$PORT"
+echo ""
+echo "📋 常用命令:"
+echo "   查看日志: ssh $REMOTE_USER@$REMOTE_HOST 'pm2 logs $SITE_NAME'"
+echo "   重启服务: ssh $REMOTE_USER@$REMOTE_HOST 'pm2 restart $SITE_NAME'"
 echo ""
 echo "Done."
