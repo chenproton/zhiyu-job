@@ -36,9 +36,9 @@ cd "$SCRIPT_DIR"
 echo "[1/3] 本地构建中..."
 rm -rf "$STANDALONE_DIR"
 
-# 编译（静默模式，只显示结果）
-pnpm install --frozen-lockfile > /dev/null
-pnpm build > /dev/null
+# 编译
+pnpm install --frozen-lockfile
+pnpm build
 
 # 组装产物
 rsync -a --delete --exclude='*.map' "$STATIC_DIR/" "$STANDALONE_DIR/.next/static/"
@@ -55,7 +55,7 @@ echo "[2/3] 远程清扫与同步..."
 # 【优化点】智能识别并清理远程所有干扰目录 (dist, .next, standalone)
 # 这样无论子模块叫什么名字，rsync 都不再会报 cannot delete 错误
 ssh $SSH_OPTS "$REMOTE_USER@$REMOTE_HOST" \
-  "find $REMOTE_DIR -maxdepth 3 \( -name 'dist' -o -name '.next' -o -name 'standalone' \) -exec rm -rf {} +"
+  "mkdir -p $REMOTE_DIR && find $REMOTE_DIR -maxdepth 3 \( -name 'dist' -o -name '.next' -o -name 'standalone' \) -exec rm -rf {} + || true"
 
 # 执行增量同步
 rsync -az --delete-after \
@@ -64,7 +64,6 @@ rsync -az --delete-after \
   --exclude='*.map' \
   --exclude='*.log' \
   --exclude='logs/' \
-  --exclude='node_modules/' \
   "$STANDALONE_DIR/" \
   "$REMOTE_USER@$REMOTE_HOST:$REMOTE_DIR/"
 
