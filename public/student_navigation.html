@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>岗位门户首页</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Microsoft YaHei", sans-serif; }
+  body { background: #f4f6fb; min-height: 100vh; }
+
+  /* 顶部导航 */
+  .header {
+    background: #fff;
+    height: 56px;
+    padding: 0 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #f3f4f6;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+  }
+  .header-left { display: flex; align-items: center; gap: 32px; }
+  .logo { display: flex; align-items: center; gap: 8px; }
+  .logo-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: #1677ff;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 14px;
+  }
+  .logo-text { color: #1f2937; font-size: 18px; font-weight: 600; }
+  .header-nav { display: flex; align-items: center; gap: 4px; }
+  .header-nav-item {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px; font-size: 14px; color: #4b5563;
+    border-radius: 6px; user-select: none;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .header-nav-item:hover { background: rgba(0,0,0,0.04); color: #1f2937; }
+  .header-nav-item.active { color: #1677ff; background: rgba(22,119,255,0.05); }
+  .header-right { display: flex; align-items: center; gap: 16px; }
+  .header-time { font-size: 14px; color: #9ca3af; user-select: none; }
+  .header-bell {
+    position: relative; width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    color: #6b7280; font-size: 14px; cursor: not-allowed;
+  }
+  .header-bell-badge {
+    position: absolute; top: 2px; right: 2px;
+    width: 16px; height: 16px; background: #ef4444;
+    color: white; font-size: 10px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .header-user {
+    display: flex; align-items: center; gap: 8px;
+    padding: 4px 8px; border-radius: 6px;
+    color: #4b5563; font-size: 14px; cursor: not-allowed; user-select: none;
+  }
+  .header-user-avatar {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: rgba(22,119,255,0.1);
+    display: flex; align-items: center; justify-content: center;
+    color: #1677ff; font-size: 12px;
+  }
+
+  /* 主内容 */
+  .main { padding: 76px 40px 40px; }
+
+  /* 悬浮标注卡片 */
+  .annotation-float-card {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 320px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08);
+    z-index: 2000;
+    overflow: hidden;
+    border: 1px solid #fde68a;
+  }
+  .annotation-float-card .annotation-header {
+    background: #fffbeb;
+    padding: 10px 14px;
+    border-bottom: 1px solid #fde68a;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .annotation-float-card .annotation-header i {
+    color: #d97706;
+    font-size: 14px;
+  }
+  .annotation-float-card .annotation-header span {
+    font-size: 14px;
+    font-weight: 600;
+    color: #92400e;
+  }
+  .annotation-float-card .annotation-body {
+    padding: 12px 14px;
+    font-size: 13px;
+    color: #475569;
+    line-height: 1.7;
+  }
+  .annotation-float-card .annotation-body p {
+    margin-bottom: 8px;
+  }
+  .annotation-float-card .annotation-body p:last-child {
+    margin-bottom: 0;
+  }
+  .annotation-float-card .annotation-body strong {
+    color: #334155;
+  }
+
+  /* 轮播区 */
+  .banner-row { display: grid; grid-template-columns: 300px 1fr; gap: 16px; margin-bottom: 18px; }
+  .banner-small, .banner-big {
+    background: #fff; border-radius: 10px; height: 280px;
+    display: flex; align-items: center; justify-content: center;
+    color: #bfc5d1; font-size: 14px;
+    background: linear-gradient(135deg,#fff,#f7f9ff);
+  }
+
+  /* 统计卡片 */
+  .stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 18px; }
+  .stat-card {
+    background: #fff; border-radius: 10px; padding: 22px 26px;
+    display: flex; justify-content: space-between; align-items: center;
+    box-shadow: 0 2px 6px rgba(30,60,120,0.04);
+  }
+  .stat-label { color: #8a94a6; font-size: 14px; margin-bottom: 10px; }
+  .stat-value { color: #1f2937; font-size: 28px; font-weight: bold; }
+  .stat-icon {
+    width: 56px; height: 56px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    background: linear-gradient(135deg,#e8f0ff,#d6e4ff);
+  }
+
+  /* 筛选区 */
+  .filter-box { background: #fff; border-radius: 10px; padding: 18px 24px; margin-bottom: 18px; }
+  .filter-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; flex-wrap: nowrap; }
+  .filter-row + .filter-row { border-top: 1px dashed #eef0f5; }
+  .filter-label { color: #8a94a6; font-size: 14px; min-width: 44px; }
+  .filter-tags { display: flex; gap: 10px; flex-wrap: wrap; flex: 1; }
+  .tag {
+    padding: 6px 16px; border-radius: 16px; font-size: 13px;
+    color: #5a6478; cursor: pointer; transition: all 0.2s;
+  }
+  .tag:hover { background: #eef3ff; color: #3b7cff; }
+  .tag.active { background: linear-gradient(135deg,#3b7cff,#5a8eff); color: #fff; }
+  .expand-btn { color: #3b7cff; font-size: 13px; cursor: pointer; margin-left: auto; }
+
+  /* 排序+搜索 */
+  .toolbar {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 14px;
+  }
+  .sort-group { display: flex; gap: 16px; align-items: center; }
+  .sort-btn {
+    padding: 8px 22px; border-radius: 18px; font-size: 14px;
+    color: #5a6478; cursor: pointer;
+  }
+  .sort-btn.active {
+    background: linear-gradient(135deg,#3b7cff,#5a8eff); color: #fff;
+  }
+  .search-box {
+    display: flex; align-items: center; background: #fff;
+    border-radius: 20px; padding: 6px 14px; width: 280px;
+    border: 1px solid #e5e9f2;
+  }
+  .search-box input { border: none; outline: none; flex: 1; font-size: 13px; padding: 4px; }
+  .search-box .count { color: #bfc5d1; font-size: 12px; }
+
+  .result-tip { color: #5a6478; font-size: 13px; margin-bottom: 14px; }
+  .result-tip b { color: #3b7cff; }
+
+  /* 岗位卡片 */
+  .card-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 18px; }
+  .course-card {
+    background: #fff; border-radius: 12px; overflow: hidden;
+    box-shadow: 0 2px 8px rgba(30,60,120,0.06);
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+  }
+  .course-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(30,60,120,0.12);
+  }
+  .card-cover {
+    height: 150px; position: relative;
+    background: linear-gradient(135deg,#1e3a8a,#3b7cff);
+    display: flex; align-items: flex-end; padding: 14px;
+    color: #fff;
+  }
+  .card-cover.c2 { background: linear-gradient(135deg,#7c2d12,#dc2626); }
+  .card-cover.c3 { background: linear-gradient(135deg,#064e3b,#0891b2); }
+  .card-cover.c4 { background: linear-gradient(135deg,#334155,#64748b); }
+  .card-cover.c5 { background: linear-gradient(135deg,#581c87,#a855f7); }
+  .card-cover.c6 { background: linear-gradient(135deg,#92400e,#f59e0b); }
+  .card-cover.c7 { background: linear-gradient(135deg,#be123c,#f43f5e); }
+  .card-cover.c8 { background: linear-gradient(135deg,#0f766e,#14b8a6); }
+  .tag-v {
+    position: absolute; top: 10px; left: 10px;
+    background: rgba(255,255,255,0.25); padding: 2px 8px;
+    border-radius: 4px; font-size: 12px;
+  }
+  .tag-date {
+    position: absolute; top: 10px; left: 46px;
+    background: rgba(0,0,0,0.35); padding: 2px 8px;
+    border-radius: 4px; font-size: 12px;
+  }
+  .cover-title { font-size: 15px; font-weight: bold; line-height: 1.5; }
+  .cover-sub { font-size: 11px; opacity: 0.9; margin-top: 4px; line-height: 1.5; }
+  .tag-category {
+    position: absolute; top: 10px; right: 10px;
+    padding: 2px 8px; border-radius: 4px; font-size: 11px;
+    background: rgba(255,255,255,0.25); color: #fff;
+  }
+  .tag-category.cat-system { background: rgba(147,51,234,0.6); }
+  .tag-category.cat-particle { background: rgba(59,130,246,0.6); }
+  .code-bar {
+    background: rgba(0,0,0,0.4); color: #fff; font-size: 11px;
+    padding: 4px 12px; position: absolute; bottom: 0; right: 0;
+    border-top-left-radius: 6px;
+  }
+
+  .card-body { padding: 16px; }
+  .card-title { font-size: 15px; font-weight: bold; color: #1f2937; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .course-type-tag {
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: normal;
+    display: inline-flex; align-items: center; white-space: nowrap;
+  }
+  .course-type-tag.type-1 { background: #dbeafe; color: #1d4ed8; }
+  .course-type-tag.type-2 { background: #dcfce7; color: #15803d; }
+  .course-type-tag.type-3 { background: #ffedd5; color: #c2410c; }
+  .course-type-tag.type-4 { background: #f3e8ff; color: #7e22ce; }
+  .card-stats {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    text-align: center; padding: 10px 0;
+    border-top: 1px solid #f0f2f7; border-bottom: 1px solid #f0f2f7;
+    margin-bottom: 12px;
+  }
+  .card-stats > div + div { border-left: 1px solid #f0f2f7; }
+  .card-stat-num { font-size: 20px; font-weight: bold; color: #1f2937; }
+  .card-stat-label { font-size: 12px; color: #8a94a6; margin-top: 2px; }
+
+  .meta-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 12px; }
+  .meta-label { color: #8a94a6; min-width: 30px; }
+  .meta-tag {
+    background: #fff4e6; color: #ff9b37; padding: 2px 10px;
+    border-radius: 4px; font-size: 12px;
+  }
+  .meta-tag.purple { background: #f3e8ff; color: #9333ea; }
+
+  .card-footer {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 10px; border-top: 1px dashed #eef0f5;
+    font-size: 12px; color: #8a94a6; margin-top: 10px;
+  }
+  .footer-left { display: flex; align-items: center; gap: 8px; }
+
+  .empty-state {
+    text-align: center; padding: 60px 20px; color: #8a94a6;
+  }
+  .empty-state i { font-size: 48px; margin-bottom: 16px; color: #c7cdd8; }
+</style>
+</head>
+<body>
+
+<!-- 顶部导航 -->
+<div class="header">
+  <div class="header-left">
+    <div class="logo">
+      <div class="logo-icon"><i class="fa fa-th"></i></div>
+      <div class="logo-text">岗位化数智教学服务平台</div>
+    </div>
+    <div class="header-nav">
+      <a href="http://47.251.48.187:3001/portal" target="_blank" class="header-nav-item"><i class="fa fa-home"></i>门户首页</a>
+      <a href="http://47.251.48.187:3001/portal/workspace" target="_blank" class="header-nav-item"><i class="fa fa-th"></i>我的服务台</a>
+      <a href="http://47.251.48.187:3001/portal/apps" target="_blank" class="header-nav-item"><i class="fa fa-cog"></i>应用服务中心</a>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="header-time" id="headerTime">2026年05月09日 星期六 11:20</span>
+    <div class="header-bell">
+      <i class="fa fa-bell"></i>
+      <span class="header-bell-badge">3</span>
+    </div>
+    <div class="header-user">
+      <div class="header-user-avatar"><i class="fa fa-user"></i></div>
+      <span>管理员</span>
+      <i class="fa fa-chevron-down" style="font-size:12px;color:#9ca3af;"></i>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- 悬浮标注卡片 -->
+  <div class="annotation-float-card">
+    <div class="annotation-header">
+      <i class="fa fa-info-circle"></i>
+      <span>岗位门户首页说明</span>
+    </div>
+    <div class="annotation-body">
+      <p><strong>岗位大厅</strong>是平台的资源展示中心，学员可在此浏览所有已发布的职业岗位。</p>
+      <p>支持按<strong>行业</strong>、<strong>专业</strong>筛选，以及按名称、创建时间、更新时间排序。</p>
+      <p>点击岗位卡片即可进入<strong>岗位详情页</strong>，查看任务、资源及能力模型。</p>
+      <p>所有功能直接参考岗位的前台页面开发即可。</p>
+    </div>
+  </div>
+
+  <!-- 轮播区 -->
+  <div class="banner-row">
+    <div class="banner-small">热门推荐</div>
+    <div class="banner-big">岗位轮播大图</div>
+  </div>
+
+  <!-- 统计卡片 -->
+  <div class="stats" id="statsRow">
+    <div class="stat-card">
+      <div>
+        <div class="stat-label">收录岗位数</div>
+        <div class="stat-value" id="statTotal">0</div>
+      </div>
+      <div class="stat-icon">📚</div>
+    </div>
+    <div class="stat-card">
+      <div>
+        <div class="stat-label">已发布岗位</div>
+        <div class="stat-value" id="statPublished">0</div>
+      </div>
+      <div class="stat-icon">🚀</div>
+    </div>
+    <div class="stat-card">
+      <div>
+        <div class="stat-label">涉及任务数</div>
+        <div class="stat-value" id="statTasks">0</div>
+      </div>
+      <div class="stat-icon">🔬</div>
+    </div>
+    <div class="stat-card">
+      <div>
+        <div class="stat-label">覆盖行业数</div>
+        <div class="stat-value" id="statPositions">0</div>
+      </div>
+      <div class="stat-icon">👁</div>
+    </div>
+  </div>
+
+  <!-- 筛选区 -->
+  <div class="filter-box">
+    <div class="filter-row">
+      <span class="filter-label">行业</span>
+      <div class="filter-tags" id="industryTags">
+        <span class="tag active" data-value="all">全部</span>
+      </div>
+    </div>
+    <div class="filter-row">
+      <span class="filter-label">专业</span>
+      <div class="filter-tags" id="professionTags">
+        <span class="tag active" data-value="all">全部</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 排序+搜索 -->
+  <div class="toolbar">
+    <div class="sort-group">
+      <span class="sort-btn active" data-sort="default">默认排序（名称）</span>
+      <span class="sort-btn" data-sort="recent">最近收录（创建时间）</span>
+      <span class="sort-btn" data-sort="update">最近更新（更新时间）</span>
+    </div>
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="请输入岗位名称">
+      <span class="count">🔍 <span id="searchCount">0</span> / 100</span>
+    </div>
+  </div>
+
+  <div class="result-tip">当前共展示 <b id="resultCount">0</b> 个岗位学习入口</div>
+
+  <!-- 岗位卡片 -->
+  <div class="card-grid" id="cardGrid">
+    <!-- 动态生成 -->
+  </div>
+
+  <div class="empty-state" id="emptyState" style="display:none;">
+    <i class="fa fa-inbox"></i>
+    <div>暂无匹配的岗位</div>
+  </div>
+</div>
+
+<script>
+  // =================== 岗位数据（来自管理后台 mock-data.ts） ===================
+  const JOBS = [
+    {
+      id: "job-1",
+      name: "企业级前端项目开发实战",
+      code: "JOB-2026-0001",
+      version: "v2.1",
+      industryName: "互联网/IT",
+      professionName: "信息技术",
+      positionName: "前端开发工程师",
+      batchName: "2026春季前端开发岗位建设",
+      creatorName: "张老师",
+      difficulty: 5,
+      status: "published",
+      publishTime: "2024-03-15 10:30:00",
+      updatedAt: "2024-01-15",
+      tasksCount: 4,
+      totalHours: 44,
+      coverClass: ""
+    },
+    {
+      id: "job-2",
+      name: "RESTful API 设计与开发",
+      code: "JOB-2026-0002",
+      version: "v1.5",
+      industryName: "互联网/IT",
+      professionName: "信息技术",
+      positionName: "后端开发工程师",
+      batchName: "2026春季前端开发岗位建设",
+      creatorName: "张老师",
+      difficulty: 3,
+      status: "published",
+      publishTime: "2024-02-20 14:00:00",
+      updatedAt: "2024-01-12",
+      tasksCount: 2,
+      totalHours: 14,
+      coverClass: "c2"
+    },
+    {
+      id: "job-3",
+      name: "数据可视化分析实战",
+      code: "JOB-2026-0003",
+      version: "v1.2",
+      industryName: "互联网/IT",
+      professionName: "信息技术",
+      positionName: "数据分析师",
+      batchName: "2026春季前端开发岗位建设",
+      creatorName: "李老师",
+      difficulty: 3,
+      status: "rejected",
+      publishTime: "",
+      updatedAt: "2024-01-10",
+      tasksCount: 0,
+      totalHours: 0,
+      coverClass: "c3"
+    },
+    {
+      id: "job-4",
+      name: "电商平台运营全流程",
+      code: "JOB-2026-0004",
+      version: "v3.0",
+      industryName: "电子商务",
+      professionName: "电子商务",
+      positionName: "电商运营专员",
+      batchName: "2026春季电商实训岗位开发",
+      creatorName: "李老师",
+      difficulty: 2,
+      status: "pending",
+      publishTime: "",
+      updatedAt: "2024-01-08",
+      tasksCount: 0,
+      totalHours: 0,
+      coverClass: "c4"
+    },
+    {
+      id: "job-5",
+      name: "企业财务报表分析",
+      code: "JOB-2025-0005",
+      version: "v2.0",
+      industryName: "金融",
+      professionName: "财务管理",
+      positionName: "会计师",
+      batchName: "2025秋季财务管理岗位",
+      creatorName: "王老师",
+      difficulty: 3,
+      status: "published",
+      publishTime: "2024-01-10 09:00:00",
+      updatedAt: "2024-01-05",
+      tasksCount: 0,
+      totalHours: 0,
+      coverClass: "c5"
+    },
+    {
+      id: "job-6",
+      name: "品牌营销策划实战",
+      code: "SC-2025-0006",
+      version: "v1.8",
+      industryName: "服务业",
+      professionName: "市场营销",
+      positionName: "品牌经理",
+      batchName: "2026春季电商实训岗位开发",
+      creatorName: "赵老师",
+      difficulty: 4,
+      status: "draft",
+      publishTime: "",
+      updatedAt: "2024-01-02",
+      tasksCount: 0,
+      totalHours: 0,
+      coverClass: "c6"
+    },
+    {
+      id: "job-7",
+      name: "未分配岗位的测试草稿岗位",
+      code: "JOB-2026-0007",
+      version: "v1.0",
+      industryName: "",
+      professionName: "",
+      positionName: "",
+      batchName: "",
+      creatorName: "张老师",
+      difficulty: 2,
+      status: "draft",
+      publishTime: "",
+      updatedAt: "2024-02-01",
+      tasksCount: 0,
+      totalHours: 0,
+      coverClass: "c7"
+    },
+    {
+      id: "job-8",
+      name: "独立项目草稿 - 新媒体运营",
+      code: "JOB-2026-0008",
+      version: "v1.0",
+      industryName: "",
+      professionName: "",
+      positionName: "",
+      batchName: "",
+      creatorName: "李老师",
+      difficulty: 3,
+      status: "draft",
+      publishTime: "",
+      updatedAt: "2024-02-05",
+      tasksCount: 0,
+      totalHours: 0,
+      coverClass: "c8"
+    }
+  ];
+
+  const STATUS_MAP = {
+    draft: { label: "草稿", className: "type-4" },
+    pending: { label: "审批中", className: "type-3" },
+    approved: { label: "已通过", className: "type-1" },
+    rejected: { label: "已驳回", className: "type-4" },
+    published: { label: "已发布", className: "type-2" },
+  };
+
+  // =================== 初始化统计 ===================
+  function initStats() {
+    const total = JOBS.length;
+    const published = JOBS.filter(s => s.status === "published").length;
+    const tasks = JOBS.reduce((sum, s) => sum + s.tasksCount, 0);
+    const positions = new Set(JOBS.map(s => s.positionName).filter(Boolean)).size;
+
+    document.getElementById("statTotal").textContent = total;
+    document.getElementById("statPublished").textContent = published;
+    document.getElementById("statTasks").textContent = tasks;
+    document.getElementById("statPositions").textContent = positions;
+  }
+
+  // =================== 初始化筛选标签 ===================
+  function initFilters() {
+    const industries = ["全部", ...new Set(JOBS.map(s => s.industryName).filter(Boolean))];
+    const professions = ["全部", ...new Set(JOBS.map(s => s.professionName).filter(Boolean))];
+
+    const industryContainer = document.getElementById("industryTags");
+    industryContainer.innerHTML = industries.map((item, idx) =>
+      `<span class="tag ${idx === 0 ? 'active' : ''}" data-value="${item}">${item}</span>`
+    ).join("");
+
+    const professionContainer = document.getElementById("professionTags");
+    professionContainer.innerHTML = professions.map((item, idx) =>
+      `<span class="tag ${idx === 0 ? 'active' : ''}" data-value="${item}">${item}</span>`
+    ).join("");
+
+    // 绑定点击事件
+    [industryContainer, professionContainer].forEach(container => {
+      container.addEventListener("click", e => {
+        if (e.target.classList.contains("tag")) {
+          container.querySelectorAll(".tag").forEach(t => t.classList.remove("active"));
+          e.target.classList.add("active");
+          renderCards();
+        }
+      });
+    });
+  }
+
+  // =================== 排序 ===================
+  let currentSort = "default";
+  document.querySelectorAll(".sort-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".sort-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      currentSort = btn.dataset.sort;
+      renderCards();
+    });
+  });
+
+  // =================== 搜索 ===================
+  const searchInput = document.getElementById("searchInput");
+  const searchCount = document.getElementById("searchCount");
+  searchInput.addEventListener("input", () => {
+    searchCount.textContent = searchInput.value.length;
+    renderCards();
+  });
+
+  // =================== 获取当前筛选条件 ===================
+  function getFilterValues() {
+    const activeIndustry = document.querySelector("#industryTags .tag.active");
+    const activeProfession = document.querySelector("#professionTags .tag.active");
+    return {
+      industry: activeIndustry ? activeIndustry.dataset.value : "全部",
+      profession: activeProfession ? activeProfession.dataset.value : "全部",
+      keyword: searchInput.value.trim().toLowerCase()
+    };
+  }
+
+  // =================== 渲染卡片 ===================
+  function renderCards() {
+    const { industry, profession, keyword } = getFilterValues();
+
+    let filtered = JOBS.filter(s => {
+      const matchIndustry = industry === "全部" || s.industryName === industry;
+      const matchProfession = profession === "全部" || s.professionName === profession;
+      const matchKeyword = !keyword || s.name.toLowerCase().includes(keyword) || s.code.toLowerCase().includes(keyword);
+      return matchIndustry && matchProfession && matchKeyword;
+    });
+
+    // 排序
+    if (currentSort === "recent") {
+      filtered.sort((a, b) => {
+        const aTime = a.publishTime ? new Date(a.publishTime) : new Date(a.updatedAt);
+        const bTime = b.publishTime ? new Date(b.publishTime) : new Date(b.updatedAt);
+        return bTime - aTime;
+      });
+    } else if (currentSort === "update") {
+      filtered.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+    } else if (currentSort === "name") {
+      filtered.sort((a, b) => a.name.localeCompare(b.name, "zh-CN"));
+    }
+
+    document.getElementById("resultCount").textContent = filtered.length;
+
+    const grid = document.getElementById("cardGrid");
+    const empty = document.getElementById("emptyState");
+
+    if (filtered.length === 0) {
+      grid.innerHTML = "";
+      empty.style.display = "block";
+      return;
+    }
+    empty.style.display = "none";
+
+    grid.innerHTML = filtered.map((s, idx) => {
+      const status = STATUS_MAP[s.status] || STATUS_MAP.draft;
+      const dateStr = s.publishTime ? s.publishTime.split(" ")[0] : s.updatedAt;
+      const displayDate = dateStr || "2024-01-01";
+      const coverClass = s.coverClass || "";
+      const resourceCount = s.tasksCount * 3 + Math.floor(Math.random() * 5); // 模拟资源数
+
+      return `
+        <div class="course-card" data-id="${s.id}">
+          <div class="card-cover ${coverClass}">
+            <span class="tag-v">${s.version}</span>
+            <span class="tag-date">${displayDate}</span>
+            <div class="code-bar">岗位编码：${s.code}</div>
+          </div>
+          <div class="card-body">
+            <div class="card-title">
+              <span>${s.name}</span>
+            </div>
+            <div class="card-stats">
+              <div>
+                <div class="card-stat-num">${s.tasksCount}</div>
+                <div class="card-stat-label">涉及任务</div>
+              </div>
+              <div>
+                <div class="card-stat-num">${s.totalHours}</div>
+                <div class="card-stat-label">预计课时</div>
+              </div>
+              <div>
+                <div class="card-stat-num">${resourceCount}</div>
+                <div class="card-stat-label">资源数</div>
+              </div>
+            </div>
+            <div class="meta-row" style="flex-wrap:wrap;gap:4px 10px;margin-bottom:0;">
+              <span class="meta-label">行业</span>
+              <span class="meta-tag">${s.industryName || "未指定"}</span>
+              <span class="meta-label" style="margin-left:4px;">岗位</span>
+              <span class="meta-tag purple">${s.positionName || "未指定"}</span>
+              <span class="meta-label" style="margin-left:4px;">专业</span>
+              <span class="meta-tag" style="background:#dbeafe;color:#1d4ed8;">${s.professionName || "未分类"}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    // 绑定卡片点击事件 - 都跳转到 student.html
+    grid.querySelectorAll(".course-card").forEach(card => {
+      card.addEventListener("click", () => {
+        window.location.href = "student.html";
+      });
+    });
+  }
+
+  // =================== 初始化 ===================
+  initStats();
+  initFilters();
+  renderCards();
+
+  // 更新日期时间
+  function updateDateTime() {
+    const now = new Date();
+    const weekDays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const weekDay = weekDays[now.getDay()];
+    const hour = String(now.getHours()).padStart(2, '0');
+    const minute = String(now.getMinutes()).padStart(2, '0');
+    const timeEl = document.getElementById('headerTime');
+    if (timeEl) timeEl.textContent = `${year}年${month}月${day}日 ${weekDay} ${hour}:${minute}`;
+  }
+  updateDateTime();
+  setInterval(updateDateTime, 60000);
+</script>
+
+</body>
+</html>
