@@ -4,14 +4,20 @@ import { useState, useEffect, use } from 'react'
 import { useRouter } from 'next/navigation'
 import { useData } from '@/lib/stores/data-context'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { ArrowLeft, Save, Send, Sparkles, Check } from 'lucide-react'
-import Link from 'next/link'
+import { Badge } from '@/components/ui/badge'
+import { X, Save, Eye, ArrowRight, ArrowLeft, Check } from 'lucide-react'
 import { StepBasicInfo } from '@/components/position-builder/step-basic-info'
 import { StepAbilityModeling } from '@/components/position-builder/step-ability-modeling'
 import { StepCompetencyConfig } from '@/components/position-builder/step-competency-config'
 import type { Position } from '@/lib/types'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -24,6 +30,7 @@ export default function PositionEditPage({ params }: PageProps) {
   const [activeStep, setActiveStep] = useState('basic')
   const [isSaving, setIsSaving] = useState(false)
   const [position, setPosition] = useState<Position | null>(null)
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false)
 
   useEffect(() => {
     const found = positions.find((p) => p.id === id)
@@ -44,7 +51,6 @@ export default function PositionEditPage({ params }: PageProps) {
 
   const handleSave = async () => {
     setIsSaving(true)
-    // Simulate save delay
     await new Promise((resolve) => setTimeout(resolve, 500))
     updatePosition(position.id, position)
     setIsSaving(false)
@@ -68,133 +74,154 @@ export default function PositionEditPage({ params }: PageProps) {
   ]
 
   const currentStepIndex = steps.findIndex((s) => s.id === activeStep)
+  const currentStep = steps[currentStepIndex]
+
+  const handleNext = () => {
+    const nextIndex = currentStepIndex + 1
+    if (nextIndex < steps.length) setActiveStep(steps[nextIndex].id)
+  }
+
+  const handlePrev = () => {
+    const prevIndex = currentStepIndex - 1
+    if (prevIndex >= 0) setActiveStep(steps[prevIndex].id)
+  }
+
+  const canGoNext = currentStepIndex < steps.length - 1
+  const canGoPrev = currentStepIndex > 0
 
   return (
-    <div className="space-y-6">
+    <div className="fixed inset-0 bg-background z-50 overflow-auto">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" asChild>
-            <Link href="/positions">
-              <ArrowLeft className="h-4 w-4" />
-            </Link>
-          </Button>
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">{position.name}</h1>
-            <p className="text-muted-foreground mt-1">
-              {batch?.department} - {batch?.major} | 版本 {position.version}
-            </p>
+      <div className="sticky top-0 z-10 bg-white border-b border-gray-100">
+        <div className="max-w-full mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="sm" onClick={() => router.push('/positions')}>
+              <X className="h-4 w-4 mr-2" />
+              取消
+            </Button>
+            <div className="h-5 w-px bg-gray-200" />
+            <div className="flex items-center gap-2">
+              <Badge className="bg-primary text-primary-foreground">
+                步骤 {currentStepIndex + 1}
+              </Badge>
+              <span className="text-sm font-medium text-gray-800">{currentStep.label}</span>
+              <span className="text-xs text-gray-400 hidden sm:inline">{currentStep.description}</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <Button variant="outline" size="sm" onClick={handleSave} disabled={isSaving}>
+              <Save className="mr-2 h-4 w-4" />
+              {isSaving ? '保存中...' : '保存草稿'}
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => setIsPreviewOpen(true)}>
+              <Eye className="mr-2 h-4 w-4" />
+              预览
+            </Button>
+            {canGoPrev && (
+              <Button variant="outline" size="sm" onClick={handlePrev}>
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                上一步
+              </Button>
+            )}
+            {canGoNext ? (
+              <Button size="sm" onClick={handleNext}>
+                下一步
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            ) : (
+              position.status === 'draft' && (
+                <Button size="sm" onClick={handleSubmit}>
+                  <Check className="mr-2 h-4 w-4" />
+                  提交审批
+                </Button>
+              )
+            )}
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={handleSave} disabled={isSaving}>
-            <Save className="mr-2 h-4 w-4" />
-            {isSaving ? '保存中...' : '保存草稿'}
-          </Button>
-          {position.status === 'draft' && (
-            <Button onClick={handleSubmit}>
-              <Send className="mr-2 h-4 w-4" />
-              提交审批
-            </Button>
+      </div>
+
+      {/* Content */}
+      <div className="max-w-full mx-auto px-6 py-8">
+        <div className="mb-8">
+          <h1 className="text-2xl font-semibold text-gray-800">{position.name}</h1>
+          <p className="text-sm text-gray-500 mt-1">
+            {batch?.department} - {batch?.major} | 版本 {position.version}
+          </p>
+        </div>
+
+        <div className="space-y-6">
+          {activeStep === 'basic' && (
+            <StepBasicInfo position={position} onUpdate={updatePositionData} />
+          )}
+          {activeStep === 'ability' && (
+            <StepAbilityModeling position={position} onUpdate={updatePositionData} />
+          )}
+          {activeStep === 'competency' && (
+            <StepCompetencyConfig position={position} onUpdate={updatePositionData} />
           )}
         </div>
       </div>
 
-      {/* Progress Steps */}
-      <Card>
-        <CardContent className="py-4">
-          <div className="flex items-center justify-between">
-            {steps.map((step, index) => (
-              <div key={step.id} className="flex items-center flex-1">
-                <button
-                  onClick={() => setActiveStep(step.id)}
-                  className="flex items-center gap-3 group"
-                >
-                  <div
-                    className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-colors ${
-                      index < currentStepIndex
-                        ? 'bg-primary border-primary text-primary-foreground'
-                        : index === currentStepIndex
-                          ? 'border-primary text-primary'
-                          : 'border-border text-muted-foreground'
-                    }`}
-                  >
-                    {index < currentStepIndex ? (
-                      <Check className="h-5 w-5" />
-                    ) : (
-                      <span className="font-semibold">{index + 1}</span>
-                    )}
-                  </div>
-                  <div className="text-left">
-                    <p
-                      className={`font-medium ${
-                        index === currentStepIndex ? 'text-primary' : 'text-foreground'
-                      }`}
-                    >
-                      {step.label}
-                    </p>
-                    <p className="text-xs text-muted-foreground">{step.description}</p>
-                  </div>
-                </button>
-                {index < steps.length - 1 && (
-                  <div
-                    className={`flex-1 h-0.5 mx-4 ${
-                      index < currentStepIndex ? 'bg-primary' : 'bg-border'
-                    }`}
-                  />
-                )}
+      {/* Preview Dialog */}
+      <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
+        <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>岗位信息预览</DialogTitle>
+            <DialogDescription>预览当前填写的岗位信息</DialogDescription>
+          </DialogHeader>
+          <div className="py-4 space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="p-3 bg-gray-50 rounded-lg">
+                <p className="text-xs text-gray-500 mb-1">岗位名称</p>
+                <p className="font-medium text-sm">{position.name}</p>
               </div>
-            ))}
+              <div className="p-3 bg-gray-50 rounded-lg">
+                <p className="text-xs text-gray-500 mb-1">所属批次</p>
+                <p className="font-medium text-sm">{batch?.name || '未关联'}</p>
+              </div>
+              <div className="p-3 bg-gray-50 rounded-lg">
+                <p className="text-xs text-gray-500 mb-1">所属行业</p>
+                <p className="font-medium text-sm">{position.industry || '-'}</p>
+              </div>
+              <div className="p-3 bg-gray-50 rounded-lg">
+                <p className="text-xs text-gray-500 mb-1">适用专业</p>
+                <p className="font-medium text-sm">{position.majors.join('、') || '-'}</p>
+              </div>
+              <div className="p-3 bg-gray-50 rounded-lg">
+                <p className="text-xs text-gray-500 mb-1">薪资范围</p>
+                <p className="font-medium text-sm">{position.salaryRange[0]} - {position.salaryRange[1]}</p>
+              </div>
+              <div className="p-3 bg-gray-50 rounded-lg">
+                <p className="text-xs text-gray-500 mb-1">当前版本</p>
+                <p className="font-medium text-sm">{position.version}</p>
+              </div>
+            </div>
+            <div className="p-3 bg-gray-50 rounded-lg">
+              <p className="text-xs text-gray-500 mb-1">岗位描述</p>
+              <p className="text-sm">{position.description || '暂无描述'}</p>
+            </div>
+            <div className="p-3 bg-gray-50 rounded-lg">
+              <p className="text-xs text-gray-500 mb-1">工作职责 ({position.responsibilities.length})</p>
+              <ul className="text-sm space-y-1 mt-1">
+                {position.responsibilities.map((r) => (
+                  <li key={r.id}>• {r.name}</li>
+                ))}
+              </ul>
+            </div>
+            <div className="p-3 bg-gray-50 rounded-lg">
+              <p className="text-xs text-gray-500 mb-1">能力绑定 ({position.abilityBindings.length})</p>
+              <div className="flex flex-wrap gap-1 mt-1">
+                {position.abilityBindings.map((b) => (
+                  <Badge key={b.id} variant="secondary" className="text-xs">{b.name}</Badge>
+                ))}
+              </div>
+            </div>
           </div>
-        </CardContent>
-      </Card>
-
-      {/* Content */}
-      <Tabs value={activeStep} onValueChange={setActiveStep}>
-        <TabsList className="hidden">
-          <TabsTrigger value="basic">基础信息</TabsTrigger>
-          <TabsTrigger value="ability">能力建模</TabsTrigger>
-          <TabsTrigger value="competency">胜任力配置</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="basic" className="mt-0">
-          <StepBasicInfo position={position} onUpdate={updatePositionData} />
-        </TabsContent>
-
-        <TabsContent value="ability" className="mt-0">
-          <StepAbilityModeling position={position} onUpdate={updatePositionData} />
-        </TabsContent>
-
-        <TabsContent value="competency" className="mt-0">
-          <StepCompetencyConfig
-            position={position}
-            onUpdate={updatePositionData}
-          />
-        </TabsContent>
-      </Tabs>
-
-      {/* Navigation */}
-      <div className="flex items-center justify-between">
-        <Button
-          variant="outline"
-          onClick={() => {
-            const prevIndex = currentStepIndex - 1
-            if (prevIndex >= 0) setActiveStep(steps[prevIndex].id)
-          }}
-          disabled={currentStepIndex === 0}
-        >
-          上一步
-        </Button>
-        <Button
-          onClick={() => {
-            const nextIndex = currentStepIndex + 1
-            if (nextIndex < steps.length) setActiveStep(steps[nextIndex].id)
-          }}
-          disabled={currentStepIndex === steps.length - 1}
-        >
-          下一步
-        </Button>
-      </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsPreviewOpen(false)}>关闭</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
