@@ -19,6 +19,7 @@ export interface SideNavChild {
   label: string
   href: string
   matchers?: string[]
+  external?: boolean
 }
 
 export interface SideNavItem {

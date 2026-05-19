@@ -99,9 +99,27 @@ export function PlatformSideNav({ config }) {
                     const hasChildren = Boolean(item.children?.length);
                     const active = isSideItemActive(pathname, item);
                     const isExpanded = expandedItems.includes(item.id);
-                    return (_jsxs("div", { className: "mb-1", children: [hasChildren ? (_jsxs("button", { type: "button", onClick: () => toggleExpand(item.id), className: cn("flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm transition-colors", active ? "bg-primary/5 font-medium text-primary" : "text-gray-600 hover:bg-gray-50"), children: [_jsxs("div", { className: "flex items-center gap-2.5", children: [_jsx(Icon, { className: "h-4 w-4" }), item.label] }), isExpanded ? (_jsx(ChevronDown, { className: "h-4 w-4 text-gray-400" })) : (_jsx(ChevronRight, { className: "h-4 w-4 text-gray-400" }))] })) : (_jsxs(Link, { href: item.href || "/", className: cn("flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm transition-colors", active ? "bg-primary text-white font-medium" : "text-gray-600 hover:bg-gray-50"), children: [_jsx(Icon, { className: "h-4 w-4" }), item.label] })), hasChildren && isExpanded ? (_jsx("div", { className: "ml-4 mt-1 space-y-0.5 border-l-2 border-gray-100 pl-3", children: item.children?.map((child) => (_jsx(Link, { href: child.href, className: cn("block rounded-lg px-3 py-2 text-sm transition-colors", matchesPath(pathname, child.href, child.matchers)
-                                        ? "bg-primary text-white font-medium"
-                                        : "text-gray-500 hover:bg-gray-50 hover:text-gray-800"), children: child.label }, child.id))) })) : null] }, item.id));
+                    return (_jsxs("div", { className: "mb-1", children: [hasChildren ? (_jsxs("button", { type: "button", onClick: () => toggleExpand(item.id), className: cn("flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm transition-colors", active ? "bg-primary/5 font-medium text-primary" : "text-gray-600 hover:bg-gray-50"), children: [_jsxs("div", { className: "flex items-center gap-2.5", children: [_jsx(Icon, { className: "h-4 w-4" }), item.label] }), isExpanded ? (_jsx(ChevronDown, { className: "h-4 w-4 text-gray-400" })) : (_jsx(ChevronRight, { className: "h-4 w-4 text-gray-400" }))] })) : (_jsxs(Link, { href: item.href || "/", className: cn("flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm transition-colors", active ? "bg-primary text-white font-medium" : "text-gray-600 hover:bg-gray-50"), children: [_jsx(Icon, { className: "h-4 w-4" }), item.label] })), hasChildren && isExpanded ? (_jsx("div", { className: "ml-4 mt-1 space-y-0.5 border-l-2 border-gray-100 pl-3", children: (() => {
+                                    // 找出所有匹配的子菜单，选择 href 最长的作为最佳匹配（最精确）
+                                    const matchedChildren = item.children?.filter((child) => matchesPath(pathname, child.href, child.matchers)) || [];
+                                    const bestMatch = matchedChildren.reduce((best, child) => {
+                                        if (!best)
+                                            return child;
+                                        return (child.href?.length || 0) > (best.href?.length || 0)
+                                            ? child
+                                            : best;
+                                    }, null);
+                                    return item.children?.map((child) => {
+                                        const isChildActive = bestMatch?.id === child.id;
+                                        const childClassName = cn("block rounded-lg px-3 py-2 text-sm transition-colors", isChildActive
+                                            ? "bg-primary text-white font-medium"
+                                            : "text-gray-500 hover:bg-gray-50 hover:text-gray-800");
+                                        if (child.external) {
+                                            return (_jsx("a", { href: child.href, target: "_blank", rel: "noopener noreferrer", className: childClassName, children: child.label }, child.id));
+                                        }
+                                        return (_jsx(Link, { href: child.href, className: childClassName, children: child.label }, child.id));
+                                    });
+                                })() })) : null] }, item.id));
                 }) })] }));
 }
 export function PlatformShell({ config, children, userMenuSlot, }) {
