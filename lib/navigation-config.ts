@@ -11,9 +11,9 @@ export const careerNavigationConfig: PlatformNavigationConfig = {
   showCurrentTime: true,
   showUserMenu: false,
   topNavItems: [
-    { id: "portal", label: "门户首页", href: "/dashboard", icon: "home", matchers: ["/dashboard"] },
-    { id: "workspace", label: "我的服务台", href: "/approvals", icon: "briefcase", matchers: ["/approvals"] },
-    { id: "apps", label: "应用服务中心", href: "/positions", icon: "layoutGrid", matchers: ["/positions", "/abilities", "/rules", "/batches", "/workflows"] },
+    { id: "portal", label: "门户首页", href: "http://47.251.48.187:3001/portal", icon: "home" },
+    { id: "workspace", label: "我的服务台", href: "http://47.251.48.187:3001/portal/workspace", icon: "briefcase" },
+    { id: "apps", label: "应用服务中心", href: "http://47.251.48.187:3001/portal/apps", icon: "layoutGrid" },
   ],
   sideNavItems: [
     { id: "overview", label: "数据工作台", href: "/dashboard", icon: "barChart3", matchers: ["/dashboard"] },
