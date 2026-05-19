@@ -11,13 +11,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Textarea } from "@/components/ui/textarea"
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -55,7 +48,7 @@ import {
   Filter
 } from "lucide-react"
 import { StatusBadge } from "@/components/shared/status-badge"
-import type { ApprovalRecord, ApprovalStatus } from "@/lib/types"
+import type { ApprovalRecord } from "@/lib/types"
 import { formatDistanceToNow } from "date-fns"
 import { zhCN } from "date-fns/locale"
 
@@ -68,7 +61,7 @@ const APPROVAL_TABS = [
 
 export default function ApprovalsPage() {
   const { user } = useAuth()
-  const { approvals, positions, updateApproval } = useData()
+  const { approvals, positions, workflows, approveApproval, rejectApproval } = useData()
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedTab, setSelectedTab] = useState("pending")
   const [selectedApproval, setSelectedApproval] = useState<ApprovalRecord | null>(null)
@@ -81,13 +74,15 @@ export default function ApprovalsPage() {
   const myApprovals = approvals.filter((approval) => {
     // 管理员可以看到所有审批
     if (user?.role === "admin") return true
-    // 审批人只能看到自己负责的审批
-    if (user?.role === "approver") {
-      return approval.approverId === user.id || approval.currentStep?.approverId === user.id
+    // 审批人只能看到自己负责的审批（根据当前步骤角色判断）
+    if (user?.role === "reviewer") {
+      const workflow = workflows.find(w => w.id === approval.workflowId)
+      const currentStep = workflow?.steps[approval.currentStepIndex]
+      return currentStep?.role === "reviewer" || currentStep?.role === "admin"
     }
     // 岗位建设者只能看到自己提交的审批
     if (user?.role === "builder") {
-      return approval.submitterId === user.id
+      return approval.submittedBy === user.id
     }
     return false
   })
@@ -96,7 +91,7 @@ export default function ApprovalsPage() {
   const filteredApprovals = myApprovals.filter((approval) => {
     const matchesSearch =
       approval.positionName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      approval.submitterName.toLowerCase().includes(searchQuery.toLowerCase())
+      approval.submittedByName.toLowerCase().includes(searchQuery.toLowerCase())
 
     if (selectedTab === "all") return matchesSearch
     if (selectedTab === "pending") return matchesSearch && approval.status === "pending"
@@ -126,23 +121,13 @@ export default function ApprovalsPage() {
   }
 
   const handleSubmitAction = () => {
-    if (!selectedApproval || !actionType) return
+    if (!selectedApproval || !actionType || !user) return
 
-    const newStatus: ApprovalStatus = actionType === "approve" ? "approved" : "rejected"
-    const historyEntry = {
-      id: `history-${Date.now()}`,
-      action: actionType === "approve" ? "通过" : "驳回",
-      userId: user?.id || "",
-      userName: user?.name || "",
-      timestamp: new Date().toISOString(),
-      comment,
+    if (actionType === "approve") {
+      approveApproval(selectedApproval.id, user.id, user.name, comment)
+    } else {
+      rejectApproval(selectedApproval.id, user.id, user.name, comment)
     }
-
-    updateApproval(selectedApproval.id, {
-      status: newStatus,
-      history: [...(selectedApproval.history || []), historyEntry],
-      completedAt: new Date().toISOString(),
-    })
 
     setIsActionDialogOpen(false)
     setSelectedApproval(null)
@@ -152,6 +137,27 @@ export default function ApprovalsPage() {
 
   const getRelatedPosition = (positionId: string) => {
     return positions.find((p) => p.id === positionId)
+  }
+
+  const getBatchName = (positionId: string) => {
+    const position = positions.find((p) => p.id === positionId)
+    if (!position) return "未知批次"
+    // 通过 batchId 查找批次名称（DataContext 中未导出 batches，简化处理）
+    return position.batchId ? "常规批次" : "未知批次"
+  }
+
+  const getCurrentStep = (approval: ApprovalRecord) => {
+    const workflow = workflows.find(w => w.id === approval.workflowId)
+    return workflow?.steps[approval.currentStepIndex]
+  }
+
+  const getWorkflowSteps = (approval: ApprovalRecord) => {
+    const workflow = workflows.find(w => w.id === approval.workflowId)
+    if (!workflow) return []
+    return workflow.steps.map((step, index) => ({
+      ...step,
+      status: index < approval.currentStepIndex ? "completed" : index === approval.currentStepIndex ? "current" : "pending" as const,
+    }))
   }
 
   return (
@@ -280,94 +286,97 @@ export default function ApprovalsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredApprovals.map((approval) => (
-                  <TableRow key={approval.id}>
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                          <FileText className="h-5 w-5 text-primary" />
-                        </div>
-                        <div>
-                          <div className="font-medium">{approval.positionName}</div>
-                          <div className="text-sm text-muted-foreground">
-                            {approval.batchName}
+                {filteredApprovals.map((approval) => {
+                  const currentStep = getCurrentStep(approval)
+                  return (
+                    <TableRow key={approval.id}>
+                      <TableCell>
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                            <FileText className="h-5 w-5 text-primary" />
+                          </div>
+                          <div>
+                            <div className="font-medium">{approval.positionName}</div>
+                            <div className="text-sm text-muted-foreground">
+                              {getBatchName(approval.positionId)}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Avatar className="h-8 w-8">
-                          <AvatarFallback>
-                            {approval.submitterName.slice(0, 1)}
-                          </AvatarFallback>
-                        </Avatar>
-                        <span>{approval.submitterName}</span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Badge variant="outline">
-                          {approval.currentStep?.name || "待分配"}
-                        </Badge>
-                        {approval.currentStep && (
-                          <span className="text-sm text-muted-foreground">
-                            <ArrowRight className="inline h-3 w-3" />{" "}
-                            {approval.currentStep.approverName}
-                          </span>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <StatusBadge status={approval.status} type="approval" />
-                    </TableCell>
-                    <TableCell className="text-muted-foreground">
-                      {formatDistanceToNow(new Date(approval.submittedAt), {
-                        addSuffix: true,
-                        locale: zhCN,
-                      })}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => handleOpenDetail(approval)}>
-                            <Eye className="mr-2 h-4 w-4" />
-                            查看详情
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <History className="mr-2 h-4 w-4" />
-                            审批历史
-                          </DropdownMenuItem>
-                          {approval.status === "pending" &&
-                            (user?.role === "admin" || user?.role === "approver") && (
-                              <>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem
-                                  onClick={() => handleOpenAction(approval, "approve")}
-                                  className="text-success"
-                                >
-                                  <CheckCircle2 className="mr-2 h-4 w-4" />
-                                  通过
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  onClick={() => handleOpenAction(approval, "reject")}
-                                  className="text-destructive"
-                                >
-                                  <XCircle className="mr-2 h-4 w-4" />
-                                  驳回
-                                </DropdownMenuItem>
-                              </>
-                            )}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Avatar className="h-8 w-8">
+                            <AvatarFallback>
+                              {approval.submittedByName.slice(0, 1)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <span>{approval.submittedByName}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline">
+                            {currentStep?.name || "待分配"}
+                          </Badge>
+                          {currentStep && (
+                            <span className="text-sm text-muted-foreground">
+                              <ArrowRight className="inline h-3 w-3" />{" "}
+                              {currentStep.role === "admin" ? "管理员" : "审批人"}
+                            </span>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <StatusBadge status={approval.status} type="approval" />
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {formatDistanceToNow(new Date(approval.createdAt), {
+                          addSuffix: true,
+                          locale: zhCN,
+                        })}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => handleOpenDetail(approval)}>
+                              <Eye className="mr-2 h-4 w-4" />
+                              查看详情
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <History className="mr-2 h-4 w-4" />
+                              审批历史
+                            </DropdownMenuItem>
+                            {approval.status === "pending" &&
+                              (user?.role === "admin" || user?.role === "reviewer") && (
+                                <>
+                                  <DropdownMenuSeparator />
+                                  <DropdownMenuItem
+                                    onClick={() => handleOpenAction(approval, "approve")}
+                                    className="text-success"
+                                  >
+                                    <CheckCircle2 className="mr-2 h-4 w-4" />
+                                    通过
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() => handleOpenAction(approval, "reject")}
+                                    className="text-destructive"
+                                  >
+                                    <XCircle className="mr-2 h-4 w-4" />
+                                    驳回
+                                  </DropdownMenuItem>
+                                </>
+                              )}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  )
+                })}
               </TableBody>
             </Table>
           )}
@@ -393,16 +402,16 @@ export default function ApprovalsPage() {
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">所属批次</p>
-                  <p className="font-medium">{selectedApproval.batchName}</p>
+                  <p className="font-medium">{getBatchName(selectedApproval.positionId)}</p>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">提交人</p>
-                  <p className="font-medium">{selectedApproval.submitterName}</p>
+                  <p className="font-medium">{selectedApproval.submittedByName}</p>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">提交时间</p>
                   <p className="font-medium">
-                    {new Date(selectedApproval.submittedAt).toLocaleString("zh-CN")}
+                    {new Date(selectedApproval.createdAt).toLocaleString("zh-CN")}
                   </p>
                 </div>
               </div>
@@ -411,7 +420,7 @@ export default function ApprovalsPage() {
               <div>
                 <h4 className="mb-3 font-medium">审批流程</h4>
                 <div className="space-y-3">
-                  {selectedApproval.steps?.map((step, index) => (
+                  {getWorkflowSteps(selectedApproval).map((step, index) => (
                     <div
                       key={step.id}
                       className="flex items-center gap-4 rounded-lg border p-3"
@@ -430,7 +439,7 @@ export default function ApprovalsPage() {
                       <div className="flex-1">
                         <div className="font-medium">{step.name}</div>
                         <div className="text-sm text-muted-foreground">
-                          审批人：{step.approverName}
+                          审批角色：{step.role === "admin" ? "管理员" : step.role === "reviewer" ? "审批人" : step.role === "builder" ? "建设者" : "学生"}
                         </div>
                       </div>
                       <StatusBadge
@@ -461,9 +470,9 @@ export default function ApprovalsPage() {
                         <MessageSquare className="mt-0.5 h-4 w-4 text-muted-foreground" />
                         <div className="flex-1">
                           <div className="flex items-center gap-2">
-                            <span className="font-medium">{entry.userName}</span>
+                            <span className="font-medium">{entry.reviewerName}</span>
                             <span className="text-sm text-muted-foreground">
-                              {entry.action}
+                              {entry.status === "approved" ? "通过" : "驳回"}
                             </span>
                           </div>
                           {entry.comment && (
@@ -472,7 +481,7 @@ export default function ApprovalsPage() {
                             </p>
                           )}
                           <p className="mt-1 text-xs text-muted-foreground">
-                            {new Date(entry.timestamp).toLocaleString("zh-CN")}
+                            {new Date(entry.createdAt).toLocaleString("zh-CN")}
                           </p>
                         </div>
                       </div>
@@ -487,7 +496,7 @@ export default function ApprovalsPage() {
               关闭
             </Button>
             {selectedApproval?.status === "pending" &&
-              (user?.role === "admin" || user?.role === "approver") && (
+              (user?.role === "admin" || user?.role === "reviewer") && (
                 <>
                   <Button
                     variant="outline"

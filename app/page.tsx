@@ -13,7 +13,7 @@ export default function HomePage() {
       if (user.role === 'student') {
         router.push('/explore')
       } else {
-        router.push('/dashboard')
+        router.push('/positions')
       }
     }
   }, [user, router])

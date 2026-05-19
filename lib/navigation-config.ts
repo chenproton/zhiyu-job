@@ -4,10 +4,10 @@ export const careerNavigationConfig: PlatformNavigationConfig = {
   brandTitle: "职业岗位学习平台",
   currentPlatformId: "career",
   currentPlatformLabel: "职业岗位学习平台",
-  brandHref: "/dashboard",
+  brandHref: "/positions",
   brandIcon: "briefcase",
   platformIcon: "briefcase",
-  sideBackHref: "/dashboard",
+  sideBackHref: "/positions",
   showCurrentTime: true,
   showUserMenu: false,
   topNavItems: [
@@ -16,14 +16,16 @@ export const careerNavigationConfig: PlatformNavigationConfig = {
     { id: "apps", label: "应用服务中心", href: "http://47.251.48.187:3001/portal/apps", icon: "layoutGrid" },
   ],
   sideNavItems: [
-    { id: "overview", label: "数据工作台", href: "/dashboard", icon: "barChart3", matchers: ["/dashboard"] },
-    { id: "jobs", label: "岗位大厅", href: "/positions", icon: "briefcase", matchers: ["/positions"] },
-    { id: "abilities", label: "能力公共池", href: "/abilities", icon: "layers3", matchers: ["/abilities"] },
-    { id: "rules", label: "评价规则库", href: "/rules", icon: "bookOpen", matchers: ["/rules"] },
-    { id: "operations", label: "建设运营", icon: "settings", children: [
-      { id: "batches", label: "批次管理", href: "/batches", matchers: ["/batches"] },
-      { id: "workflows", label: "审批流程管理", href: "/workflows", matchers: ["/workflows"] },
-    ]},
-    { id: "approvals", label: "审批中心", href: "/approvals", icon: "fileText", matchers: ["/approvals"] },
+    {
+      id: "job-construction",
+      label: "岗位建设管理",
+      icon: "briefcase",
+      children: [
+        { id: "positions", label: "岗位资源管理", href: "/positions", matchers: ["/positions"] },
+        { id: "batches", label: "批次分组管理", href: "/batches", matchers: ["/batches"] },
+        { id: "workflows", label: "审批流程管理", href: "/workflows", matchers: ["/workflows"] },
+        { id: "approvals", label: "资源审批管理", href: "/approvals", matchers: ["/approvals"] },
+      ],
+    },
   ],
 }

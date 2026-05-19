@@ -255,20 +255,53 @@ export function PlatformSideNav({ config }: { config: PlatformNavigationConfig }
 
               {hasChildren && isExpanded ? (
                 <div className="ml-4 mt-1 space-y-0.5 border-l-2 border-gray-100 pl-3">
-                  {item.children?.map((child) => (
-                    <Link
-                      key={child.id}
-                      href={child.href}
-                      className={cn(
-                        "block rounded-lg px-3 py-2 text-sm transition-colors",
+                  {(() => {
+                    // 找出所有匹配的子菜单，选择 href 最长的作为最佳匹配（最精确）
+                    const matchedChildren =
+                      item.children?.filter((child) =>
                         matchesPath(pathname, child.href, child.matchers)
+                      ) || []
+                    const bestMatch = matchedChildren.reduce<
+                      (typeof matchedChildren)[0] | null
+                    >((best, child) => {
+                      if (!best) return child
+                      return (child.href?.length || 0) > (best.href?.length || 0)
+                        ? child
+                        : best
+                    }, null)
+
+                    return item.children?.map((child) => {
+                      const isChildActive = bestMatch?.id === child.id
+                      const childClassName = cn(
+                        "block rounded-lg px-3 py-2 text-sm transition-colors",
+                        isChildActive
                           ? "bg-primary text-white font-medium"
                           : "text-gray-500 hover:bg-gray-50 hover:text-gray-800"
-                      )}
-                    >
-                      {child.label}
-                    </Link>
-                  ))}
+                      )
+                      if (child.external) {
+                        return (
+                          <a
+                            key={child.id}
+                            href={child.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={childClassName}
+                          >
+                            {child.label}
+                          </a>
+                        )
+                      }
+                      return (
+                        <Link
+                          key={child.id}
+                          href={child.href}
+                          className={childClassName}
+                        >
+                          {child.label}
+                        </Link>
+                      )
+                    })
+                  })()}
                 </div>
               ) : null}
             </div>
