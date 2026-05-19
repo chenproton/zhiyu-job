@@ -7,9 +7,9 @@ import { careerNavigationConfig } from "@/lib/navigation-config"
 import type { SideNavItem } from "@my-app/platform-navigation-system"
 
 const ROLE_SIDE_NAV_ACCESS: Record<string, string[]> = {
-  admin: ['overview', 'jobs', 'abilities', 'rules', 'operations', 'approvals'],
-  builder: ['jobs', 'abilities', 'rules'],
-  reviewer: ['overview', 'jobs', 'abilities', 'rules', 'approvals'],
+  admin: ['job-construction', 'positions', 'batches', 'workflows', 'approvals'],
+  builder: ['job-construction', 'positions', 'batches', 'workflows', 'approvals'],
+  reviewer: ['job-construction', 'positions', 'batches', 'workflows', 'approvals'],
 }
 
 export function PlatformShellWrapper({ children }: { children: React.ReactNode }) {
