@@ -5,7 +5,16 @@ import { useRouter } from 'next/navigation'
 import { useData } from '@/lib/stores/data-context'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { X, Save, Eye, ArrowRight, ArrowLeft, Check } from 'lucide-react'
+import { Card, CardContent } from '@/components/ui/card'
+import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { X, Save, Eye, ArrowRight, ArrowLeft, Check, ImagePlus, UserPlus } from 'lucide-react'
 import { StepBasicInfo } from '@/components/position-builder/step-basic-info'
 import { StepAbilityModeling } from '@/components/position-builder/step-ability-modeling'
 import { StepCompetencyConfig } from '@/components/position-builder/step-competency-config'
@@ -18,6 +27,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+
+const CURRENT_USER = { id: 'user-1', name: '张建设' }
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -149,17 +160,116 @@ export default function PositionEditPage({ params }: PageProps) {
           </p>
         </div>
 
-        <div className="space-y-6">
-          {activeStep === 'basic' && (
-            <StepBasicInfo position={position} onUpdate={updatePositionData} />
-          )}
-          {activeStep === 'ability' && (
-            <StepAbilityModeling position={position} onUpdate={updatePositionData} />
-          )}
-          {activeStep === 'competency' && (
-            <StepCompetencyConfig position={position} onUpdate={updatePositionData} />
-          )}
-        </div>
+        {activeStep === 'basic' ? (
+          <div className="grid grid-cols-3 gap-6">
+            {/* Left: form */}
+            <div className="col-span-2">
+              <StepBasicInfo position={position} onUpdate={updatePositionData} />
+            </div>
+
+            {/* Right: sidebar */}
+            <div className="space-y-6">
+              {/* Cover Image */}
+              <Card>
+                <CardContent className="pt-6">
+                  <Label className="mb-3 block">岗位封面</Label>
+                  {position.coverImage ? (
+                    <div className="relative group">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={position.coverImage}
+                        alt="岗位封面"
+                        className="aspect-video w-full rounded-lg border object-cover"
+                      />
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center cursor-pointer"
+                        onClick={() => updatePositionData({ coverImage: '' })}
+                      >
+                        <span className="text-white text-sm">点击移除封面</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div
+                      className="aspect-video bg-gray-100 rounded-lg border-2 border-dashed border-gray-200 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors"
+                      onClick={() => updatePositionData({ coverImage: '/placeholder.svg?height=200&width=300' })}
+                    >
+                      <ImagePlus className="h-8 w-8 text-gray-400 mb-2" />
+                      <p className="text-sm text-gray-500">点击设置封面图片</p>
+                      <p className="text-xs text-gray-400 mt-1">建议尺寸 320x200</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Meta Info */}
+              <Card>
+                <CardContent className="pt-6 space-y-4">
+                  {/* Batch */}
+                  <div>
+                    <Label className="text-gray-500 text-xs">所属批次</Label>
+                    <div className="mt-1">
+                      <Select
+                        value={position.batchId || '__none__'}
+                        onValueChange={(v) => updatePositionData({ batchId: v === '__none__' ? '' : v })}
+                      >
+                        <SelectTrigger className="h-9 text-sm">
+                          <SelectValue placeholder="选择批次" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="__none__">未选择批次</SelectItem>
+                          {batches.map((b) => (
+                            <SelectItem key={b.id} value={b.id}>
+                              {b.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  {/* Creator */}
+                  <div>
+                    <Label className="text-gray-500 text-xs">创建人</Label>
+                    <p className="font-medium text-gray-800 mt-1">{CURRENT_USER.name}</p>
+                  </div>
+
+                  {/* Collaborators */}
+                  <div>
+                    <Label className="text-gray-500 text-xs">共建人</Label>
+                    <div className="mt-1 border rounded-lg p-3 cursor-pointer hover:bg-gray-50 transition-colors">
+                      {position.collaborators.length === 0 ? (
+                        <div className="flex items-center gap-2 text-gray-400">
+                          <UserPlus className="h-4 w-4" />
+                          <span className="text-sm">点击选择共建人</span>
+                        </div>
+                      ) : (
+                        <div className="flex flex-wrap gap-2">
+                          <div className="flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-primary/10 text-primary">
+                            <span>{CURRENT_USER.name}</span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Version */}
+                  <div className="pt-3 border-t border-gray-100">
+                    <Label className="text-gray-500 text-xs">当前版本号</Label>
+                    <p className="font-medium text-gray-800 mt-1">{position.version}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-6">
+            {activeStep === 'ability' && (
+              <StepAbilityModeling position={position} onUpdate={updatePositionData} />
+            )}
+            {activeStep === 'competency' && (
+              <StepCompetencyConfig position={position} onUpdate={updatePositionData} />
+            )}
+          </div>
+        )}
       </div>
 
       {/* Preview Dialog */}

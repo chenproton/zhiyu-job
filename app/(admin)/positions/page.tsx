@@ -75,8 +75,6 @@ export default function PositionsPage() {
   const [expandedBatches, setExpandedBatches] = useState<string[]>(batches.map((b) => b.id))
 
   // Dialogs
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
-  const [createBatchId, setCreateBatchId] = useState<string>("")
 
   const [isBatchDialogOpen, setIsBatchDialogOpen] = useState(false)
   const [isInnerBatchCreateOpen, setIsInnerBatchCreateOpen] = useState(false)
@@ -336,20 +334,15 @@ export default function PositionsPage() {
     setSelectedStatus(null)
   }
 
-  const handleOpenCreateDialog = () => {
-    setIsCreateDialogOpen(true)
-  }
-
-  const handleCreateWithBatch = (batchId: string) => {
-    const batch = batches.find((b) => b.id === batchId)
+  const handleCreate = () => {
     const newPosition = addPosition({
-      batchId,
+      batchId: "",
       version: "V1.0",
       status: "draft",
       name: "新建岗位",
       shortName: "新岗位",
       industry: "",
-      majors: batch ? [batch.major] : [],
+      majors: [],
       salaryRange: [0, 0],
       certificates: [],
       description: "",
@@ -365,7 +358,6 @@ export default function PositionsPage() {
       favoriteCount: 0,
     })
     router.push(`/positions/${newPosition.id}/edit`)
-    setIsCreateDialogOpen(false)
   }
 
   return (
@@ -500,7 +492,7 @@ export default function PositionsPage() {
                 导入岗位
               </Button>
 
-              <Button size="sm" className="bg-primary hover:bg-primary/90" onClick={handleOpenCreateDialog}>
+              <Button size="sm" className="bg-primary hover:bg-primary/90" onClick={handleCreate}>
                 <Plus className="mr-2 h-4 w-4" />
                 新建岗位
               </Button>
@@ -794,64 +786,12 @@ export default function PositionsPage() {
           </div>
           <h3 className="mb-2 text-lg font-medium text-slate-700">暂无岗位</h3>
           <p className="mb-4 text-sm text-slate-500">当前筛选条件下没有岗位数据</p>
-          <Button size="sm" onClick={handleOpenCreateDialog}>
+          <Button size="sm" onClick={handleCreate}>
             <Plus className="mr-2 h-4 w-4" />
             新建岗位
           </Button>
         </div>
       )}
-
-      {/* Create Dialog */}
-      <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>选择批次</DialogTitle>
-            <DialogDescription>请选择岗位所属的批次，选择后将进入岗位编辑页面</DialogDescription>
-          </DialogHeader>
-          <div className="py-4">
-            {openBatches.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                <FolderKanban className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>暂无开放中的批次</p>
-                <p className="text-sm">请先在批次管理中创建批次</p>
-              </div>
-            ) : (
-              <div className="grid gap-3 md:grid-cols-2">
-                {openBatches.map((batch) => {
-                  const workflow = workflows.find((w) => w.id === batch.workflowId)
-                  return (
-                    <Card
-                      key={batch.id}
-                      className="cursor-pointer hover:border-primary transition-colors"
-                      onClick={() => handleCreateWithBatch(batch.id)}
-                    >
-                      <CardContent className="p-4">
-                        <div className="flex items-start justify-between">
-                          <div>
-                            <p className="font-medium">{batch.name}</p>
-                            <p className="text-sm text-muted-foreground mt-1">
-                              {batch.department} - {batch.major}
-                            </p>
-                            {workflow && (
-                              <Badge variant="outline" className="mt-2 text-xs">
-                                {workflow.name}
-                              </Badge>
-                            )}
-                          </div>
-                          <Badge variant="secondary">{batch.positionCount} 个岗位</Badge>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )
-                })}
-              </div>
-            )}
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>取消</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
       {/* Import Dialog */}
       <Dialog open={isImportDialogOpen} onOpenChange={setIsImportDialogOpen}>

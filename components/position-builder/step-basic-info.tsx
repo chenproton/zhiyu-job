@@ -1,12 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
-import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
+import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
@@ -23,7 +23,15 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Checkbox } from '@/components/ui/checkbox'
-import { Sparkles, Plus, X, Loader2, Award, ExternalLink, Image as ImageIcon } from 'lucide-react'
+import {
+  Sparkles,
+  Plus,
+  X,
+  Loader2,
+  Award,
+  ExternalLink,
+  Image as ImageIcon,
+} from 'lucide-react'
 import type { Position, PositionResponsibility } from '@/lib/types'
 
 interface StepBasicInfoProps {
@@ -106,12 +114,12 @@ export function StepBasicInfo({ position, onUpdate }: StepBasicInfoProps) {
   const [newRequirement, setNewRequirement] = useState('')
   const [newHorizontal, setNewHorizontal] = useState('')
   const [newVertical, setNewVertical] = useState('')
-  
+
   // 证书相关状态
   const [isCertDialogOpen, setIsCertDialogOpen] = useState(false)
   const [isNewCertDialogOpen, setIsNewCertDialogOpen] = useState(false)
   const [selectedCertIds, setSelectedCertIds] = useState<string[]>(
-    position.certificates?.map(c => c.id) || []
+    position.certificates?.map((c) => c.id) || []
   )
   const [newCert, setNewCert] = useState<Omit<Certificate, 'id'>>({
     name: '',
@@ -212,13 +220,14 @@ export function StepBasicInfo({ position, onUpdate }: StepBasicInfoProps) {
     if (checked) {
       setSelectedCertIds([...selectedCertIds, certId])
     } else {
-      setSelectedCertIds(selectedCertIds.filter(id => id !== certId))
+      setSelectedCertIds(selectedCertIds.filter((id) => id !== certId))
     }
   }
 
   const handleConfirmCertificates = () => {
-    const selectedCerts = MOCK_CERTIFICATES.filter(c => selectedCertIds.includes(c.id))
-    const existingCustomCerts = position.certificates?.filter(c => !MOCK_CERTIFICATES.some(mc => mc.id === c.id)) || []
+    const selectedCerts = MOCK_CERTIFICATES.filter((c) => selectedCertIds.includes(c.id))
+    const existingCustomCerts =
+      position.certificates?.filter((c) => !MOCK_CERTIFICATES.some((mc) => mc.id === c.id)) || []
     onUpdate({ certificates: [...selectedCerts, ...existingCustomCerts] })
     setIsCertDialogOpen(false)
   }
@@ -235,312 +244,261 @@ export function StepBasicInfo({ position, onUpdate }: StepBasicInfoProps) {
   }
 
   const handleRemoveCertificate = (certId: string) => {
-    onUpdate({ certificates: position.certificates?.filter(c => c.id !== certId) || [] })
-    setSelectedCertIds(selectedCertIds.filter(id => id !== certId))
+    onUpdate({ certificates: position.certificates?.filter((c) => c.id !== certId) || [] })
+    setSelectedCertIds(selectedCertIds.filter((id) => id !== certId))
   }
 
   return (
-    <div className="grid gap-6 lg:grid-cols-2">
-      {/* Left Column - Basic Info */}
-      <div className="space-y-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>基本信息</CardTitle>
-            <CardDescription>填写岗位的基础信息</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <FieldGroup className="gap-4">
-              <Field>
-                <FieldLabel>岗位名称</FieldLabel>
-                <Input
-                  value={position.name}
-                  onChange={(e) => onUpdate({ name: e.target.value })}
-                  placeholder="例如：Java 后端开发工程师"
-                />
-              </Field>
-              <Field>
-                <FieldLabel>岗位简称</FieldLabel>
-                <Input
-                  value={position.shortName}
-                  onChange={(e) => onUpdate({ shortName: e.target.value })}
-                  placeholder="例如：Java开发"
-                />
-              </Field>
-              <Field>
-                <FieldLabel>所属行业</FieldLabel>
-                <Select
-                  value={position.industry}
-                  onValueChange={(value) => onUpdate({ industry: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="选择行业" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {MOCK_INDUSTRIES.map((industry) => (
-                      <SelectItem key={industry} value={industry}>
-                        {industry}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </Field>
-              <Field>
-                <FieldLabel>关联专业</FieldLabel>
-                <Select
-                  value={position.majors[0] || ''}
-                  onValueChange={(value) => onUpdate({ majors: [value] })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="选择专业" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {MOCK_MAJORS.map((major) => (
-                      <SelectItem key={major} value={major}>
-                        {major}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </Field>
-            </FieldGroup>
-          </CardContent>
-        </Card>
-
-        {/* Description */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <div>
-              <CardTitle>岗位介绍</CardTitle>
-              <CardDescription>描述该岗位的主要工作内容和特点</CardDescription>
+    <div className="space-y-6">
+      {/* Merged Basic Info Card */}
+      <Card>
+        <CardHeader>
+          <CardTitle>基本信息</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-5">
+          {/* Row 1: Name + Short Name */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="name">岗位名称</Label>
+              <Input
+                id="name"
+                value={position.name}
+                onChange={(e) => onUpdate({ name: e.target.value })}
+                placeholder="例如：Java 后端开发工程师"
+              />
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handleAIGenerate('description')}
-              disabled={isGenerating !== null}
-            >
-              {isGenerating === 'description' ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Sparkles className="mr-2 h-4 w-4" />
-              )}
-              AI 起草
-            </Button>
-          </CardHeader>
-          <CardContent>
+            <div className="grid gap-2">
+              <Label htmlFor="shortName">岗位简称</Label>
+              <Input
+                id="shortName"
+                value={position.shortName}
+                onChange={(e) => onUpdate({ shortName: e.target.value })}
+                placeholder="例如：Java开发"
+              />
+            </div>
+          </div>
+
+          {/* Row 2: Industry + Major */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="industry">所属行业</Label>
+              <Select
+                value={position.industry}
+                onValueChange={(value) => onUpdate({ industry: value })}
+              >
+                <SelectTrigger id="industry">
+                  <SelectValue placeholder="选择行业" />
+                </SelectTrigger>
+                <SelectContent>
+                  {MOCK_INDUSTRIES.map((industry) => (
+                    <SelectItem key={industry} value={industry}>
+                      {industry}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="major">关联专业</Label>
+              <Select
+                value={position.majors[0] || ''}
+                onValueChange={(value) => onUpdate({ majors: [value] })}
+              >
+                <SelectTrigger id="major">
+                  <SelectValue placeholder="选择专业" />
+                </SelectTrigger>
+                <SelectContent>
+                  {MOCK_MAJORS.map((major) => (
+                    <SelectItem key={major} value={major}>
+                      {major}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {/* Row 3: Salary Range */}
+          <div className="grid gap-2">
+            <Label>薪资范围（元/月）</Label>
+            <div className="flex items-center gap-3">
+              <Input
+                type="number"
+                value={position.salaryRange[0]}
+                onChange={(e) =>
+                  onUpdate({
+                    salaryRange: [Number(e.target.value), position.salaryRange[1]],
+                  })
+                }
+                placeholder="最低"
+                className="w-32"
+              />
+              <span className="text-muted-foreground">-</span>
+              <Input
+                type="number"
+                value={position.salaryRange[1]}
+                onChange={(e) =>
+                  onUpdate({
+                    salaryRange: [position.salaryRange[0], Number(e.target.value)],
+                  })
+                }
+                placeholder="最高"
+                className="w-32"
+              />
+            </div>
+          </div>
+
+          {/* Description */}
+          <div className="grid gap-2">
+            <div className="flex items-center justify-between">
+              <Label htmlFor="description">岗位介绍</Label>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleAIGenerate('description')}
+                disabled={isGenerating !== null}
+              >
+                {isGenerating === 'description' ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Sparkles className="mr-2 h-4 w-4" />
+                )}
+                AI 起草
+              </Button>
+            </div>
             <Textarea
+              id="description"
               value={position.description}
               onChange={(e) => onUpdate({ description: e.target.value })}
-              placeholder="请输入岗位介绍..."
-              rows={5}
+              placeholder="描述该岗位的主要工作内容和特点..."
+              rows={4}
             />
-          </CardContent>
-        </Card>
+          </div>
+        </CardContent>
+      </Card>
 
-        {/* Certificates */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <div>
-              <CardTitle>相关证书</CardTitle>
-              <CardDescription>该岗位相关的职业资格证书</CardDescription>
-            </div>
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIsCertDialogOpen(true)}
-              >
-                从资源库选择
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIsNewCertDialogOpen(true)}
-              >
-                <Plus className="mr-2 h-4 w-4" />
-                新增证书
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent>
-            {(!position.certificates || position.certificates.length === 0) ? (
-              <div className="text-center py-8 text-muted-foreground">
-                <Award className="h-10 w-10 mx-auto mb-2 opacity-50" />
-                <p>暂无相关证书</p>
-              </div>
+      {/* Responsibilities */}
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between pb-3">
+          <CardTitle className="text-base">工作职责</CardTitle>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handleAIGenerate('responsibilities')}
+            disabled={isGenerating !== null}
+          >
+            {isGenerating === 'responsibilities' ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : (
-              <div className="space-y-3">
-                {position.certificates.map((cert) => (
-                  <div key={cert.id} className="flex items-start gap-3 p-3 rounded-lg border">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                      <Award className="h-5 w-5 text-primary" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium">{cert.name}</span>
-                        {cert.url && (
-                          <a 
-                            href={cert.url} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="text-primary hover:underline"
-                          >
-                            <ExternalLink className="h-3.5 w-3.5" />
-                          </a>
-                        )}
-                      </div>
-                      {cert.description && (
-                        <p className="text-sm text-muted-foreground mt-0.5">{cert.description}</p>
-                      )}
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                      onClick={() => handleRemoveCertificate(cert.id)}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))}
-              </div>
+              <Sparkles className="mr-2 h-4 w-4" />
             )}
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Right Column - Lists */}
-      <div className="space-y-6">
-        {/* Responsibilities */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <div>
-              <CardTitle>工作职责</CardTitle>
-              <CardDescription>列出该岗位的主要工作职责</CardDescription>
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handleAIGenerate('responsibilities')}
-              disabled={isGenerating !== null}
-            >
-              {isGenerating === 'responsibilities' ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Sparkles className="mr-2 h-4 w-4" />
-              )}
-              AI 生成
-            </Button>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {position.responsibilities.map((item, index) => (
-                <div key={item.id} className="flex items-center gap-2">
-                  <Badge variant="outline" className="shrink-0">
-                    {index + 1}
-                  </Badge>
-                  <span className="flex-1 text-sm">{item.name}</span>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                    onClick={() => removeResponsibility(index)}
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
-              ))}
-              <div className="flex gap-2">
-                <Input
-                  placeholder="添加工作职责..."
-                  value={newResponsibility}
-                  onChange={(e) => setNewResponsibility(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && addResponsibility()}
-                />
-                <Button variant="outline" onClick={addResponsibility}>
-                  <Plus className="h-4 w-4" />
+            AI 生成
+          </Button>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            {position.responsibilities.map((item, index) => (
+              <div key={item.id} className="flex items-center gap-2">
+                <Badge variant="outline" className="shrink-0">
+                  {index + 1}
+                </Badge>
+                <span className="flex-1 text-sm">{item.name}</span>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                  onClick={() => removeResponsibility(index)}
+                >
+                  <X className="h-4 w-4" />
                 </Button>
               </div>
+            ))}
+            <div className="flex gap-2">
+              <Input
+                placeholder="添加工作职责..."
+                value={newResponsibility}
+                onChange={(e) => setNewResponsibility(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && addResponsibility()}
+              />
+              <Button variant="outline" onClick={addResponsibility}>
+                <Plus className="h-4 w-4" />
+              </Button>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </CardContent>
+      </Card>
 
-        {/* Requirements */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <div>
-              <CardTitle>任职要求</CardTitle>
-              <CardDescription>列出该岗位的任职资格要求</CardDescription>
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handleAIGenerate('requirements')}
-              disabled={isGenerating !== null}
-            >
-              {isGenerating === 'requirements' ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Sparkles className="mr-2 h-4 w-4" />
-              )}
-              AI 生成
-            </Button>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {position.requirements.map((item, index) => (
-                <div key={index} className="flex items-center gap-2">
-                  <Badge variant="outline" className="shrink-0">
-                    {index + 1}
-                  </Badge>
-                  <span className="flex-1 text-sm">{item}</span>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                    onClick={() => removeRequirement(index)}
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
-              ))}
-              <div className="flex gap-2">
-                <Input
-                  placeholder="添加任职要求..."
-                  value={newRequirement}
-                  onChange={(e) => setNewRequirement(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && addRequirement()}
-                />
-                <Button variant="outline" onClick={addRequirement}>
-                  <Plus className="h-4 w-4" />
+      {/* Requirements */}
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between pb-3">
+          <CardTitle className="text-base">任职要求</CardTitle>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handleAIGenerate('requirements')}
+            disabled={isGenerating !== null}
+          >
+            {isGenerating === 'requirements' ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Sparkles className="mr-2 h-4 w-4" />
+            )}
+            AI 生成
+          </Button>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            {position.requirements.map((item, index) => (
+              <div key={index} className="flex items-center gap-2">
+                <Badge variant="outline" className="shrink-0">
+                  {index + 1}
+                </Badge>
+                <span className="flex-1 text-sm">{item}</span>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                  onClick={() => removeRequirement(index)}
+                >
+                  <X className="h-4 w-4" />
                 </Button>
               </div>
+            ))}
+            <div className="flex gap-2">
+              <Input
+                placeholder="添加任职要求..."
+                value={newRequirement}
+                onChange={(e) => setNewRequirement(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && addRequirement()}
+              />
+              <Button variant="outline" onClick={addRequirement}>
+                <Plus className="h-4 w-4" />
+              </Button>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </CardContent>
+      </Card>
 
-        {/* Career Path */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <div>
-              <CardTitle>发展路径</CardTitle>
-              <CardDescription>设置职业发展的横向和纵向路径</CardDescription>
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handleAIGenerate('careerPath')}
-              disabled={isGenerating !== null}
-            >
-              {isGenerating === 'careerPath' ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Sparkles className="mr-2 h-4 w-4" />
-              )}
-              AI 生成
-            </Button>
-          </CardHeader>
-          <CardContent className="space-y-4">
+      {/* Career Path */}
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between pb-3">
+          <CardTitle className="text-base">发展路径</CardTitle>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handleAIGenerate('careerPath')}
+            disabled={isGenerating !== null}
+          >
+            {isGenerating === 'careerPath' ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Sparkles className="mr-2 h-4 w-4" />
+            )}
+            AI 生成
+          </Button>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-2 gap-6">
             <div>
               <p className="text-sm font-medium mb-2">横向发展</p>
               <div className="flex flex-wrap gap-2 mb-2">
@@ -591,9 +549,69 @@ export function StepBasicInfo({ position, onUpdate }: StepBasicInfoProps) {
                 </Button>
               </div>
             </div>
-          </CardContent>
-        </Card>
-      </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Certificates */}
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between pb-3">
+          <CardTitle className="text-base">相关证书</CardTitle>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={() => setIsCertDialogOpen(true)}>
+              从资源库选择
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => setIsNewCertDialogOpen(true)}>
+              <Plus className="mr-2 h-4 w-4" />
+              新增证书
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {!position.certificates || position.certificates.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">
+              <Award className="h-10 w-10 mx-auto mb-2 opacity-50" />
+              <p>暂无相关证书</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {position.certificates.map((cert) => (
+                <div key={cert.id} className="flex items-start gap-3 p-3 rounded-lg border">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                    <Award className="h-5 w-5 text-primary" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium">{cert.name}</span>
+                      {cert.url && (
+                        <a
+                          href={cert.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-primary hover:underline"
+                        >
+                          <ExternalLink className="h-3.5 w-3.5" />
+                        </a>
+                      )}
+                    </div>
+                    {cert.description && (
+                      <p className="text-sm text-muted-foreground mt-0.5">{cert.description}</p>
+                    )}
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                    onClick={() => handleRemoveCertificate(cert.id)}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* 从资源库选择证书对话框 */}
       <Dialog open={isCertDialogOpen} onOpenChange={setIsCertDialogOpen}>
@@ -621,7 +639,9 @@ export function StepBasicInfo({ position, onUpdate }: StepBasicInfoProps) {
             ))}
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsCertDialogOpen(false)}>取消</Button>
+            <Button variant="outline" onClick={() => setIsCertDialogOpen(false)}>
+              取消
+            </Button>
             <Button onClick={handleConfirmCertificates}>确认选择</Button>
           </DialogFooter>
         </DialogContent>
@@ -634,34 +654,34 @@ export function StepBasicInfo({ position, onUpdate }: StepBasicInfoProps) {
             <DialogTitle>新增证书</DialogTitle>
             <DialogDescription>添加一个新的职业资格证书</DialogDescription>
           </DialogHeader>
-          <FieldGroup className="gap-4 py-4">
-            <Field>
-              <FieldLabel>证书名称</FieldLabel>
+          <div className="space-y-4 py-4">
+            <div className="grid gap-2">
+              <Label>证书名称</Label>
               <Input
                 value={newCert.name}
                 onChange={(e) => setNewCert({ ...newCert, name: e.target.value })}
                 placeholder="例如：AWS 云从业者认证"
               />
-            </Field>
-            <Field>
-              <FieldLabel>相关网址</FieldLabel>
+            </div>
+            <div className="grid gap-2">
+              <Label>相关网址</Label>
               <Input
                 value={newCert.url}
                 onChange={(e) => setNewCert({ ...newCert, url: e.target.value })}
                 placeholder="https://..."
               />
-            </Field>
-            <Field>
-              <FieldLabel>证书介绍</FieldLabel>
+            </div>
+            <div className="grid gap-2">
+              <Label>证书介绍</Label>
               <Textarea
                 value={newCert.description}
                 onChange={(e) => setNewCert({ ...newCert, description: e.target.value })}
                 placeholder="简要描述该证书..."
                 rows={3}
               />
-            </Field>
-            <Field>
-              <FieldLabel>证书图片</FieldLabel>
+            </div>
+            <div className="grid gap-2">
+              <Label>证书图片</Label>
               <div className="flex gap-2">
                 <Input
                   value={newCert.image}
@@ -673,11 +693,15 @@ export function StepBasicInfo({ position, onUpdate }: StepBasicInfoProps) {
                   <ImageIcon className="h-4 w-4" />
                 </Button>
               </div>
-            </Field>
-          </FieldGroup>
+            </div>
+          </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsNewCertDialogOpen(false)}>取消</Button>
-            <Button onClick={handleAddNewCertificate} disabled={!newCert.name}>添加</Button>
+            <Button variant="outline" onClick={() => setIsNewCertDialogOpen(false)}>
+              取消
+            </Button>
+            <Button onClick={handleAddNewCertificate} disabled={!newCert.name}>
+              添加
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

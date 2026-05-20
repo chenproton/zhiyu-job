@@ -23,12 +23,6 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion'
-import {
   Sparkles,
   Plus,
   Search,
@@ -36,7 +30,6 @@ import {
   Lightbulb,
   BookOpen,
   Brain,
-  Heart,
   CheckCircle2,
   AlertCircle,
   ChevronRight,
@@ -89,7 +82,7 @@ export function StepAbilityModeling({ position, onUpdate }: StepAbilityModelingP
   ).length
 
   const filteredPublicAbilities = useMemo(() => {
-    if (!searchQuery.trim()) return abilities.slice(0, 10)
+    if (!searchQuery.trim()) return []
     return abilities.filter(a =>
       a.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       a.category.toLowerCase().includes(searchQuery.toLowerCase())
@@ -114,6 +107,7 @@ export function StepAbilityModeling({ position, onUpdate }: StepAbilityModelingP
       rubricDescription: '',
     }
     onUpdate({ abilityBindings: [...position.abilityBindings, newBinding] })
+    setSearchQuery('')
   }
 
   const handleCreateCustom = () => {
@@ -151,7 +145,6 @@ export function StepAbilityModeling({ position, onUpdate }: StepAbilityModelingP
     setIsGenerating(true)
     await new Promise(resolve => setTimeout(resolve, 1500))
 
-    // Mock AI generated bindings for selected responsibility
     const mockBindings: PositionAbilityBinding[] = ([
       {
         id: `bind-ai-1-${Date.now()}`,
@@ -184,7 +177,6 @@ export function StepAbilityModeling({ position, onUpdate }: StepAbilityModelingP
       },
     ] as PositionAbilityBinding[]).filter(b => b.name)
 
-    // Remove existing bindings for this responsibility first
     const cleaned = position.abilityBindings.filter(b => b.responsibilityId !== selectedRespId)
     onUpdate({ abilityBindings: [...cleaned, ...mockBindings] })
     setIsGenerating(false)
@@ -324,54 +316,55 @@ export function StepAbilityModeling({ position, onUpdate }: StepAbilityModelingP
                   />
                 </div>
 
-                <div className="rounded-lg border bg-card p-3 space-y-2 max-h-56 overflow-y-auto">
-                  <div className="flex items-center justify-between">
-                    <p className="text-xs text-muted-foreground font-medium">公共能力点库（{abilities.length}）</p>
-                    {searchQuery && (
+                {/* Search results - only shown when searching */}
+                {searchQuery.trim() && (
+                  <div className="rounded-lg border bg-card p-3 space-y-2 max-h-56 overflow-y-auto">
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs text-muted-foreground font-medium">公共能力点库（{abilities.length}）</p>
                       <p className="text-xs text-muted-foreground">
                         搜索「{searchQuery}」
                       </p>
-                    )}
-                  </div>
-                  {filteredPublicAbilities.length === 0 ? (
-                    <div className="py-4 text-center">
-                      <p className="text-sm text-muted-foreground">未找到匹配的能力点</p>
                     </div>
-                  ) : (
-                    filteredPublicAbilities.map((ability) => (
-                      <div
-                        key={ability.id}
-                        className="flex items-center justify-between p-2 rounded-md hover:bg-accent/50 cursor-pointer transition-colors"
-                        onClick={() => handleAddFromPool(ability)}
-                      >
-                        <div className="flex items-center gap-2">
-                          <BookOpen className="h-4 w-4 text-primary" />
-                          <span className="text-sm">{ability.name}</span>
-                          <Badge variant="outline" className="text-xs">{ability.category}</Badge>
+                    {filteredPublicAbilities.length === 0 ? (
+                      <div className="py-4 text-center">
+                        <p className="text-sm text-muted-foreground">未找到匹配的能力点</p>
+                      </div>
+                    ) : (
+                      filteredPublicAbilities.map((ability) => (
+                        <div
+                          key={ability.id}
+                          className="flex items-center justify-between p-2 rounded-md hover:bg-accent/50 cursor-pointer transition-colors"
+                          onClick={() => handleAddFromPool(ability)}
+                        >
+                          <div className="flex items-center gap-2">
+                            <BookOpen className="h-4 w-4 text-primary" />
+                            <span className="text-sm">{ability.name}</span>
+                            <Badge variant="outline" className="text-xs">{ability.category}</Badge>
+                          </div>
+                          <Button size="sm" variant="ghost" className="h-7 px-2">
+                            <Plus className="h-3.5 w-3.5" />
+                          </Button>
                         </div>
-                        <Button size="sm" variant="ghost" className="h-7 px-2">
-                          <Plus className="h-3.5 w-3.5" />
+                      ))
+                    )}
+                    {filteredPublicAbilities.length === 0 && (
+                      <div className="pt-2 border-t">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="w-full text-amber-600 hover:text-amber-700 hover:bg-amber-50"
+                          onClick={() => {
+                            setNewAbilityName(searchQuery)
+                            setShowCreateDialog(true)
+                          }}
+                        >
+                          <Plus className="mr-2 h-4 w-4" />
+                          库中不存在，新建「{searchQuery}」能力点
                         </Button>
                       </div>
-                    ))
-                  )}
-                  {searchQuery && filteredPublicAbilities.length === 0 && (
-                    <div className="pt-2 border-t">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="w-full text-amber-600 hover:text-amber-700 hover:bg-amber-50"
-                        onClick={() => {
-                          setNewAbilityName(searchQuery)
-                          setShowCreateDialog(true)
-                        }}
-                      >
-                        <Plus className="mr-2 h-4 w-4" />
-                        库中不存在，新建「{searchQuery}」能力点
-                      </Button>
-                    </div>
-                  )}
-                </div>
+                    )}
+                  </div>
+                )}
 
                 <Button
                   variant="outline"
@@ -383,7 +376,7 @@ export function StepAbilityModeling({ position, onUpdate }: StepAbilityModelingP
                 </Button>
               </div>
 
-              {/* Bindings List */}
+              {/* Bindings List - Expanded cards, no accordion */}
               {respBindings.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-8 rounded-lg border border-dashed">
                   <Brain className="h-10 w-10 text-muted-foreground/50 mb-3" />
@@ -393,95 +386,84 @@ export function StepAbilityModeling({ position, onUpdate }: StepAbilityModelingP
                   </p>
                 </div>
               ) : (
-                <Accordion type="multiple" className="space-y-2">
+                <div className="space-y-3">
                   {respBindings.map((binding) => (
-                    <AccordionItem
+                    <div
                       key={binding.id}
-                      value={binding.id}
-                      className="rounded-lg border bg-card px-4"
+                      className="rounded-lg border bg-card p-4 space-y-4"
                     >
-                      <AccordionTrigger className="hover:no-underline py-3">
-                        <div className="flex flex-1 items-center justify-between pr-4">
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium text-sm">{binding.name}</span>
-                            {getSourceBadge(binding.source)}
-                            <Badge variant="outline" className="text-xs">{binding.category}</Badge>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            {binding.level ? (
-                              <Badge className="bg-primary/10 text-primary border-primary/20 text-xs">
-                                {COMPETENCY_LEVEL_LABELS[binding.level]}
-                              </Badge>
-                            ) : (
-                              <Badge variant="outline" className="text-xs text-amber-600">
-                                待配置
-                              </Badge>
-                            )}
-                          </div>
+                      {/* Header */}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium text-sm">{binding.name}</span>
+                          {getSourceBadge(binding.source)}
+                          <Badge variant="outline" className="text-xs">{binding.category}</Badge>
                         </div>
-                      </AccordionTrigger>
-                      <AccordionContent className="pb-4">
-                        <div className="space-y-4">
-                          {/* Level */}
-                          <div className="space-y-2">
-                            <Label className="text-sm">掌握程度档次</Label>
-                            <Select
-                              value={binding.level}
-                              onValueChange={(value) =>
-                                handleUpdateBinding(binding.id, { level: value as CompetencyLevel })
-                              }
-                            >
-                              <SelectTrigger>
-                                <SelectValue placeholder="选择达标等级" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {COMPETENCY_LEVELS.map((level) => (
-                                  <SelectItem key={level.value} value={level.value}>
-                                    <div className="flex flex-col">
-                                      <span className="font-medium">{level.label}</span>
-                                      <span className="text-xs text-muted-foreground">
-                                        {level.description}
-                                      </span>
-                                    </div>
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-destructive hover:text-destructive hover:bg-destructive/10 h-8 px-2"
+                          onClick={() => handleRemoveBinding(binding.id)}
+                        >
+                          <Trash2 className="mr-1 h-4 w-4" />
+                          移除
+                        </Button>
+                      </div>
 
-                          {/* Rubric Description */}
-                          <div className="space-y-2">
-                            <Label className="text-sm">量规表现描述（岗位私有）</Label>
-                            <Textarea
-                              value={binding.rubricDescription}
-                              onChange={(e) =>
-                                handleUpdateBinding(binding.id, { rubricDescription: e.target.value })
-                              }
-                              placeholder="描述该能力点在本岗位中的具体达标表现，如考核方式、评判标准等..."
-                              rows={3}
-                            />
-                            <p className="text-xs text-muted-foreground">
-                              此处配置的掌握程度与量规描述仅作为当前岗位的私有业务数据保存，不会反向污染全校能力点公共池。
-                            </p>
-                          </div>
-
-                          {/* Remove */}
-                          <div className="flex justify-end">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                              onClick={() => handleRemoveBinding(binding.id)}
-                            >
-                              <Trash2 className="mr-2 h-4 w-4" />
-                              移除该能力点
-                            </Button>
-                          </div>
+                      {/* Level - Radio style */}
+                      <div className="space-y-2">
+                        <Label className="text-sm">掌握程度档次</Label>
+                        <div className="grid grid-cols-5 gap-2">
+                          {COMPETENCY_LEVELS.map((level) => {
+                            const isActive = binding.level === level.value
+                            return (
+                              <button
+                                key={level.value}
+                                type="button"
+                                onClick={() =>
+                                  handleUpdateBinding(binding.id, { level: level.value })
+                                }
+                                className={`relative flex flex-col items-center justify-center rounded-lg border p-3 text-center transition-all ${
+                                  isActive
+                                    ? 'border-primary bg-primary/5 ring-1 ring-primary/20'
+                                    : 'border-border hover:border-primary/30 hover:bg-accent/30'
+                                }`}
+                              >
+                                <span className={`text-sm font-semibold ${isActive ? 'text-primary' : 'text-foreground'}`}>
+                                  {level.label}
+                                </span>
+                                <span className="text-xs text-muted-foreground mt-1 leading-tight line-clamp-2">
+                                  {level.description}
+                                </span>
+                                {isActive && (
+                                  <div className="absolute top-1.5 right-1.5">
+                                    <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
+                                  </div>
+                                )}
+                              </button>
+                            )
+                          })}
                         </div>
-                      </AccordionContent>
-                    </AccordionItem>
+                      </div>
+
+                      {/* Rubric Description */}
+                      <div className="space-y-2">
+                        <Label className="text-sm">量规表现描述（岗位私有）</Label>
+                        <Textarea
+                          value={binding.rubricDescription}
+                          onChange={(e) =>
+                            handleUpdateBinding(binding.id, { rubricDescription: e.target.value })
+                          }
+                          placeholder="描述该能力点在本岗位中的具体达标表现，如考核方式、评判标准等..."
+                          rows={3}
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          此处配置的掌握程度与量规描述仅作为当前岗位的私有业务数据保存，不会反向污染全校能力点公共池。
+                        </p>
+                      </div>
+                    </div>
                   ))}
-                </Accordion>
+                </div>
               )}
             </div>
           )}
