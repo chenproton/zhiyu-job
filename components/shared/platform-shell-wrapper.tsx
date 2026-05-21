@@ -1,10 +1,10 @@
 'use client'
 
-import { PlatformShell } from "@my-app/platform-navigation-system"
+import { PlatformShell } from "@/components/platform-shell"
 import { useAuth } from "@/lib/stores/auth-context"
 import { RoleSwitcher } from "@/components/shared/role-switcher"
 import { careerNavigationConfig } from "@/lib/navigation-config"
-import type { SideNavItem } from "@my-app/platform-navigation-system"
+import type { SideNavItem } from "@/components/platform-shell"
 
 const ROLE_SIDE_NAV_ACCESS: Record<string, string[]> = {
   admin: ['job-construction', 'positions', 'batches', 'workflows', 'approvals'],

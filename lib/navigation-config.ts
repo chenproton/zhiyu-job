@@ -1,4 +1,4 @@
-import type { PlatformNavigationConfig } from "@my-app/platform-navigation-system"
+import type { PlatformNavigationConfig } from "@/components/platform-shell"
 
 export const careerNavigationConfig: PlatformNavigationConfig = {
   brandTitle: "职业岗位学习平台",
@@ -11,9 +11,9 @@ export const careerNavigationConfig: PlatformNavigationConfig = {
   showCurrentTime: true,
   showUserMenu: false,
   topNavItems: [
-    { id: "portal", label: "门户首页", href: "http://47.251.48.187:3001/portal", icon: "home" },
-    { id: "workspace", label: "我的服务台", href: "http://47.251.48.187:3001/portal/workspace", icon: "briefcase" },
-    { id: "apps", label: "应用服务中心", href: "http://47.251.48.187:3001/portal/apps", icon: "layoutGrid" },
+    { id: "portal", label: "门户首页", href: "http://111.170.170.202:3001/portal", icon: "home" },
+    { id: "workspace", label: "我的服务台", href: "http://111.170.170.202:3001/portal/workspace", icon: "briefcase" },
+    { id: "apps", label: "应用服务中心", href: "http://111.170.170.202:3001/portal/apps", icon: "layoutGrid" },
   ],
   sideNavItems: [
     {

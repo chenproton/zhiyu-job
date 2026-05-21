@@ -4,9 +4,9 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react"
-import type { PlatformNavigationConfig, SideNavItem, TopNavItem, UserMenuItem } from "../lib/config"
-import { resolvePlatformIcon } from "../lib/icons"
-import { cn, matchesPath } from "../lib/utils"
+import type { PlatformNavigationConfig, SideNavItem, TopNavItem, UserMenuItem } from "./config"
+import { resolvePlatformIcon } from "./icons"
+import { cn, matchesPath } from "./utils"
 
 function isTopItemActive(pathname: string, item: TopNavItem) {
   return matchesPath(pathname, item.href, item.matchers)
