@@ -3,7 +3,6 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { AuthProvider } from '@/lib/stores/auth-context'
 import { DataProvider } from '@/lib/stores/data-context'
-import { AnnotationSystemWrapper } from '@/components/shared/annotation-system-wrapper'
 import './globals.css'
 
 const _geist = Geist({ subsets: ["latin"] });
@@ -44,7 +43,6 @@ export default function RootLayout({
           <DataProvider>
             {children}
           </DataProvider>
-          <AnnotationSystemWrapper />
         </AuthProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>

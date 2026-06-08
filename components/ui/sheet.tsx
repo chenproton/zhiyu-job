@@ -44,17 +44,13 @@ function SheetOverlay({
   )
 }
 
-import { AnnotationSystem } from '@my-app/annotation-system'
-
 function SheetContent({
   className,
   children,
   side = 'right',
-  annotationContext,
   ...props
 }: React.ComponentProps<typeof SheetPrimitive.Content> & {
   side?: 'top' | 'right' | 'bottom' | 'left'
-  annotationContext?: string
 }) {
   return (
     <SheetPortal>
@@ -80,15 +76,6 @@ function SheetContent({
           <XIcon className="size-4" />
           <span className="sr-only">Close</span>
         </SheetPrimitive.Close>
-        {/* 弹窗内独立标注层 */}
-        {annotationContext && (
-          <AnnotationSystem
-            context={annotationContext}
-            zIndex={100}
-            defaultMode="view"
-            hideController
-          />
-        )}
       </SheetPrimitive.Content>
     </SheetPortal>
   )

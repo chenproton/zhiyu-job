@@ -15,13 +15,6 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import {
   FolderOpen,
   Plus,
   Trash2,
@@ -30,13 +23,22 @@ import {
   AlertCircle,
   Boxes,
   GripVertical,
+  Sparkles,
+  Check,
+  X,
+  Loader2,
 } from 'lucide-react'
+import { AiGenerateButton } from '@/components/ai/ai-generate-button'
+import { AiConfidenceBadge } from '@/components/ai/ai-confidence-badge'
+import { mockDomainClassification, type AiDomainClassification } from '@/lib/ai-mock-data'
 import type { Position, AbilityDomain, PositionAbilityBinding } from '@/lib/types'
 import { COMPETENCY_LEVEL_LABELS } from '@/lib/types'
 
 interface StepCompetencyConfigProps {
   position: Position
   onUpdate: (updates: Partial<Position>) => void
+  aiMode?: boolean
+  onSubmit?: () => void
 }
 
 const PRESET_DOMAINS = [
@@ -50,20 +52,19 @@ const PRESET_DOMAINS = [
 export function StepCompetencyConfig({
   position,
   onUpdate,
+  aiMode = false,
+  onSubmit,
 }: StepCompetencyConfigProps) {
   const [selectedDomainId, setSelectedDomainId] = useState<string | null>(null)
   const [showAddDomain, setShowAddDomain] = useState(false)
   const [newDomainName, setNewDomainName] = useState('')
   const [selectedBindingIds, setSelectedBindingIds] = useState<string[]>([])
+  const [isAiClassifying, setIsAiClassifying] = useState(false)
+  const [aiClassifications, setAiClassifications] = useState<AiDomainClassification[]>([])
 
   const domains = position.abilityDomains.length > 0
     ? position.abilityDomains
     : PRESET_DOMAINS.map(d => ({ ...d, bindingIds: [] }))
-
-  // Ensure preset domains are initialized if none exist
-  if (position.abilityDomains.length === 0 && position.abilityBindings.length > 0) {
-    // Don't auto-init here to avoid infinite loop; handled via useEffect in parent or initial state
-  }
 
   const unassignedBindings = position.abilityBindings.filter(
     b => !domains.some(d => d.bindingIds.includes(b.id))
@@ -123,6 +124,47 @@ export function StepCompetencyConfig({
     )
   }
 
+  const handleAiClassify = async () => {
+    if (position.abilityBindings.length === 0) return
+    setIsAiClassifying(true)
+    await new Promise(resolve => setTimeout(resolve, 1500))
+
+    const classifications = mockDomainClassification()
+    // 将推荐绑定 ID 替换为实际存在的能力点 binding ID
+    const availableBindingIds = position.abilityBindings.map(b => b.id)
+    const mappedClassifications = classifications.map(c => ({
+      ...c,
+      bindingIds: c.bindingIds
+        .map((_id, idx) => availableBindingIds[idx])
+        .filter(Boolean)
+        .slice(0, Math.floor(Math.random() * 3) + 1),
+    }))
+    setAiClassifications(mappedClassifications)
+    setIsAiClassifying(false)
+  }
+
+  const handleAdoptAiClassification = () => {
+    if (aiClassifications.length === 0) return
+
+    const updatedDomains = domains.map(d => {
+      const classification = aiClassifications.find(c => c.domainId === d.id)
+      if (classification && classification.bindingIds.length > 0) {
+        return {
+          ...d,
+          bindingIds: Array.from(new Set([...d.bindingIds, ...classification.bindingIds])),
+        }
+      }
+      return d
+    })
+
+    onUpdate({ abilityDomains: updatedDomains })
+    setAiClassifications([])
+  }
+
+  const handleDismissAiClassification = () => {
+    setAiClassifications([])
+  }
+
   const totalBindings = position.abilityBindings.length
   const assignedCount = position.abilityBindings.filter(
     b => domains.some(d => d.bindingIds.includes(b.id))
@@ -161,16 +203,80 @@ export function StepCompetencyConfig({
         </CardContent>
       </Card>
 
+      {/* AI Classification Suggestion */}
+      {aiMode && aiClassifications.length > 0 && (
+        <div className="rounded-lg border border-purple-200 bg-purple-50/30 p-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-4 w-4 text-purple-600" />
+              <span className="text-sm font-medium text-purple-800">AI 智能归类建议</span>
+              <AiConfidenceBadge confidence="medium" />
+            </div>
+            <button
+              onClick={handleDismissAiClassification}
+              className="text-gray-400 hover:text-gray-600"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+          <p className="text-xs text-gray-500">
+            AI 已根据能力点的名称和类型特征，为您推荐以下归类方案。采纳后将自动分配到对应领域。
+          </p>
+          <div className="grid gap-2 md:grid-cols-2">
+            {aiClassifications.filter(c => c.bindingIds.length > 0).map((c) => (
+              <div key={c.domainId} className="rounded-md bg-white border border-purple-100 p-3">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="text-sm font-medium">{c.domainName}</span>
+                  <Badge variant="outline" className="text-[10px]">{c.bindingIds.length} 个</Badge>
+                </div>
+                <div className="flex flex-wrap gap-1">
+                  {c.bindingIds.map(bid => {
+                    const binding = getBindingById(bid)
+                    return binding ? (
+                      <Badge key={bid} variant="secondary" className="text-xs">
+                        {binding.name}
+                      </Badge>
+                    ) : null
+                  })}
+                </div>
+                <p className="text-xs text-gray-400 mt-1.5">{c.reasoning}</p>
+              </div>
+            ))}
+          </div>
+          <div className="flex items-center justify-end gap-2 pt-1">
+            <AiGenerateButton
+              onClick={handleAiClassify}
+              loading={isAiClassifying}
+              label="重新分析"
+              size="sm"
+            />
+            <Button
+              size="sm"
+              onClick={handleAdoptAiClassification}
+              className="gap-1 bg-purple-600 hover:bg-purple-700"
+            >
+              <Check className="h-3.5 w-3.5" />
+              采纳建议
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* Unassigned Pool */}
       <Card>
-        <CardHeader>
+        <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-base flex items-center gap-2">
             <AlertCircle className="h-4 w-4 text-amber-500" />
             待归类能力点
           </CardTitle>
-          <CardDescription>
-            勾选能力点，点击下方领域卡片进行批量归入
-          </CardDescription>
+          {aiMode && unassignedBindings.length > 0 && aiClassifications.length === 0 && (
+            <AiGenerateButton
+              onClick={handleAiClassify}
+              loading={isAiClassifying}
+              label="AI 智能归类"
+              size="sm"
+            />
+          )}
         </CardHeader>
         <CardContent>
           {unassignedBindings.length === 0 ? (
@@ -357,6 +463,16 @@ export function StepCompetencyConfig({
             </div>
           </CardContent>
         </Card>
+      )}
+
+      {/* Submit */}
+      {onSubmit && (
+        <div className="flex justify-end pt-2">
+          <Button onClick={onSubmit} className="gap-1 bg-gray-900 hover:bg-gray-800 text-white">
+            <Check className="h-4 w-4" />
+            提交审批
+          </Button>
+        </div>
       )}
 
       {/* Add Domain Dialog */}

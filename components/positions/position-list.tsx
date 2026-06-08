@@ -27,6 +27,7 @@ interface PositionListProps {
   onSubmitApproval?: (position: Position) => void
   onWithdrawApproval?: (position: Position) => void
   className?: string
+  basePath?: string
 }
 
 export function PositionList({
@@ -39,6 +40,7 @@ export function PositionList({
   onSubmitApproval,
   onWithdrawApproval,
   className,
+  basePath = "/positions",
 }: PositionListProps) {
   if (positions.length === 0) return null
 
@@ -89,7 +91,7 @@ export function PositionList({
                 />
               </div>
               <div className="col-span-2">
-                <Link href={`/positions/${position.id}/edit`} className="block">
+                <Link href={`${basePath}/${position.id}/edit`} className="block">
                   <p className="text-sm font-medium text-slate-900 line-clamp-1 hover:text-primary">{position.name}</p>
                 </Link>
                 <Badge variant="secondary" className={cn("text-xs mt-1", status.className)}>
@@ -118,7 +120,7 @@ export function PositionList({
               <div className="col-span-1 text-right relative">
                 <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity absolute right-0 top-1/2 -translate-y-1/2 bg-white/95 backdrop-blur-sm z-10 px-2 py-1 rounded-lg shadow-sm border border-slate-100">
                   <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" asChild>
-                    <Link href={`/positions/${position.id}/edit`}>
+                    <Link href={`${basePath}/${position.id}/edit`}>
                       <Eye className="mr-1 h-3 w-3" />
                       查看详情
                     </Link>
@@ -130,7 +132,7 @@ export function PositionList({
                     </Link>
                   </Button>
                   <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" asChild>
-                    <Link href={`/positions/${position.id}/edit?step=1`}>
+                    <Link href={`${basePath}/${position.id}/edit?step=1`}>
                       <GitBranch className="mr-1 h-3 w-3" />
                       配置能力
                     </Link>

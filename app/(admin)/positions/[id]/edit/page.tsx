@@ -67,10 +67,11 @@ export default function PositionEditPage({ params }: PageProps) {
     setIsSaving(false)
   }
 
-  const handleSubmit = () => {
-    if (!batch) return
-    handleSave()
-    submitForApproval(position.id, batch.workflowId, 'user-2', '李建设')
+  const handleSubmit = async () => {
+    await handleSave()
+    if (batch) {
+      submitForApproval(position.id, batch.workflowId, 'user-2', '李建设')
+    }
     router.push('/positions')
   }
 
@@ -173,30 +174,51 @@ export default function PositionEditPage({ params }: PageProps) {
               <Card>
                 <CardContent className="pt-6">
                   <Label className="mb-3 block">岗位封面</Label>
-                  {position.coverImage ? (
-                    <div className="relative group">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={position.coverImage}
-                        alt="岗位封面"
-                        className="aspect-video w-full rounded-lg border object-cover"
-                      />
-                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center cursor-pointer"
-                        onClick={() => updatePositionData({ coverImage: '' })}
-                      >
-                        <span className="text-white text-sm">点击移除封面</span>
+                  <div
+                    className="aspect-video bg-gray-100 rounded-lg border-2 border-dashed border-gray-200 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors overflow-hidden relative group"
+                    onClick={() => !position.coverImage && updatePositionData({ coverImage: '/placeholder.svg?height=200&width=300' })}
+                  >
+                    {position.coverImage ? (
+                      <>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={position.coverImage}
+                          alt="岗位封面"
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="bg-white/90 text-gray-800 border-white hover:bg-white"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              updatePositionData({ coverImage: '/placeholder.svg?height=200&width=300' })
+                            }}
+                          >
+                            更换封面
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="bg-white/90 text-gray-800 border-white hover:bg-white"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              updatePositionData({ coverImage: '' })
+                            }}
+                          >
+                            移除封面
+                          </Button>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="flex flex-col items-center">
+                        <ImagePlus className="h-8 w-8 text-gray-400 mb-2" />
+                        <p className="text-sm text-gray-500">点击设置封面图片</p>
+                        <p className="text-xs text-gray-400 mt-1">建议尺寸 320x200</p>
                       </div>
-                    </div>
-                  ) : (
-                    <div
-                      className="aspect-video bg-gray-100 rounded-lg border-2 border-dashed border-gray-200 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors"
-                      onClick={() => updatePositionData({ coverImage: '/placeholder.svg?height=200&width=300' })}
-                    >
-                      <ImagePlus className="h-8 w-8 text-gray-400 mb-2" />
-                      <p className="text-sm text-gray-500">点击设置封面图片</p>
-                      <p className="text-xs text-gray-400 mt-1">建议尺寸 320x200</p>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </CardContent>
               </Card>
 
@@ -266,7 +288,7 @@ export default function PositionEditPage({ params }: PageProps) {
               <StepAbilityModeling position={position} onUpdate={updatePositionData} />
             )}
             {activeStep === 'competency' && (
-              <StepCompetencyConfig position={position} onUpdate={updatePositionData} />
+              <StepCompetencyConfig position={position} onUpdate={updatePositionData} onSubmit={handleSubmit} />
             )}
           </div>
         )}

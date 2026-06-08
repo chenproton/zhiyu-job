@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>岗位详情 - 职业岗位查看平台</title>
+    <title>岗位详情(AI主导) - 职业岗位查看平台</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -41,6 +41,9 @@
         .header-left, .header-right { display: flex; align-items: center; gap: 24px; }
         .header-right { gap: 20px; }
         .logo { display: flex; align-items: center; gap: 12px; font-size: 18px; font-weight: 600; color: var(--primary-color); }
+        .ai-badge { padding: 2px 10px; background: linear-gradient(135deg, #a855f7, #7c3aed); color: white; border-radius: 12px; font-size: 12px; font-weight: 500; margin-left: 8px; }
+        .ai-float-btn { position: fixed; bottom: 24px; right: 24px; width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #a855f7, #7c3aed); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3); z-index: 999; transition: transform 0.2s; }
+        .ai-float-btn:hover { transform: scale(1.1); }
         .logo-icon { width: 36px; height: 36px; background: linear-gradient(135deg, var(--primary-color), #69b1ff); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; }
         .back-btn, .header-btn { padding: 6px 12px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); background: var(--bg-white); color: var(--text-primary); cursor: pointer; transition: all 0.2s; font-size: 14px; display: flex; align-items: center; gap: 8px; }
         .header-btn { padding: 8px 16px; }
@@ -263,6 +266,166 @@
         .kg-res-info { flex: 1; }
         .kg-res-name { font-size: 13px; font-weight: 500; color: var(--text-primary); margin-bottom: 2px; }
         .kg-res-meta { font-size: 11px; color: var(--text-tertiary); }
+
+        /* ===== AI Features ===== */
+        /* AI Match Badge */
+        .ai-match-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; background: linear-gradient(135deg, #a855f7, #7c3aed); color: white; border-radius: 20px; font-size: 13px; font-weight: 500; animation: pulseGlow 2s ease-in-out infinite; margin-left: 8px; }
+        @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.4); } 50% { box-shadow: 0 0 0 8px rgba(124, 58, 237, 0); } }
+
+        /* AI Interpret Button */
+        .ai-interpret-btn { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; background: linear-gradient(135deg, #f3e8ff, #e9d5ff); color: #7c3aed; border: 1px solid #d8b4fe; border-radius: 12px; font-size: 12px; cursor: pointer; transition: all 0.2s; margin-left: 8px; white-space: nowrap; }
+        .ai-interpret-btn:hover { background: linear-gradient(135deg, #e9d5ff, #ddd6fe); transform: scale(1.05); }
+        .ai-interpret-btn i { font-size: 10px; }
+        .ability-point .ai-interpret-btn { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); opacity: 0; transition: opacity 0.2s; }
+        .ability-point:hover .ai-interpret-btn { opacity: 1; }
+
+        /* AI Chat Widget */
+        .ai-chat-widget { position: fixed; bottom: 24px; right: 24px; width: 400px; height: 520px; background: white; border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.15); z-index: 999; display: flex; flex-direction: column; overflow: hidden; transition: all 0.3s ease; }
+        .ai-chat-widget.collapsed { width: 190px; height: 48px; border-radius: 24px 24px 4px 24px; box-shadow: 0 4px 16px rgba(124, 58, 237, 0.25); overflow: hidden; }
+        .ai-chat-widget.collapsed .ai-chat-header { border-radius: 0; height: 48px; padding: 0 14px; justify-content: flex-start; gap: 8px; }
+        .ai-chat-widget.collapsed .ai-chat-toggle { display: none; }
+        .ai-chat-widget.collapsed .ai-chat-body, .ai-chat-widget.collapsed .ai-chat-input, .ai-chat-widget.collapsed .ai-chat-suggestions { display: none; }
+        .ai-chat-header { padding: 14px 16px; background: linear-gradient(135deg, #a855f7, #7c3aed); color: white; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; cursor: pointer; }
+        .ai-chat-title { display: flex; align-items: center; gap: 8px; font-weight: 500; font-size: 14px; }
+        .ai-chat-toggle { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 50%; cursor: pointer; transition: background 0.2s; }
+        .ai-chat-toggle:hover { background: rgba(255,255,255,0.2); }
+        .ai-chat-body { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+        .ai-chat-msg { max-width: 85%; padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 1.6; animation: msgIn 0.3s ease; }
+        @keyframes msgIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .ai-chat-msg.user { align-self: flex-end; background: var(--primary-bg); color: var(--primary-color); border-bottom-right-radius: 4px; }
+        .ai-chat-msg.ai { align-self: flex-start; background: #f9f5ff; color: var(--text-primary); border-bottom-left-radius: 4px; border: 1px solid #f3e8ff; }
+        .ai-chat-msg.ai strong { color: #7c3aed; }
+        .ai-chat-input { padding: 12px 16px; border-top: 1px solid #f0f0f0; display: flex; gap: 8px; flex-shrink: 0; }
+        .ai-chat-input input { flex: 1; padding: 8px 12px; border: 1px solid #e0e0e0; border-radius: 20px; font-size: 13px; outline: none; }
+        .ai-chat-input input:focus { border-color: #a855f7; }
+        .ai-chat-input button { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #a855f7, #7c3aed); color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .ai-chat-suggestions { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 16px 0; }
+        .ai-chat-suggestion { padding: 4px 10px; background: #f3e8ff; color: #7c3aed; border-radius: 12px; font-size: 12px; cursor: pointer; transition: all 0.2s; border: none; }
+        .ai-chat-suggestion:hover { background: #e9d5ff; }
+
+        /* AI Interpret Modal */
+        .ai-interpret-modal .modal-box { width: 720px; max-height: 85vh; }
+        .ai-interpret-content { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .ai-interpret-text { line-height: 1.8; color: var(--text-primary); }
+        .ai-interpret-text h4 { color: #7c3aed; margin: 16px 0 8px; font-size: 15px; display: flex; align-items: center; gap: 6px; }
+        .ai-interpret-text p { font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; }
+        .ai-interpret-image { background: linear-gradient(135deg, #f3e8ff, #e9d5ff); border-radius: 12px; height: 200px; display: flex; align-items: center; justify-content: center; color: #7c3aed; font-size: 48px; }
+        .ai-interpret-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+        .ai-interpret-tag { padding: 4px 12px; background: #f3e8ff; color: #7c3aed; border-radius: 20px; font-size: 12px; }
+        .ai-score-ring { width: 80px; height: 80px; border-radius: 50%; background: conic-gradient(#a855f7 var(--score), #f0f0f0 0); display: flex; align-items: center; justify-content: center; position: relative; flex-shrink: 0; }
+        .ai-score-ring::before { content: ''; position: absolute; width: 64px; height: 64px; border-radius: 50%; background: white; }
+        .ai-score-value { position: relative; font-size: 20px; font-weight: 700; color: #7c3aed; }
+        .ai-gap-list { margin-top: 12px; }
+        .ai-gap-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; background: #fafafa; border-radius: 8px; margin-bottom: 8px; }
+        .ai-gap-item i { color: #faad14; }
+        .ai-path-step { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: #f6ffed; border-radius: 8px; margin-bottom: 6px; font-size: 13px; }
+        .ai-path-step i { color: #52c41a; }
+
+        /* AI Tour */
+        .ai-tour-btn { background: linear-gradient(135deg, #a855f7, #7c3aed); color: white !important; border-color: transparent !important; }
+        .ai-tour-btn:hover { opacity: 0.9; }
+
+        /* 高亮脉冲动画（替代遮罩 spotlight） */
+        .ai-tour-highlight {
+            animation: aiTourPulse 2s ease-in-out 3;
+            position: relative;
+            z-index: 100;
+        }
+        @keyframes aiTourPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.45); }
+            50% { box-shadow: 0 0 0 8px rgba(168, 85, 247, 0); }
+        }
+
+        /* 固定在左下角的导览面板 */
+        .ai-tour-panel {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            width: 380px;
+            max-width: calc(100vw - 48px);
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+            border: 1px solid #f3e8ff;
+            z-index: 1000;
+            overflow: hidden;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        .ai-tour-panel.hidden {
+            transform: translateY(20px);
+            opacity: 0;
+            pointer-events: none;
+        }
+        .ai-tour-panel-header {
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #a855f7, #7c3aed);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .ai-tour-panel-header-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        .ai-tour-panel-header-left i { font-size: 16px; }
+        .ai-tour-panel-step {
+            font-size: 12px;
+            opacity: 0.9;
+            background: rgba(255,255,255,0.2);
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+        .ai-tour-panel-body {
+            padding: 16px;
+        }
+        .ai-tour-panel-title {
+            font-weight: 600;
+            color: #111;
+            font-size: 15px;
+            margin-bottom: 8px;
+        }
+        .ai-tour-panel-text {
+            color: #555;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+        .ai-tour-panel-actions {
+            padding: 12px 16px;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .ai-tour-panel-actions button {
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            background: white;
+            color: #555;
+            transition: all 0.2s;
+        }
+        .ai-tour-panel-actions button:hover {
+            border-color: #a855f7;
+            color: #a855f7;
+        }
+        .ai-tour-panel-actions button.primary {
+            background: linear-gradient(135deg, #a855f7, #7c3aed);
+            color: white;
+            border-color: transparent;
+        }
+        .ai-tour-panel-actions button.primary:hover {
+            opacity: 0.9;
+        }
+        .ai-tour-panel-actions button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -271,6 +434,7 @@
             <div class="logo">
                 <div class="logo-icon">知</div>
                 <span>职业岗位查看平台</span>
+                <span class="ai-badge">AI 主导</span>
             </div>
             <button class="back-btn" onclick="history.back()">
                 <i class="fas fa-arrow-left"></i>返回首页
@@ -278,6 +442,9 @@
         </div>
         <div class="header-right">
             <span class="header-time" id="currentTime"></span>
+            <button class="header-btn ai-tour-btn" onclick="startAiTour()">
+                <i class="fas fa-route"></i> AI 导览
+            </button>
             <button class="header-btn"><i class="fas fa-plus"></i> 新增岗位</button>
             <button class="header-btn"><i class="fas fa-headset"></i> 服务台</button>
             <div class="user-avatar"><i class="fas fa-user"></i></div>
@@ -291,7 +458,7 @@
             <span>前端开发工程师</span>
         </nav>
 
-        <div class="page-header-card fade-in">
+        <div class="page-header-card fade-in" id="tour-header">
             <div class="job-header">
                 <div class="job-cover">
                     <span class="job-cover-text">前端</span>
@@ -301,6 +468,7 @@
                     <div class="job-title-row">
                         <h1 class="job-title">前端开发工程师</h1>
                         <span class="job-version">V1.2</span>
+                        <span class="ai-match-badge"><i class="fas fa-sparkles"></i> AI 匹配度 92%</span>
                     </div>
                     <p class="job-alias">别名：Web前端工程师、H5开发工程师</p>
                     <div class="job-tags">
@@ -342,7 +510,7 @@
 
         <div class="content-layout">
             <div class="main-content-area">
-                <div class="tabs">
+                <div class="tabs" id="tour-tabs">
                     <div class="tab-item active" data-tab="overview">岗位概况</div>
                     <div class="tab-item" data-tab="tasks">岗位职责</div>
                     <div class="tab-item" data-tab="certs">涉及证书</div>
@@ -352,7 +520,7 @@
                     <div class="tab-item" data-tab="scenes">实践场景</div>
                 </div>
 
-                <div class="tab-content fade-in" id="tab-overview">
+                <div class="tab-content fade-in" id="tab-overview" data-tour="overview">
                     <div style="margin-bottom: 32px;">
                         <h3 style="font-size: 16px; font-weight: 500; margin-bottom: 16px; color: var(--text-primary);"><i class="fas fa-info-circle" style="color: var(--primary-color); margin-right: 8px;"></i>岗位简介</h3>
                         <p class="job-desc">前端开发工程师是负责网站、Web应用程序、移动端H5页面等用户界面开发的技术人员。主要使用HTML、CSS、JavaScript等技术，结合Vue、React等现代前端框架，将设计稿转化为可交互的网页界面。
@@ -377,7 +545,7 @@
                     </div>
                 </div>
 
-                <div class="tab-content" id="tab-tasks" style="display: none;">
+                <div class="tab-content" id="tab-tasks" data-tour="tasks" style="display: none;">
                     <div class="requirements-section">
                         <h4><i class="fas fa-user-check" style="color: var(--primary-color);"></i> 任职要求</h4>
                         <div class="requirements-text">1. 计算机相关专业本科及以上学历，具备3年以上前端开发经验，拥有扎实的计算机基础知识；
@@ -400,32 +568,32 @@
                         <tbody>
                             <tr>
                                 <td><span class="task-id">T-001</span></td>
-                                <td>根据UI/UX设计稿，使用HTML5和CSS3完成高保真页面开发还原，确保跨浏览器兼容性和响应式布局</td>
+                                <td>根据UI/UX设计稿，使用HTML5和CSS3完成高保真页面开发还原，确保跨浏览器兼容性和响应式布局<button class="ai-interpret-btn" onclick="showDutyInterpret('T-001','页面开发与还原')"><i class="fas fa-wand-magic-sparkles"></i> AI 解读</button></td>
                                 <td><span style="font-weight:500; color:var(--primary-color);">6 个</span><button class="btn" style="padding:4px 8px; font-size:12px; margin-left:8px;" onclick="showDutyAbilities('页面开发与还原')">查看详情</button></td>
                             </tr>
                             <tr>
                                 <td><span class="task-id">T-002</span></td>
-                                <td>使用原生JavaScript或结合框架实现丰富的页面交互效果、动态数据渲染和复杂的业务逻辑控制</td>
+                                <td>使用原生JavaScript或结合框架实现丰富的页面交互效果、动态数据渲染和复杂的业务逻辑控制<button class="ai-interpret-btn" onclick="showDutyInterpret('T-002','交互功能实现')"><i class="fas fa-wand-magic-sparkles"></i> AI 解读</button></td>
                                 <td><span style="font-weight:500; color:var(--primary-color);">8 个</span><button class="btn" style="padding:4px 8px; font-size:12px; margin-left:8px;" onclick="showDutyAbilities('交互功能实现')">查看详情</button></td>
                             </tr>
                             <tr>
                                 <td><span class="task-id">T-003</span></td>
-                                <td>熟练使用Vue/React等现代前端框架进行组件化开发，搭建可复用组件库，管理复杂的单页面应用状态</td>
+                                <td>熟练使用Vue/React等现代前端框架进行组件化开发，搭建可复用组件库，管理复杂的单页面应用状态<button class="ai-interpret-btn" onclick="showDutyInterpret('T-003','前端框架应用')"><i class="fas fa-wand-magic-sparkles"></i> AI 解读</button></td>
                                 <td><span style="font-weight:500; color:var(--primary-color);">6 个</span><button class="btn" style="padding:4px 8px; font-size:12px; margin-left:8px;" onclick="showDutyAbilities('前端框架应用')">查看详情</button></td>
                             </tr>
                             <tr>
                                 <td><span class="task-id">T-004</span></td>
-                                <td>与后端工程师紧密配合进行API接口联调，处理异步数据请求、异常拦截和接口状态可视化</td>
+                                <td>与后端工程师紧密配合进行API接口联调，处理异步数据请求、异常拦截和接口状态可视化<button class="ai-interpret-btn" onclick="showDutyInterpret('T-004','接口对接与数据处理')"><i class="fas fa-wand-magic-sparkles"></i> AI 解读</button></td>
                                 <td><span style="font-weight:500; color:var(--primary-color);">4 个</span><button class="btn" style="padding:4px 8px; font-size:12px; margin-left:8px;" onclick="showDutyAbilities('接口对接与数据处理')">查看详情</button></td>
                             </tr>
                             <tr>
                                 <td><span class="task-id">T-005</span></td>
-                                <td>对线上页面进行性能监控与分析，实施打包优化、资源懒加载等策略，持续提升首屏速度与用户体验</td>
+                                <td>对线上页面进行性能监控与分析，实施打包优化、资源懒加载等策略，持续提升首屏速度与用户体验<button class="ai-interpret-btn" onclick="showDutyInterpret('T-005','性能优化与调试')"><i class="fas fa-wand-magic-sparkles"></i> AI 解读</button></td>
                                 <td><span style="font-weight:500; color:var(--primary-color);">4 个</span><button class="btn" style="padding:4px 8px; font-size:12px; margin-left:8px;" onclick="showDutyAbilities('性能优化与调试')">查看详情</button></td>
                             </tr>
                             <tr>
                                 <td><span class="task-id">T-006</span></td>
-                                <td>参与制定并落实前端代码规范，进行代码评审(Code Review)，编写并维护相关的技术与接口文档</td>
+                                <td>参与制定并落实前端代码规范，进行代码评审(Code Review)，编写并维护相关的技术与接口文档<button class="ai-interpret-btn" onclick="showDutyInterpret('T-006','代码质量保障')"><i class="fas fa-wand-magic-sparkles"></i> AI 解读</button></td>
                                 <td><span style="font-weight:500; color:var(--primary-color);">4 个</span><button class="btn" style="padding:4px 8px; font-size:12px; margin-left:8px;" onclick="showDutyAbilities('代码质量保障')">查看详情</button></td>
                             </tr>
                         </tbody>
@@ -460,7 +628,7 @@
                     </div>
                 </div>
 
-                <div class="tab-content" id="tab-ability" style="display: none;">
+                <div class="tab-content" id="tab-ability" data-tour="ability" style="display: none;">
                     <div style="margin-bottom: 16px;">
                         <span style="color: var(--text-secondary);">共 <strong style="color: var(--primary-color);">5</strong> 个能力领域，<strong style="color: var(--primary-color);">32</strong> 个能力点</span>
                     </div>
@@ -470,15 +638,15 @@
                             <div class="ability-unit-body">
                                 <div class="ability-point" onclick="showKgDetailModal({name:'互联网产品思维', type:'ability', id:'a01'})">
                                     <div class="ability-point-name"><span>互联网产品思维</span><span class="ability-point-code">AP-001</span></div>
-                                    <div class="ability-point-type"><span class="type-tag knowledge">知识</span></div>
+                                    <div class="ability-point-type"><span class="type-tag knowledge">知识</span><button class="ai-interpret-btn" onclick="event.stopPropagation();showAbilityInterpret('互联网产品思维','知识')"><i class="fas fa-wand-magic-sparkles"></i> AI 解读</button></div>
                                 </div>
                                 <div class="ability-point" onclick="showKgDetailModal({name:'前端技术生态与演进', type:'ability', id:'a02'})">
                                     <div class="ability-point-name"><span>前端技术生态与演进</span><span class="ability-point-code">AP-002</span></div>
-                                    <div class="ability-point-type"><span class="type-tag knowledge">知识</span></div>
+                                    <div class="ability-point-type"><span class="type-tag knowledge">知识</span><button class="ai-interpret-btn" onclick="event.stopPropagation();showAbilityInterpret('前端技术生态与演进','知识')"><i class="fas fa-wand-magic-sparkles"></i> AI 解读</button></div>
                                 </div>
                                 <div class="ability-point" onclick="showKgDetailModal({name:'业务需求分析能力', type:'ability', id:'a03'})">
                                     <div class="ability-point-name"><span>业务需求分析能力</span><span class="ability-point-code">AP-003</span></div>
-                                    <div class="ability-point-type"><span class="type-tag skill">技能</span></div>
+                                    <div class="ability-point-type"><span class="type-tag skill">技能</span><button class="ai-interpret-btn" onclick="event.stopPropagation();showAbilityInterpret('业务需求分析能力','技能')"><i class="fas fa-wand-magic-sparkles"></i> AI 解读</button></div>
                                 </div>
                             </div>
                         </div>
@@ -487,19 +655,19 @@
                             <div class="ability-unit-body">
                                 <div class="ability-point" onclick="showKgDetailModal({name:'HTML5/CSS3基础知识', type:'ability', id:'a04'})">
                                     <div class="ability-point-name"><span>HTML5/CSS3基础知识</span><span class="ability-point-code">AP-004</span></div>
-                                    <div class="ability-point-type"><span class="type-tag knowledge">知识</span></div>
+                                    <div class="ability-point-type"><span class="type-tag knowledge">知识</span><button class="ai-interpret-btn" onclick="event.stopPropagation();showAbilityInterpret('HTML5/CSS3基础知识','知识')"><i class="fas fa-wand-magic-sparkles"></i> AI 解读</button></div>
                                 </div>
                                 <div class="ability-point" onclick="showKgDetailModal({name:'JavaScript核心原理', type:'ability', id:'a05'})">
                                     <div class="ability-point-name"><span>JavaScript核心原理</span><span class="ability-point-code">AP-005</span></div>
-                                    <div class="ability-point-type"><span class="type-tag knowledge">知识</span></div>
+                                    <div class="ability-point-type"><span class="type-tag knowledge">知识</span><button class="ai-interpret-btn" onclick="event.stopPropagation();showAbilityInterpret('JavaScript核心原理','知识')"><i class="fas fa-wand-magic-sparkles"></i> AI 解读</button></div>
                                 </div>
                                 <div class="ability-point" onclick="showKgDetailModal({name:'计算机网络与HTTP协议', type:'ability', id:'a06'})">
                                     <div class="ability-point-name"><span>计算机网络与HTTP协议</span><span class="ability-point-code">AP-006</span></div>
-                                    <div class="ability-point-type"><span class="type-tag knowledge">知识</span></div>
+                                    <div class="ability-point-type"><span class="type-tag knowledge">知识</span><button class="ai-interpret-btn" onclick="event.stopPropagation();showAbilityInterpret('计算机网络与HTTP协议','知识')"><i class="fas fa-wand-magic-sparkles"></i> AI 解读</button></div>
                                 </div>
                                 <div class="ability-point" onclick="showKgDetailModal({name:'数据结构与常见算法', type:'ability', id:'a07'})">
                                     <div class="ability-point-name"><span>数据结构与常见算法</span><span class="ability-point-code">AP-007</span></div>
-                                    <div class="ability-point-type"><span class="type-tag knowledge">知识</span></div>
+                                    <div class="ability-point-type"><span class="type-tag knowledge">知识</span><button class="ai-interpret-btn" onclick="event.stopPropagation();showAbilityInterpret('数据结构与常见算法','知识')"><i class="fas fa-wand-magic-sparkles"></i> AI 解读</button></div>
                                 </div>
                             </div>
                         </div>
@@ -508,23 +676,23 @@
                             <div class="ability-unit-body">
                                 <div class="ability-point" onclick="showKgDetailModal({name:'响应式页面开发', type:'ability', id:'a08'})">
                                     <div class="ability-point-name"><span>响应式页面开发</span><span class="ability-point-code">AP-008</span></div>
-                                    <div class="ability-point-type"><span class="type-tag skill">技能</span></div>
+                                    <div class="ability-point-type"><span class="type-tag skill">技能</span><button class="ai-interpret-btn" onclick="event.stopPropagation();showAbilityInterpret('响应式页面开发','技能')"><i class="fas fa-wand-magic-sparkles"></i> AI 解读</button></div>
                                 </div>
                                 <div class="ability-point" onclick="showKgDetailModal({name:'Vue3/React组件化开发', type:'ability', id:'a09'})">
                                     <div class="ability-point-name"><span>Vue3/React组件化开发</span><span class="ability-point-code">AP-009</span></div>
-                                    <div class="ability-point-type"><span class="type-tag skill">技能</span></div>
+                                    <div class="ability-point-type"><span class="type-tag skill">技能</span><button class="ai-interpret-btn" onclick="event.stopPropagation();showAbilityInterpret('Vue3/React组件化开发','技能')"><i class="fas fa-wand-magic-sparkles"></i> AI 解读</button></div>
                                 </div>
                                 <div class="ability-point" onclick="showKgDetailModal({name:'状态管理与路由配置', type:'ability', id:'a10'})">
                                     <div class="ability-point-name"><span>状态管理与路由配置</span><span class="ability-point-code">AP-010</span></div>
-                                    <div class="ability-point-type"><span class="type-tag skill">技能</span></div>
+                                    <div class="ability-point-type"><span class="type-tag skill">技能</span><button class="ai-interpret-btn" onclick="event.stopPropagation();showAbilityInterpret('状态管理与路由配置','技能')"><i class="fas fa-wand-magic-sparkles"></i> AI 解读</button></div>
                                 </div>
                                 <div class="ability-point" onclick="showKgDetailModal({name:'前端性能优化实践', type:'ability', id:'a11'})">
                                     <div class="ability-point-name"><span>前端性能优化实践</span><span class="ability-point-code">AP-011</span></div>
-                                    <div class="ability-point-type"><span class="type-tag skill">技能</span></div>
+                                    <div class="ability-point-type"><span class="type-tag skill">技能</span><button class="ai-interpret-btn" onclick="event.stopPropagation();showAbilityInterpret('前端性能优化实践','技能')"><i class="fas fa-wand-magic-sparkles"></i> AI 解读</button></div>
                                 </div>
                                 <div class="ability-point" onclick="showKgDetailModal({name:'前端工程化与构建部署', type:'ability', id:'a12'})">
                                     <div class="ability-point-name"><span>前端工程化与构建部署</span><span class="ability-point-code">AP-012</span></div>
-                                    <div class="ability-point-type"><span class="type-tag skill">技能</span></div>
+                                    <div class="ability-point-type"><span class="type-tag skill">技能</span><button class="ai-interpret-btn" onclick="event.stopPropagation();showAbilityInterpret('前端工程化与构建部署','技能')"><i class="fas fa-wand-magic-sparkles"></i> AI 解读</button></div>
                                 </div>
                             </div>
                         </div>
@@ -533,15 +701,15 @@
                             <div class="ability-unit-body">
                                 <div class="ability-point" onclick="showKgDetailModal({name:'团队协作与沟通', type:'ability', id:'a13'})">
                                     <div class="ability-point-name"><span>团队协作与沟通</span><span class="ability-point-code">AP-013</span></div>
-                                    <div class="ability-point-type"><span class="type-tag skill">技能</span></div>
+                                    <div class="ability-point-type"><span class="type-tag skill">技能</span><button class="ai-interpret-btn" onclick="event.stopPropagation();showAbilityInterpret('团队协作与沟通','技能')"><i class="fas fa-wand-magic-sparkles"></i> AI 解读</button></div>
                                 </div>
                                 <div class="ability-point" onclick="showKgDetailModal({name:'复杂线上问题排查', type:'ability', id:'a14'})">
                                     <div class="ability-point-name"><span>复杂线上问题排查</span><span class="ability-point-code">AP-014</span></div>
-                                    <div class="ability-point-type"><span class="type-tag skill">技能</span></div>
+                                    <div class="ability-point-type"><span class="type-tag skill">技能</span><button class="ai-interpret-btn" onclick="event.stopPropagation();showAbilityInterpret('复杂线上问题排查','技能')"><i class="fas fa-wand-magic-sparkles"></i> AI 解读</button></div>
                                 </div>
                                 <div class="ability-point" onclick="showKgDetailModal({name:'技术文档编写能力', type:'ability', id:'a15'})">
                                     <div class="ability-point-name"><span>技术文档编写能力</span><span class="ability-point-code">AP-015</span></div>
-                                    <div class="ability-point-type"><span class="type-tag skill">技能</span></div>
+                                    <div class="ability-point-type"><span class="type-tag skill">技能</span><button class="ai-interpret-btn" onclick="event.stopPropagation();showAbilityInterpret('技术文档编写能力','技能')"><i class="fas fa-wand-magic-sparkles"></i> AI 解读</button></div>
                                 </div>
                             </div>
                         </div>
@@ -550,22 +718,22 @@
                             <div class="ability-unit-body">
                                 <div class="ability-point" onclick="showKgDetailModal({name:'持续学习与技术视野', type:'ability', id:'a16'})">
                                     <div class="ability-point-name"><span>持续学习与技术视野</span><span class="ability-point-code">AP-016</span></div>
-                                    <div class="ability-point-type"><span class="type-tag quality">素养</span></div>
+                                    <div class="ability-point-type"><span class="type-tag quality">素养</span><button class="ai-interpret-btn" onclick="event.stopPropagation();showAbilityInterpret('持续学习与技术视野','素养')"><i class="fas fa-wand-magic-sparkles"></i> AI 解读</button></div>
                                 </div>
                                 <div class="ability-point" onclick="showKgDetailModal({name:'工作责任心与抗压', type:'ability', id:'a17'})">
                                     <div class="ability-point-name"><span>工作责任心与抗压</span><span class="ability-point-code">AP-017</span></div>
-                                    <div class="ability-point-type"><span class="type-tag quality">素养</span></div>
+                                    <div class="ability-point-type"><span class="type-tag quality">素养</span><button class="ai-interpret-btn" onclick="event.stopPropagation();showAbilityInterpret('工作责任心与抗压','素养')"><i class="fas fa-wand-magic-sparkles"></i> AI 解读</button></div>
                                 </div>
                                 <div class="ability-point" onclick="showKgDetailModal({name:'极致体验追求', type:'ability', id:'a18'})">
                                     <div class="ability-point-name"><span>极致体验追求</span><span class="ability-point-code">AP-018</span></div>
-                                    <div class="ability-point-type"><span class="type-tag quality">素养</span></div>
+                                    <div class="ability-point-type"><span class="type-tag quality">素养</span><button class="ai-interpret-btn" onclick="event.stopPropagation();showAbilityInterpret('极致体验追求','素养')"><i class="fas fa-wand-magic-sparkles"></i> AI 解读</button></div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="tab-content" id="tab-competency" style="display: none; padding-top: 16px;">
+                <div class="tab-content" id="tab-competency" data-tour="competency" style="display: none; padding-top: 16px;">
                     <div style="margin-bottom:16px; display:flex; justify-content:space-between; align-items:center;">
                         <span style="color:var(--text-secondary);">全览岗位 <strong style="color:var(--primary-color);">12</strong> 个关键能力点胜任标准</span>
                         <div style="font-size:12px; color:var(--text-secondary);">
@@ -1033,7 +1201,12 @@
 
                     contentHtml += `
                         <div class="comp-card">
-                            <div class="comp-card-header"><div class="comp-card-name">${c.name}</div></div>
+                            <div class="comp-card-header">
+                                <div class="comp-card-name">${c.name}</div>
+                                <button class="ai-interpret-btn" style="position:static;opacity:1;transform:none;" onclick="showCompetencyInterpret('${c.name}', ${c.target}, ${c.current}, '${c.desc.replace(/'/g,"\\'")}')">
+                                    <i class="fas fa-wand-magic-sparkles"></i> AI 解读
+                                </button>
+                            </div>
                             <div class="comp-target-label">
                                 <span><i class="fas fa-bullseye"></i> 目标：<strong>${LEVELS[c.target-1]}</strong> &nbsp;·&nbsp; 当前：<span style="color:var(--primary-color);">${LEVELS[c.current-1]}</span></span>
                                 ${status}
@@ -1083,6 +1256,191 @@
                     behavior: 'smooth'
                 });
             }
+        }
+
+        // ================= AI Chat Widget =================
+        let aiChatOpen = false;
+        function toggleAiChat() {
+            const widget = document.getElementById('aiChatWidget');
+            const icon = document.getElementById('aiChatToggleIcon');
+            aiChatOpen = !aiChatOpen;
+            if (aiChatOpen) {
+                widget.classList.remove('collapsed');
+                icon.className = 'fas fa-chevron-down';
+            } else {
+                widget.classList.add('collapsed');
+                icon.className = 'fas fa-chevron-up';
+            }
+        }
+
+        function sendAiMessage() {
+            const input = document.getElementById('aiChatInput');
+            const text = input.value.trim();
+            if (!text) return;
+            appendAiMsg(text, 'user');
+            input.value = '';
+            setTimeout(() => {
+                const replies = [
+                    '这是一个非常好的问题！前端开发工程师需要掌握 HTML、CSS、JavaScript 等核心技术，同时熟悉至少一种现代前端框架如 Vue 或 React。',
+                    '根据岗位要求，建议从基础开始系统学习：先掌握 HTML5/CSS3，再深入学习 JavaScript，最后选择一个主流框架进行实战练习。',
+                    '前端开发的薪资与经验和技能深度密切相关。初级工程师 8-15K，中级 15-25K，高级/架构师可达 30K 以上。',
+                    '这个岗位特别看重实战能力，建议多参与开源项目或做一些完整的个人作品来积累经验。',
+                    'AI 建议：你可以从"企业官网开发"这个实践场景入手，它涵盖了响应式布局、DOM 操作、动画效果等核心技能。'
+                ];
+                const reply = replies[Math.floor(Math.random() * replies.length)];
+                appendAiMsg(reply, 'ai');
+            }, 800 + Math.random() * 600);
+        }
+
+        function sendAiSuggestion(text) {
+            document.getElementById('aiChatInput').value = text;
+            sendAiMessage();
+        }
+
+        function appendAiMsg(text, role) {
+            const body = document.getElementById('aiChatBody');
+            const div = document.createElement('div');
+            div.className = 'ai-chat-msg ' + role;
+            div.textContent = text;
+            body.appendChild(div);
+            body.scrollTop = body.scrollHeight;
+        }
+
+        // ================= AI 职责解读 =================
+        const DUTY_INTERPRET_DATA = {
+            'T-001': { scene: '电商大促活动页开发', image: 'fa-laptop-code', text: '想象一下双11凌晨，数百万用户同时涌入购物页面。你的职责就是确保每一个按钮、每一张图片、每一个倒计时都能完美呈现。这不仅是写代码，更是在为千万用户的购物体验保驾护航。你需要像建筑师一样规划页面结构，像艺术家一样打磨视觉细节。' },
+            'T-002': { scene: '在线教育互动课堂', image: 'fa-comments', text: '当老师在直播间点击"开始答题"， thousands of 学生的屏幕上同时弹出答题框，倒计时开始，答案实时统计...这些看似简单的交互背后，是复杂的事件处理、状态管理和数据同步。你编写的每一行代码，都在让学习变得更加生动有趣。' },
+            'T-003': { scene: 'SaaS 后台管理系统', image: 'fa-sitemap', text: '想象一个拥有上百个功能模块的企业管理系统，如何让用户在使用时感到清晰、高效、愉悦？你需要像搭积木一样设计可复用的组件，像编织网络一样管理复杂的状态流转。每一个组件的封装，都是为了让团队开发更高效。' },
+            'T-004': { scene: '金融数据实时看板', image: 'fa-exchange-alt', text: '股票行情每秒刷新，交易数据实时推送，K线图动态绘制...在这个场景下，你需要与后端工程师像搭档一样紧密配合，确保每一毫秒的数据都能准确、及时地呈现在用户眼前。每一次接口联调，都是前后端协作的艺术。' },
+            'T-005': { scene: '短视频 App 首屏加载', image: 'fa-bolt', text: '用户打开 App，期待在 1 秒内看到精彩内容。你的优化工作就像给赛车减重、换引擎——代码分割、图片懒加载、缓存策略、CDN 加速...每一个优化手段，都是在为用户争取宝贵的时间，让体验如丝般顺滑。' },
+            'T-006': { scene: '开源项目协作社区', image: 'fa-code-branch', text: '当你提交的代码被全球开发者审阅、讨论、合并，当你的文档帮助了成千上万的初学者...代码评审不仅是找 bug，更是知识的传承和团队的共同成长。你写的每一篇技术文档，都可能在世界的某个角落点亮一盏明灯。' }
+        };
+
+        function showDutyInterpret(id, name) {
+            const data = DUTY_INTERPRET_DATA[id] || DUTY_INTERPRET_DATA['T-001'];
+            document.getElementById('dutyInterpretTitle').textContent = 'AI 解读：' + name;
+            document.getElementById('dutyInterpretBody').innerHTML = `
+                <div class="ai-interpret-content">
+                    <div>
+                        <div class="ai-interpret-text">
+                            <h4><i class="fas fa-theater-masks"></i> 情景化解读</h4>
+                            <p><strong style="color:#7c3aed;">「${data.scene}」</strong></p>
+                            <p>${data.text}</p>
+                            <h4><i class="fas fa-lightbulb"></i> 核心要点</h4>
+                            <p>这项职责要求你不仅掌握技术，更要理解业务场景。在实际工作中，你会面对各种复杂的需求变更和紧急问题，需要保持冷静、快速响应。</p>
+                            <h4><i class="fas fa-route"></i> 成长路径</h4>
+                            <p>初级：能独立完成基础页面 → 中级：能处理复杂交互和优化 → 高级：能主导技术方案和团队规范制定</p>
+                        </div>
+                        <div class="ai-interpret-tags">
+                            <span class="ai-interpret-tag"><i class="fas fa-star"></i> 核心职责</span>
+                            <span class="ai-interpret-tag"><i class="fas fa-users"></i> 团队协作</span>
+                            <span class="ai-interpret-tag"><i class="fas fa-chart-line"></i> 高优先级</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="ai-interpret-image"><i class="fas ${data.image}"></i></div>
+                        <div style="margin-top:16px; padding:16px; background:#f9f5ff; border-radius:12px; border:1px solid #f3e8ff;">
+                            <div style="font-weight:600; color:#7c3aed; margin-bottom:8px;"><i class="fas fa-user-graduate"></i> 给学生的话</div>
+                            <p style="font-size:13px; color:var(--text-secondary); line-height:1.8;">这项职责听起来复杂，但拆解开来就是：理解需求 → 设计方案 → 编码实现 → 测试优化。建议从模仿优秀的开源项目开始，逐步培养自己的工程思维。</p>
+                        </div>
+                    </div>
+                </div>`;
+            openModal('dutyInterpretModal');
+        }
+
+        // ================= AI 能力点解读 =================
+        function showAbilityInterpret(name, type) {
+            document.getElementById('abilityInterpretTitle').textContent = 'AI 解读：' + name;
+            document.getElementById('abilityInterpretBody').innerHTML = `
+                <div style="display:grid; gap:16px;">
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                        <div style="padding:16px; background:#f9f5ff; border-radius:12px; border:1px solid #f3e8ff;">
+                            <div style="font-weight:600; color:#7c3aed; margin-bottom:8px;"><i class="fas fa-question-circle"></i> 是什么</div>
+                            <p style="font-size:13px; color:var(--text-secondary); line-height:1.8;"><strong>${name}</strong> 是前端开发工程师的核心${type === '知识' ? '理论基础' : type === '技能' ? '实操能力' : '职业素质'}。它决定了你在实际项目中能否高效、高质量地完成开发任务。</p>
+                        </div>
+                        <div style="padding:16px; background:#f6ffed; border-radius:12px; border:1px solid #b7eb8f;">
+                            <div style="font-weight:600; color:#389e0d; margin-bottom:8px;"><i class="fas fa-map-marker-alt"></i> 用在哪</div>
+                            <p style="font-size:13px; color:var(--text-secondary); line-height:1.8;">在页面开发、组件封装、性能优化、团队协作等各个环节都会用到。掌握它，意味着你能独立承担中等复杂度以上的功能模块。</p>
+                        </div>
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                        <div style="padding:16px; background:#fff7e6; border-radius:12px; border:1px solid #ffd591;">
+                            <div style="font-weight:600; color:#d46b08; margin-bottom:8px;"><i class="fas fa-book-open"></i> 怎么学</div>
+                            <p style="font-size:13px; color:var(--text-secondary); line-height:1.8;">1. 系统学习官方文档和经典教材<br>2. 动手实践：从模仿到独立实现<br>3. 参与开源项目，阅读优秀源码<br>4. 定期复盘，建立个人知识库</p>
+                        </div>
+                        <div style="padding:16px; background:#e6f4ff; border-radius:12px; border:1px solid #91caff;">
+                            <div style="font-weight:600; color:#0958d9; margin-bottom:8px;"><i class="fas fa-tasks"></i> 怎么测</div>
+                            <p style="font-size:13px; color:var(--text-secondary); line-height:1.8;">通过项目实战检验：能否在规定时间内完成需求？代码是否可维护？是否考虑了边界情况？团队 Code Review 的反馈如何？</p>
+                        </div>
+                    </div>
+                    <div style="padding:16px; background:#fafafa; border-radius:12px;">
+                        <div style="font-weight:600; color:var(--text-primary); margin-bottom:8px;"><i class="fas fa-chart-bar"></i> 掌握程度自评</div>
+                        <div style="display:flex; gap:8px; margin-top:8px;">
+                            <span style="flex:1; text-align:center; padding:8px; background:#fff; border-radius:8px; border:2px solid #f0f0f0; font-size:12px;">了解概念</span>
+                            <span style="flex:1; text-align:center; padding:8px; background:#fff; border-radius:8px; border:2px solid #f0f0f0; font-size:12px;">能写Demo</span>
+                            <span style="flex:1; text-align:center; padding:8px; background:#fff; border-radius:8px; border:2px solid var(--primary-color); color:var(--primary-color); font-size:12px; font-weight:500;">项目实战 ✓</span>
+                            <span style="flex:1; text-align:center; padding:8px; background:#fff; border-radius:8px; border:2px solid #f0f0f0; font-size:12px;">能教别人</span>
+                            <span style="flex:1; text-align:center; padding:8px; background:#fff; border-radius:8px; border:2px solid #f0f0f0; font-size:12px;">行业专家</span>
+                        </div>
+                    </div>
+                </div>`;
+            openModal('abilityInterpretModal');
+        }
+
+        // ================= AI 胜任标准解读 =================
+        function showCompetencyInterpret(name, target, current, desc) {
+            const levels = ['了解','理解','掌握','熟练','精通'];
+            const gap = target - current;
+            const score = Math.max(0, Math.min(100, Math.round((current / 5) * 100)));
+            const isReached = gap <= 0;
+
+            document.getElementById('competencyInterpretTitle').textContent = 'AI 胜任分析：' + name;
+            document.getElementById('competencyInterpretBody').innerHTML = `
+                <div style="display:flex; flex-direction:column; gap:16px;">
+                    <div style="display:flex; align-items:center; gap:20px; padding:20px; background:linear-gradient(135deg, #f9f5ff, #fff); border-radius:12px; border:1px solid #f3e8ff;">
+                        <div class="ai-score-ring" style="--score:${score * 3.6}deg;">
+                            <span class="ai-score-value">${score}</span>
+                        </div>
+                        <div style="flex:1;">
+                            <div style="font-size:16px; font-weight:600; color:var(--text-primary); margin-bottom:4px;">能力适配度评分</div>
+                            <div style="font-size:13px; color:var(--text-secondary);">当前等级：<strong style="color:var(--primary-color);">${levels[current-1]}</strong> &nbsp;|&nbsp; 目标等级：<strong style="color:#722ed1;">${levels[target-1]}</strong></div>
+                            <div style="margin-top:8px; font-size:13px; color:${isReached ? '#52c41a' : '#faad14'};">
+                                <i class="fas ${isReached ? 'fa-check-circle' : 'fa-exclamation-triangle'}"></i> ${isReached ? '恭喜！你已达成该能力的目标要求' : `还需提升 ${gap} 个等级才能达标，建议优先补强`}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div style="font-weight:600; color:var(--text-primary); margin-bottom:10px;"><i class="fas fa-bullseye" style="color:#7c3aed;"></i> 能力要求说明</div>
+                        <p style="font-size:13px; color:var(--text-secondary); line-height:1.8; padding:12px; background:#fafafa; border-radius:8px;">${desc}</p>
+                    </div>
+
+                    ${!isReached ? `
+                    <div>
+                        <div style="font-weight:600; color:var(--text-primary); margin-bottom:10px;"><i class="fas fa-list-ul" style="color:#faad14;"></i> 差距分析</div>
+                        <div class="ai-gap-list">
+                            <div class="ai-gap-item"><i class="fas fa-angle-double-up"></i> <div><strong>等级差距：</strong>当前 <span style="color:var(--primary-color);">${levels[current-1]}</span> → 目标 <span style="color:#722ed1;">${levels[target-1]}</span>，差 ${gap} 级</div></div>
+                            <div class="ai-gap-item"><i class="fas fa-clock"></i> <div><strong>预计学习时长：</strong>约 ${gap * 20} 学时（每天 2 小时，约 ${gap * 10} 天）</div></div>
+                            <div class="ai-gap-item"><i class="fas fa-layer-group"></i> <div><strong>优先级：</strong>${gap >= 2 ? '高优先级，建议立即开始系统学习' : '中等优先级，可在项目实战中逐步提升'}</div></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div style="font-weight:600; color:var(--text-primary); margin-bottom:10px;"><i class="fas fa-route" style="color:#52c41a;"></i> AI 推荐提升路径</div>
+                        <div class="ai-path-step"><i class="fas fa-flag"></i> <strong>第1步：</strong>系统学习 ${name} 核心理论（建议 5 学时）</div>
+                        <div class="ai-path-step"><i class="fas fa-laptop-code"></i> <strong>第2步：</strong>完成 2-3 个相关实战练习（建议 8 学时）</div>
+                        <div class="ai-path-step"><i class="fas fa-project-diagram"></i> <strong>第3步：</strong>参与团队项目，在真实场景中应用（建议 ${gap * 5} 学时）</div>
+                        <div class="ai-path-step"><i class="fas fa-clipboard-check"></i> <strong>第4步：</strong>进行自我测评和复盘，查漏补缺（建议 2 学时）</div>
+                    </div>
+                    ` : `
+                    <div style="padding:16px; background:#f6ffed; border-radius:12px; border:1px solid #b7eb8f; text-align:center;">
+                        <i class="fas fa-trophy" style="font-size:32px; color:#52c41a; margin-bottom:8px;"></i>
+                        <div style="font-weight:600; color:#389e0d;">太棒了！这项能力你已达标</div>
+                        <p style="font-size:13px; color:var(--text-secondary); margin-top:4px;">建议继续保持，尝试帮助他人或挑战更高难度的项目。</p>
+                    </div>
+                    `}
+                </div>`;
+            openModal('competencyInterpretModal');
         }
 
         // ================= 6. 知识图谱 (扩充的3层精简版) =================
@@ -1219,6 +1577,246 @@
             document.getElementById('kgZoomOut').onclick=()=>kgSvgSel.transition().call(kgZoomBehavior.scaleBy,0.75);
             document.getElementById('kgReset').onclick=()=>kgSvgSel.transition().duration(600).call(kgZoomBehavior.transform, d3.zoomIdentity.translate(W/2,H/2).scale(0.7).translate(-W/2,-H/2));
         }
+
+        // AI 导览向导（无遮罩版：CSS 高亮 + 固定面板）
+        (function(){
+            const tourSteps = [
+                {
+                    selector: '#tour-header',
+                    title: '岗位概览',
+                    content: '这里是岗位的头部信息卡片，包含岗位名称、所属行业、适用专业、薪资范围、共建单位等核心信息。右侧还有 AI 匹配度标签，帮你快速判断是否适合自己。',
+                    tab: null,
+                },
+                {
+                    selector: '#tour-tabs',
+                    title: '内容导航',
+                    content: '通过这组标签页，你可以在「岗位概况」「岗位职责」「能力模型」「胜任标准」等维度之间切换，全面了解这个岗位。',
+                    tab: null,
+                },
+                {
+                    selector: '#tab-overview',
+                    title: '岗位概况',
+                    content: '这里展示岗位的整体介绍、核心职责摘要、涉及证书以及关联的实践场景。点击任意 AI 解读按钮，可以查看 AI 对该模块的深度分析。',
+                    tab: 'overview',
+                },
+                {
+                    selector: '#tab-tasks',
+                    title: '岗位职责',
+                    content: '岗位职责按业务领域分组展示。点击「AI 解读」可以看到该职责在实际工作场景中的具体表现；点击「查看能力要求」能直接跳转到对应的能力点。',
+                    tab: 'tasks',
+                },
+                {
+                    selector: '#tab-ability',
+                    title: '能力模型',
+                    content: '能力模型以列表形式展示该岗位所需的全部能力点。每个能力点都可以点击「AI 解读」，了解「是什么」「用在哪」「怎么学」「怎么测」。',
+                    tab: 'ability',
+                },
+                {
+                    selector: '#tab-competency',
+                    title: '胜任标准',
+                    content: '胜任标准展示了每个能力点需要达到的具体等级和描述。AI 会根据你的学习画像给出适配度分数、差距分析和个性化提升路径。',
+                    tab: 'competency',
+                },
+                {
+                    selector: '#aiChatWidget',
+                    title: 'AI 岗位助手',
+                    content: '右下角的 AI 助手始终陪伴你。有任何关于岗位的问题，都可以直接输入或点击推荐问题，AI 会实时为你解答。',
+                    tab: null,
+                },
+            ];
+
+            let currentStep = 0;
+            let tourPanel = null;
+            let prevHighlighted = null;
+
+            function createTourPanel() {
+                if (tourPanel) return;
+                tourPanel = document.createElement('div');
+                tourPanel.className = 'ai-tour-panel hidden';
+                tourPanel.id = 'aiTourPanel';
+                tourPanel.innerHTML = `
+                    <div class="ai-tour-panel-header">
+                        <div class="ai-tour-panel-header-left">
+                            <i class="fas fa-robot"></i>
+                            <span>AI 导览</span>
+                        </div>
+                        <span class="ai-tour-panel-step" id="aiTourStepBadge">1 / ${tourSteps.length}</span>
+                    </div>
+                    <div class="ai-tour-panel-body">
+                        <div class="ai-tour-panel-title" id="aiTourTitle"></div>
+                        <div class="ai-tour-panel-text" id="aiTourText"></div>
+                    </div>
+                    <div class="ai-tour-panel-actions">
+                        <button onclick="window.aiTourEnd()">跳过</button>
+                        <div>
+                            <button id="aiTourPrevBtn" onclick="window.aiTourPrev()">上一步</button>
+                            <button class="primary" id="aiTourNextBtn" onclick="window.aiTourNext()">下一步</button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(tourPanel);
+            }
+
+            function switchTab(tabName) {
+                if (!tabName) return;
+                const tabEl = document.querySelector(`.tab-item[data-tab="${tabName}"]`);
+                if (tabEl) tabEl.click();
+            }
+
+            function removeHighlight() {
+                if (prevHighlighted) {
+                    prevHighlighted.classList.remove('ai-tour-highlight');
+                    prevHighlighted = null;
+                }
+            }
+
+            function scrollToElement(el, isTabStep) {
+                if (isTabStep) {
+                    const tabsEl = document.querySelector('.tabs');
+                    if (tabsEl) {
+                        const tabsTop = tabsEl.getBoundingClientRect().top + window.scrollY - 80;
+                        window.scrollTo({ top: Math.max(0, tabsTop), behavior: 'smooth' });
+                    }
+                } else {
+                    const rect = el.getBoundingClientRect();
+                    const targetTop = rect.top + window.scrollY - 100;
+                    window.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' });
+                }
+            }
+
+            function renderStep() {
+                const step = tourSteps[currentStep];
+                const target = document.querySelector(step.selector);
+                if (!target) {
+                    nextStep();
+                    return;
+                }
+
+                if (step.tab) switchTab(step.tab);
+                scrollToElement(target, !!step.tab);
+
+                setTimeout(() => {
+                    removeHighlight();
+                    target.classList.add('ai-tour-highlight');
+                    prevHighlighted = target;
+
+                    document.getElementById('aiTourStepBadge').textContent = (currentStep + 1) + ' / ' + tourSteps.length;
+                    document.getElementById('aiTourTitle').textContent = step.title;
+                    document.getElementById('aiTourText').textContent = step.content;
+
+                    const prevBtn = document.getElementById('aiTourPrevBtn');
+                    const nextBtn = document.getElementById('aiTourNextBtn');
+                    if (prevBtn) prevBtn.disabled = currentStep === 0;
+                    if (nextBtn) nextBtn.textContent = currentStep === tourSteps.length - 1 ? '完成' : '下一步';
+                }, step.tab ? 350 : 100);
+            }
+
+            window.startAiTour = function() {
+                currentStep = 0;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                createTourPanel();
+                setTimeout(() => {
+                    tourPanel.classList.remove('hidden');
+                    renderStep();
+                }, 300);
+            };
+
+            window.aiTourNext = function() {
+                if (currentStep >= tourSteps.length - 1) {
+                    endTour();
+                    return;
+                }
+                currentStep++;
+                renderStep();
+            };
+
+            window.aiTourPrev = function() {
+                if (currentStep <= 0) return;
+                currentStep--;
+                renderStep();
+            };
+
+            window.aiTourEnd = function() {
+                endTour();
+            };
+
+            function endTour() {
+                removeHighlight();
+                if (tourPanel) {
+                    tourPanel.classList.add('hidden');
+                    setTimeout(() => {
+                        if (tourPanel) {
+                            tourPanel.remove();
+                            tourPanel = null;
+                        }
+                    }, 300);
+                }
+            }
+
+            function nextStep() {
+                if (currentStep >= tourSteps.length - 1) endTour();
+                else { currentStep++; renderStep(); }
+            }
+
+            // 页面加载后自动启动 AI 导览
+            window.addEventListener('load', function() {
+                setTimeout(startAiTour, 800);
+            });
+        })();
     </script>
+    <!-- AI 岗位全局问答助手 -->
+    <div class="ai-chat-widget collapsed" id="aiChatWidget">
+        <div class="ai-chat-header" onclick="toggleAiChat()">
+            <div class="ai-chat-title"><i class="fas fa-robot"></i> AI 岗位助手</div>
+            <div class="ai-chat-toggle"><i class="fas fa-chevron-up" id="aiChatToggleIcon"></i></div>
+        </div>
+        <div class="ai-chat-body" id="aiChatBody">
+            <div class="ai-chat-msg ai">
+                <strong>👋 你好！</strong> 我是你的 AI 岗位助手。我可以帮你解读这个岗位的职责、能力要求，或者回答任何关于前端开发工程师的问题。
+            </div>
+        </div>
+        <div class="ai-chat-suggestions" id="aiChatSuggestions">
+            <button class="ai-chat-suggestion" onclick="sendAiSuggestion('这个岗位需要掌握哪些核心技能？')">需要哪些核心技能？</button>
+            <button class="ai-chat-suggestion" onclick="sendAiSuggestion('零基础如何学习前端开发？')">零基础如何学习？</button>
+            <button class="ai-chat-suggestion" onclick="sendAiSuggestion('前端开发的薪资待遇如何？')">薪资待遇如何？</button>
+        </div>
+        <div class="ai-chat-input">
+            <input type="text" id="aiChatInput" placeholder="输入你的问题..." onkeydown="if(event.key==='Enter')sendAiMessage()">
+            <button onclick="sendAiMessage()"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <!-- AI 职责解读弹窗 -->
+    <div class="modal-overlay ai-interpret-modal" id="dutyInterpretModalOverlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <div class="modal-title" style="display:flex;align-items:center;gap:8px;"><i class="fas fa-wand-magic-sparkles" style="color:#a855f7;"></i> <span id="dutyInterpretTitle">AI 职责解读</span></div>
+                <i class="fas fa-times modal-close" onclick="closeModal('dutyInterpretModal')"></i>
+            </div>
+            <div class="modal-body" id="dutyInterpretBody"></div>
+        </div>
+    </div>
+
+    <!-- AI 能力点解读弹窗 -->
+    <div class="modal-overlay" id="abilityInterpretModalOverlay">
+        <div class="modal-box" style="width: 560px;">
+            <div class="modal-header">
+                <div class="modal-title" style="display:flex;align-items:center;gap:8px;"><i class="fas fa-wand-magic-sparkles" style="color:#a855f7;"></i> <span id="abilityInterpretTitle">AI 能力点解读</span></div>
+                <i class="fas fa-times modal-close" onclick="closeModal('abilityInterpretModal')"></i>
+            </div>
+            <div class="modal-body" id="abilityInterpretBody"></div>
+        </div>
+    </div>
+
+    <!-- AI 胜任标准解读弹窗 -->
+    <div class="modal-overlay" id="competencyInterpretModalOverlay">
+        <div class="modal-box" style="width: 600px;">
+            <div class="modal-header">
+                <div class="modal-title" style="display:flex;align-items:center;gap:8px;"><i class="fas fa-wand-magic-sparkles" style="color:#a855f7;"></i> <span id="competencyInterpretTitle">AI 胜任标准分析</span></div>
+                <i class="fas fa-times modal-close" onclick="closeModal('competencyInterpretModal')"></i>
+            </div>
+            <div class="modal-body" id="competencyInterpretBody"></div>
+        </div>
+    </div>
 </body>
 </html>

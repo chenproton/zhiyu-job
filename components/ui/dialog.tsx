@@ -46,17 +46,13 @@ function DialogOverlay({
   )
 }
 
-import { AnnotationSystem } from '@my-app/annotation-system'
-
 function DialogContent({
   className,
   children,
   showCloseButton = true,
-  annotationContext,
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Content> & {
   showCloseButton?: boolean
-  annotationContext?: string
 }) {
   return (
     <DialogPortal data-slot="dialog-portal">
@@ -78,15 +74,6 @@ function DialogContent({
             <XIcon />
             <span className="sr-only">Close</span>
           </DialogPrimitive.Close>
-        )}
-        {/* 弹窗内独立标注层 */}
-        {annotationContext && (
-          <AnnotationSystem
-            context={annotationContext}
-            zIndex={100}
-            defaultMode="view"
-            hideController
-          />
         )}
       </DialogPrimitive.Content>
     </DialogPortal>

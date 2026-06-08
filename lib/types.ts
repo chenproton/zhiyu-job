@@ -99,6 +99,9 @@ export interface PositionAbilityBinding {
   category: string               // 能力分类
   level: CompetencyLevel
   rubricDescription: string      // 量规表现描述
+  description?: string           // 能力描述
+  attributes?: string[]          // 能力属性：知识/素养/技能
+  domain?: string                // 所属能力域
 }
 
 // 能力领域
