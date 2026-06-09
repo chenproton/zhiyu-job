@@ -1,0 +1,64 @@
+{
+  "id": "",
+  "batchId": "",
+  "version": "V1.0",
+  "status": "draft",
+
+  "name": "岗位名称",
+  "shortName": "简称",
+  "industry": "所属行业",
+  "majors": ["适用专业1", "适用专业2"],
+  "salaryRange": [8000, 20000],
+  "coverImage": "",
+
+  "description": "岗位简介",
+
+  "responsibilities": [
+    { "name": "工作职责1" },
+    { "name": "工作职责2" }
+  ],
+
+  "requirements": [
+    "任职要求1",
+    "任职要求2"
+  ],
+
+  "careerPath": {
+    "horizontal": ["横向发展路径1", "横向发展路径2"],
+    "vertical": ["纵向晋升节点1", "纵向晋升节点2", "纵向晋升节点3"]
+  },
+
+  "certificates": [
+    {
+      "name": "证书名称",
+      "description": "证书描述"
+    }
+  ],
+
+  "abilityBindings": [
+    {
+      "name": "能力点名称",
+      "category": "专业技能",
+      "level": "master",
+      "rubricDescription": "胜任标准描述",
+      "attributes": ["技能"],
+      "domain": "业务洞察"
+    }
+  ],
+
+  "abilityDomains": [
+    {
+      "name": "能力域名称",
+      "description": "能力域描述"
+    }
+  ],
+
+  "competencyConfig": [
+    {
+      "abilityName": "能力点名称",
+      "level": "master",
+      "ruleDescription": "胜任标准描述",
+      "weight": 1
+    }
+  ]
+}

@@ -35,6 +35,8 @@ import {
   ImagePlus,
   UserPlus,
   Wand2,
+  Save,
+  Eye,
 } from 'lucide-react'
 import { StepBasicInfo } from '@/components/position-builder/step-basic-info'
 import { StepAbilityModeling } from '@/components/position-builder/step-ability-modeling'
@@ -189,9 +191,11 @@ export default function AiFirstNewPositionPage() {
   }
 
   const steps = [
-    { id: 'chat', label: 'AI 对话生成', num: 1 },
-    { id: 'basic', label: '基本信息确认', num: 2 },
-    { id: 'ability', label: '能力建模表确认', num: 3 },
+    { id: 'chat', label: 'AI 对话生成' },
+    { id: 'basic', label: '基本信息确认' },
+    { id: 'ability', label: '能力建模表确认' },
+    { id: 'submitting', label: '提交审批' },
+    { id: 'success', label: '创建成功' },
   ]
 
   const currentStepIndex = steps.findIndex((s) => s.id === step)
@@ -284,49 +288,61 @@ export default function AiFirstNewPositionPage() {
               取消
             </Button>
             <div className="h-5 w-px bg-gray-200" />
+            {currentStepIndex >= 0 && (
+              <div className="flex items-center gap-2">
+                <Badge className="bg-primary text-primary-foreground">
+                  步骤 {currentStepIndex + 1}
+                </Badge>
+                <span className="text-sm font-medium text-gray-800">{steps[currentStepIndex].label}</span>
+              </div>
+            )}
+          </div>
+          {step !== 'success' && (
             <div className="flex items-center gap-3">
-              <div className="h-8 w-8 rounded-lg bg-purple-100 flex items-center justify-center">
-                <Bot className="h-4 w-4 text-purple-600" />
-              </div>
-              <div>
-                <h1 className="text-sm font-semibold text-gray-900">AI 主导创建岗位</h1>
-                <p className="text-xs text-gray-400">向导式 AI 生成 · 确认即可发布</p>
-              </div>
+              {step !== 'chat' && (
+                <Button variant="outline" size="sm" onClick={() => {}}>
+                  <Save className="mr-2 h-4 w-4" />
+                  保存草稿
+                </Button>
+              )}
+              {step !== 'chat' && (
+                <Button variant="outline" size="sm" onClick={() => {}}>
+                  <Eye className="mr-2 h-4 w-4" />
+                  预览
+                </Button>
+              )}
+              {currentStepIndex > 0 && step !== 'submitting' && (
+                <Button variant="outline" size="sm" onClick={() => setStep(steps[currentStepIndex - 1].id as typeof step)}>
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  上一步
+                </Button>
+              )}
+              {step === 'chat' && (
+                <Button size="sm" onClick={handleGenerate} disabled={!requirement || isGenerating}>
+                  下一步
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              )}
+              {step === 'basic' && (
+                <Button size="sm" onClick={handleGoToAbility}>
+                  下一步
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              )}
+              {step === 'ability' && (
+                <Button size="sm" onClick={() => setStep('submitting')}>
+                  下一步
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              )}
+              {step === 'submitting' && (
+                <Button size="sm" onClick={handleSubmit} disabled={!selectedBatchId || submitting}>
+                  <Check className="mr-2 h-4 w-4" />
+                  提交审批
+                </Button>
+              )}
             </div>
-          </div>
-
-          {/* Stepper */}
-          <div className="hidden md:flex items-center gap-1">
-            {steps.map((s, idx) => (
-              <div key={s.id} className="flex items-center">
-                <div
-                  className={cn(
-                    'flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium transition-colors',
-                    step === s.id
-                      ? 'bg-purple-100 text-purple-700'
-                      : idx < currentStepIndex
-                        ? 'bg-green-50 text-green-700'
-                        : 'bg-gray-100 text-gray-400'
-                  )}
-                >
-                  <span
-                    className={cn(
-                      'h-5 w-5 rounded-full flex items-center justify-center text-[10px]',
-                      step === s.id
-                        ? 'bg-purple-600 text-white'
-                        : idx < currentStepIndex
-                          ? 'bg-green-600 text-white'
-                          : 'bg-gray-300 text-white'
-                    )}
-                  >
-                    {idx < currentStepIndex ? <Check className="h-3 w-3" /> : s.num}
-                  </span>
-                  {s.label}
-                </div>
-                {idx < steps.length - 1 && <div className="w-6 h-px bg-gray-200 mx-1" />}
-              </div>
-            ))}
-          </div>
+          )}
         </div>
       </div>
 

@@ -398,10 +398,7 @@ export function Step1BasicInfo({ draft, onUpdate, onNext }: Step1BasicInfoProps)
             <Sparkles className="h-4 w-4" />
             AI 辅助编写
           </Button>
-          <Button onClick={onNext} className="gap-1">
-            下一步
-            <ArrowRight className="h-4 w-4" />
-          </Button>
+
         </div>
       </div>
 
@@ -496,7 +493,7 @@ export function Step1BasicInfo({ draft, onUpdate, onNext }: Step1BasicInfoProps)
               id="description"
               value={draft.description}
               onChange={(e) => onUpdate({ description: e.target.value })}
-              placeholder="一句话或一大段话描述该岗位..."
+              placeholder="对岗位做简要的背景介绍"
               rows={4}
             />
             {renderPolishCard('description', '岗位简介')}
@@ -817,7 +814,7 @@ export function Step1BasicInfo({ draft, onUpdate, onNext }: Step1BasicInfoProps)
                 <Textarea
                   value={quickFill.description}
                   onChange={(e) => setQuickFill({ ...quickFill, description: e.target.value })}
-                  placeholder="一句话或一大段话描述该岗位..."
+                  placeholder="对岗位做简要的背景介绍"
                   rows={3}
                   className="resize-none"
                 />

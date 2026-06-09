@@ -1,0 +1,111 @@
+{
+  "position": {
+    "id": "position-example-001",
+    "batchId": "batch-2024-spring",
+    "version": "V1.0",
+    "status": "draft",
+
+    "name": "Java 后端开发工程师",
+    "shortName": "Java开发",
+    "industry": "互联网/IT",
+    "majors": ["软件工程", "计算机科学与技术"],
+    "salaryRange": [15000, 35000],
+    "coverImage": "/cover-wms-1.png",
+    "certificates": [
+      {
+        "id": "cert-001",
+        "name": "软件设计师（中级）",
+        "description": "国家计算机技术与软件专业技术资格考试",
+        "url": "https://www.ruankao.org.cn"
+      }
+    ],
+
+    "description": "负责互联网/IT业务后端服务的设计与开发，完成系统架构设计、接口开发、性能优化及技术难点攻关。",
+
+    "responsibilities": [
+      {
+        "id": "resp-001",
+        "name": "负责互联网/IT业务服务端架构设计、核心模块开发与代码评审",
+        "description": ""
+      },
+      {
+        "id": "resp-002",
+        "name": "完成高并发、高可用接口设计，保障系统稳定性与数据安全",
+        "description": ""
+      }
+    ],
+
+    "requirements": [
+      "本科及以上学历，计算机相关专业优先",
+      "熟练掌握 Java/Python/Go 中至少一门主流后端语言"
+    ],
+
+    "careerPath": {
+      "horizontal": ["技术专家", "项目管理"],
+      "vertical": ["初级后端工程师", "后端工程师", "高级后端工程师", "后端专家", "系统架构师", "技术总监"]
+    },
+
+    "abilityModel": {
+      "nodes": [
+        {
+          "id": "node-001",
+          "type": "responsibility",
+          "data": {
+            "label": "服务端架构设计",
+            "description": "负责系统架构设计与核心模块开发"
+          },
+          "position": { "x": 100, "y": 100 }
+        }
+      ],
+      "edges": [
+        {
+          "id": "edge-001",
+          "source": "node-001",
+          "target": "node-002",
+          "type": "default"
+        }
+      ]
+    },
+
+    "abilityBindings": [
+      {
+        "id": "bind-001",
+        "responsibilityId": "resp-001",
+        "source": "custom",
+        "name": "编程开发能力",
+        "category": "专业技能",
+        "level": "proficient",
+        "rubricDescription": "能够独立完成复杂业务模块的编码实现，代码质量达到团队规范要求",
+        "description": "",
+        "attributes": ["技能"],
+        "domain": "业务洞察"
+      }
+    ],
+
+    "abilityDomains": [
+      {
+        "id": "domain-001",
+        "name": "业务洞察",
+        "description": "对行业趋势和业务场景的理解能力",
+        "bindingIds": ["bind-001"]
+      }
+    ],
+
+    "competencyConfig": [
+      {
+        "id": "comp-001",
+        "abilityId": "bind-001",
+        "abilityName": "编程开发能力",
+        "level": "proficient",
+        "ruleDescription": "能够独立完成复杂业务模块的编码实现",
+        "weight": 1
+      }
+    ],
+
+    "createdBy": "user-1",
+    "collaborators": ["user-1"],
+    "createdAt": "2024-01-15T08:00:00.000Z",
+    "updatedAt": "2024-01-15T08:00:00.000Z",
+    "favoriteCount": 0
+  }
+}

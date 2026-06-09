@@ -56,21 +56,36 @@ export function Step2AbilityModel({ position, onUpdate, onNext }: Step2AbilityMo
   }, [aiStep])
   const pendingAutoAiRef = useRef(false)
   const startAiAssistRef = useRef<() => void>(() => {})
+  const isRunningRef = useRef(false)
 
   const responsibilities = position.responsibilities
   const currentResp = responsibilities[currentRespIndex]
+
+  const currentRespIndexRef = useRef(currentRespIndex)
+  useEffect(() => {
+    currentRespIndexRef.current = currentRespIndex
+  }, [currentRespIndex])
+
+  const responsibilitiesRef = useRef(responsibilities)
+  useEffect(() => {
+    responsibilitiesRef.current = responsibilities
+  }, [responsibilities])
 
   const currentBindings = useMemo(
     () => position.abilityBindings.filter((b) => b.responsibilityId === currentResp?.id),
     [position.abilityBindings, currentResp?.id]
   )
 
+  const allResponsibilitiesBound = responsibilities.length > 0 &&
+    responsibilities.every((resp) => position.abilityBindings.some((b) => b.responsibilityId === resp.id))
+
   const progressPercent = responsibilities.length > 0
     ? Math.round(((currentRespIndex + (currentBindings.length > 0 ? 1 : 0)) / responsibilities.length) * 100)
     : 0
 
   const startAiAssist = () => {
-    if (!currentResp) return
+    if (!currentResp || isRunningRef.current) return
+    isRunningRef.current = true
     setAiOpen(true)
     setAiStep(0)
     setAiProgress(0)
@@ -91,6 +106,13 @@ export function Step2AbilityModel({ position, onUpdate, onNext }: Step2AbilityMo
       setTimeout(() => {
         setAiOpen(false)
         generateAbilitiesForCurrentResp()
+        isRunningRef.current = false
+
+        // 自动切换到下一个职责并继续拆解
+        if (currentRespIndexRef.current < responsibilitiesRef.current.length - 1) {
+          pendingAutoAiRef.current = true
+          setCurrentRespIndex((i) => i + 1)
+        }
       }, 400)
     }, 5000)
   }
@@ -106,7 +128,6 @@ export function Step2AbilityModel({ position, onUpdate, onNext }: Step2AbilityMo
   const generateAbilitiesForCurrentResp = () => {
     if (!currentResp) return
     const recs = mockAbilityRecommendations(currentResp.name)
-    const existingIds = new Set(currentBindings.map((b) => b.id))
     const newBindings: PositionAbilityBinding[] = recs
       .filter((_, i) => i < 4)
       .map((rec, i) => ({
@@ -115,10 +136,10 @@ export function Step2AbilityModel({ position, onUpdate, onNext }: Step2AbilityMo
         source: 'custom',
         name: rec.name,
         category: rec.category,
-        level: rec.level,
-        rubricDescription: rec.rubricDescription,
+        level: 'understand',
+        rubricDescription: '',
         description: '',
-        attributes: [],
+        attributes: ['技能'],
         domain: ABILITY_DOMAINS[i % ABILITY_DOMAINS.length],
       }))
 
@@ -159,15 +180,6 @@ export function Step2AbilityModel({ position, onUpdate, onNext }: Step2AbilityMo
     onUpdate({ abilityBindings: [...position.abilityBindings, newBinding] })
   }
 
-  const handleContinue = () => {
-    if (currentRespIndex < responsibilities.length - 1) {
-      pendingAutoAiRef.current = true
-      setCurrentRespIndex((i) => i + 1)
-    } else {
-      onNext()
-    }
-  }
-
   return (
     <div className="space-y-5">
       {/* Header */}
@@ -181,22 +193,16 @@ export function Step2AbilityModel({ position, onUpdate, onNext }: Step2AbilityMo
             variant="outline"
             className="border-purple-200 text-purple-700 hover:bg-purple-50 hover:text-purple-800 gap-1"
             onClick={startAiAssist}
-            disabled={!currentResp}
+            disabled={!currentResp || isRunningRef.current}
           >
             <Sparkles className="h-4 w-4" />
             AI 辅助编写
           </Button>
-          <Button
-            onClick={handleContinue}
-            disabled={!currentResp}
-            className="gap-1"
-          >
-            {currentRespIndex < responsibilities.length - 1 ? (
-              <>继续拆解下一个 <ArrowRight className="h-4 w-4" /></>
-            ) : (
-              <>查看汇总结果 <ArrowRight className="h-4 w-4" /></>
-            )}
-          </Button>
+          {allResponsibilitiesBound && (
+            <Button onClick={onNext} className="gap-1">
+              配置岗位胜任力标准 <ArrowRight className="h-4 w-4" />
+            </Button>
+          )}
         </div>
       </div>
 

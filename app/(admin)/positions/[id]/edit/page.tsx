@@ -117,7 +117,6 @@ export default function PositionEditPage({ params }: PageProps) {
                 步骤 {currentStepIndex + 1}
               </Badge>
               <span className="text-sm font-medium text-gray-800">{currentStep.label}</span>
-              <span className="text-xs text-gray-400 hidden sm:inline">{currentStep.description}</span>
             </div>
           </div>
           <div className="flex items-center gap-3">

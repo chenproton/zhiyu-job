@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useRef, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import {
@@ -10,19 +11,88 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { Input } from '@/components/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
-import { ArrowLeft, Save, CheckCircle2 } from 'lucide-react'
-import type { Position } from '@/lib/types'
+import { ArrowLeft, Save, CheckCircle2, Sparkles } from 'lucide-react'
+import { AiProgressDialog } from './ai-progress-dialog'
+import type { Position, PositionAbilityBinding, CompetencyLevel } from '@/lib/types'
 import { COMPETENCY_LEVEL_LABELS } from '@/lib/types'
+import { mockAbilityRecommendations } from '@/lib/ai-mock-data'
+
+const COMPETENCY_LEVELS: { value: CompetencyLevel; label: string }[] = [
+  { value: 'understand', label: '了解' },
+  { value: 'comprehend', label: '理解' },
+  { value: 'master', label: '掌握' },
+  { value: 'proficient', label: '熟练' },
+  { value: 'expert', label: '精通' },
+]
 
 interface Step3ResultTableProps {
   position: Position
+  onUpdate: (data: Partial<Position>) => void
   onPrev: () => void
   onSave: () => void
 }
 
-export function Step3ResultTable({ position, onPrev, onSave }: Step3ResultTableProps) {
+export function Step3ResultTable({ position, onUpdate, onPrev, onSave }: Step3ResultTableProps) {
   const bindings = position.abilityBindings
+  const [aiOpen, setAiOpen] = useState(false)
+  const [aiProgress, setAiProgress] = useState(0)
+  const [aiStep, setAiStep] = useState(0)
+  const aiStepRef = useRef(aiStep)
+  useEffect(() => {
+    aiStepRef.current = aiStep
+  }, [aiStep])
+
+  const handleUpdateBinding = (bindingId: string, updates: Partial<PositionAbilityBinding>) => {
+    onUpdate({
+      abilityBindings: position.abilityBindings.map((b) =>
+        b.id === bindingId ? { ...b, ...updates } : b
+      ),
+    })
+  }
+
+  const handleAiFillAll = () => {
+    if (bindings.length === 0) return
+    setAiOpen(true)
+    setAiStep(0)
+    setAiProgress(0)
+
+    let progress = 0
+    const interval = setInterval(() => {
+      progress += Math.floor(Math.random() * 8) + 2
+      if (progress >= 100) progress = 100
+      setAiProgress(progress)
+      if (progress >= 40 && aiStepRef.current === 0) {
+        setAiStep(1)
+      }
+    }, 250)
+
+    setTimeout(() => {
+      clearInterval(interval)
+      setAiProgress(100)
+      setTimeout(() => {
+        setAiOpen(false)
+        const recs = mockAbilityRecommendations()
+        const updated = position.abilityBindings.map((b, i) => {
+          const rec = recs[i % recs.length]
+          return {
+            ...b,
+            level: rec.level,
+            rubricDescription: rec.rubricDescription,
+          }
+        })
+        onUpdate({ abilityBindings: updated })
+      }, 400)
+    }, 5000)
+  }
 
   return (
     <div className="space-y-5">
@@ -30,15 +100,20 @@ export function Step3ResultTable({ position, onPrev, onSave }: Step3ResultTableP
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-semibold text-gray-900">步骤三：能力模型汇总</h2>
-          <p className="text-sm text-gray-500 mt-0.5">确认拆解结果，保存后岗位将进入草稿状态</p>
+          <p className="text-sm text-gray-500 mt-0.5">确认拆解结果并配置胜任力标准，保存后岗位将进入草稿状态</p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={onPrev} className="gap-1">
-            <ArrowLeft className="h-4 w-4" /> 返回修改
+
+          <Button
+            variant="outline"
+            className="border-purple-200 text-purple-700 hover:bg-purple-50 hover:text-purple-800 gap-1"
+            onClick={handleAiFillAll}
+            disabled={aiOpen || bindings.length === 0}
+          >
+            <Sparkles className="h-4 w-4" />
+            {aiOpen ? 'AI 填充中...' : 'AI 辅助编写'}
           </Button>
-          <Button onClick={onSave} className="gap-1 bg-purple-600 hover:bg-purple-700">
-            <Save className="h-4 w-4" /> 保存岗位
-          </Button>
+
         </div>
       </div>
 
@@ -83,10 +158,10 @@ export function Step3ResultTable({ position, onPrev, onSave }: Step3ResultTableP
               <Table>
                 <TableHeader>
                   <TableRow className="bg-slate-50">
-                    <TableHead className="w-[140px]">能力域名称</TableHead>
-                    <TableHead className="w-[180px]">能力点名称</TableHead>
-                    <TableHead className="w-[100px]">能力属性</TableHead>
-                    <TableHead className="w-[100px]">掌握程度</TableHead>
+                    <TableHead className="w-[120px]">能力域名称</TableHead>
+                    <TableHead className="w-[160px]">能力点名称</TableHead>
+                    <TableHead className="w-[80px]">能力属性</TableHead>
+                    <TableHead className="w-[120px]">掌握程度</TableHead>
                     <TableHead>胜任标准描述</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -112,15 +187,32 @@ export function Step3ResultTable({ position, onPrev, onSave }: Step3ResultTableP
                             )}
                             <TableCell className="font-medium text-sm">{binding.name}</TableCell>
                             <TableCell>
-                              <span className="text-xs text-gray-700">技能</span>
-                            </TableCell>
-                            <TableCell>
-                              <span className="text-xs font-medium text-gray-800">
-                                {COMPETENCY_LEVEL_LABELS[binding.level]}
+                              <span className="text-xs text-gray-700">
+                                {(binding.attributes || [])[0] || '-'}
                               </span>
                             </TableCell>
-                            <TableCell className="text-sm text-gray-600 max-w-md">
-                              <p className="line-clamp-2">{binding.rubricDescription || '-'}</p>
+                            <TableCell>
+                              <Select
+                                value={binding.level}
+                                onValueChange={(v) => handleUpdateBinding(binding.id, { level: v as CompetencyLevel })}
+                              >
+                                <SelectTrigger className="h-7 text-xs w-[100px]">
+                                  <SelectValue placeholder="请选择" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {COMPETENCY_LEVELS.map((l) => (
+                                    <SelectItem key={l.value} value={l.value}>{l.label}</SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </TableCell>
+                            <TableCell className="text-sm text-gray-600 min-w-[240px]">
+                              <Input
+                                value={binding.rubricDescription}
+                                onChange={(e) => handleUpdateBinding(binding.id, { rubricDescription: e.target.value })}
+                                placeholder="请输入胜任标准描述..."
+                                className="h-7 text-xs"
+                              />
                             </TableCell>
                           </TableRow>
                         )
@@ -134,6 +226,16 @@ export function Step3ResultTable({ position, onPrev, onSave }: Step3ResultTableP
           )}
         </CardContent>
       </Card>
+
+      <AiProgressDialog
+        open={aiOpen}
+        onOpenChange={setAiOpen}
+        title="AI 辅助编写"
+        description="大模型正在为所有能力点生成掌握程度与胜任标准描述"
+        steps={['分析能力点特征', '生成掌握程度与胜任标准']}
+        currentStep={aiStep}
+        progress={aiProgress}
+      />
     </div>
   )
 }
