@@ -23,7 +23,7 @@ import {
   ArrowUpFromLine,
 } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { useState, useMemo, useEffect } from "react"
+import { useState, useMemo, useEffect, useRef, useCallback } from "react"
 import { PositionList } from "@/components/positions/position-list"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -87,6 +87,12 @@ export default function PositionsPage() {
   const [isExportDialogOpen, setIsExportDialogOpen] = useState(false)
   const [isBatchMoveDialogOpen, setIsBatchMoveDialogOpen] = useState(false)
   const [moveTargetBatchId, setMoveTargetBatchId] = useState("")
+
+  // 导入岗位相关状态
+  const [importFile, setImportFile] = useState<File | null>(null)
+  const [importError, setImportError] = useState<string | null>(null)
+  const [isImporting, setIsImporting] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [isCloneRenameDialogOpen, setIsCloneRenameDialogOpen] = useState(false)
   const [cloneRenameValue, setCloneRenameValue] = useState("")
@@ -353,6 +359,136 @@ export default function PositionsPage() {
   const handleCreate = () => {
     router.push('/ai-assisted_2/positions/new')
   }
+
+  // 导入岗位：等级映射
+  const parseCompetencyLevel = (levelStr: string): string => {
+    if (!levelStr) return 'understand'
+    if (levelStr.includes('L1') || levelStr.includes('了解')) return 'understand'
+    if (levelStr.includes('L2') || levelStr.includes('熟练')) return 'comprehend'
+    if (levelStr.includes('L3') || levelStr.includes('掌握')) return 'master'
+    if (levelStr.includes('L4') || levelStr.includes('精通')) return 'proficient'
+    if (levelStr.includes('L5') || levelStr.includes('专家')) return 'expert'
+    return 'understand'
+  }
+
+  // 导入岗位：将上传的 JSON 对象转换为 Position 结构
+  const convertImportToPosition = useCallback((raw: any): Omit<Position, 'id' | 'createdAt' | 'updatedAt'> => {
+    const makeId = (prefix: string) => `${prefix}-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
+
+    const responsibilities = (raw.responsibilities || []).map((r: any, idx: number) => ({
+      id: makeId(`resp-${idx}`),
+      name: r.name || '',
+      description: '',
+    }))
+
+    const requirements = (raw.requirements || []).map((r: any) => r.name || '').filter(Boolean)
+
+    const certificates = (raw.certificates || []).map((c: any, idx: number) => ({
+      id: makeId(`cert-${idx}`),
+      name: c.name || '',
+      description: c.description || '',
+    }))
+
+    const competencyConfig = (raw.competencyConfig || []).map((c: any, idx: number) => ({
+      id: makeId(`comp-${idx}`),
+      abilityId: '',
+      abilityName: c.abilityName || '',
+      level: parseCompetencyLevel(c.level || '') as any,
+      ruleDescription: c.ruleDescription || '',
+      weight: 0,
+    }))
+
+    const abilityBindings = (raw.abilityBindings || []).map((b: any, idx: number) => ({
+      id: makeId(`bind-${idx}`),
+      responsibilityId: '',
+      source: 'custom' as const,
+      name: b.name || '',
+      category: '',
+      level: 'understand' as any,
+      rubricDescription: '',
+      attributes: b.attributes || [],
+      domain: b.domain || '',
+    }))
+
+    const abilityDomains = (raw.abilityDomains || []).map((d: any, idx: number) => ({
+      id: makeId(`domain-${idx}`),
+      name: d.name || '',
+      description: '',
+      bindingIds: [],
+    }))
+
+    return {
+      batchId: '',
+      version: 'v1',
+      status: 'draft',
+      name: raw.name || '',
+      shortName: raw.shortName || '',
+      industry: raw.industry || '',
+      majors: raw.majors || [],
+      salaryRange: raw.salaryRange || [0, 0],
+      coverImage: raw.coverImage || '',
+      description: raw.description || '',
+      responsibilities,
+      requirements,
+      careerPath: {
+        horizontal: raw.careerPath?.horizontal || [],
+        vertical: raw.careerPath?.vertical || [],
+      },
+      certificates,
+      abilityModel: { nodes: [], edges: [] },
+      abilityBindings,
+      abilityDomains,
+      competencyConfig,
+      createdBy: CURRENT_USER_ID,
+      collaborators: [],
+      favoriteCount: 0,
+    }
+  }, [])
+
+  // 导入岗位：处理文件选择
+  const handleImportFileSelect = useCallback((files: FileList | null) => {
+    if (!files || files.length === 0) return
+    const file = files[0]
+    if (!file.name.endsWith('.json') && file.type !== 'application/json') {
+      setImportError('请上传 JSON 格式的文件')
+      setImportFile(null)
+      return
+    }
+    setImportError(null)
+    setImportFile(file)
+  }, [])
+
+  // 导入岗位：处理拖拽
+  const handleImportDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    handleImportFileSelect(e.dataTransfer.files)
+  }, [handleImportFileSelect])
+
+  // 导入岗位：执行导入
+  const handleImport = useCallback(async () => {
+    if (!importFile) return
+    setIsImporting(true)
+    setImportError(null)
+    try {
+      const text = await importFile.text()
+      const data = JSON.parse(text)
+      const rawArray = Array.isArray(data) ? data : [data]
+      let successCount = 0
+      for (const raw of rawArray) {
+        if (!raw || typeof raw !== 'object') continue
+        const positionData = convertImportToPosition(raw)
+        addPosition(positionData)
+        successCount++
+      }
+      alert(`导入完成，成功创建 ${successCount} 个岗位`)
+      setIsImportDialogOpen(false)
+      setImportFile(null)
+    } catch (err: any) {
+      setImportError('文件解析失败：' + (err?.message || '未知错误'))
+    } finally {
+      setIsImporting(false)
+    }
+  }, [importFile, convertImportToPosition, addPosition])
 
   return (
     <div className="space-y-6">
@@ -791,24 +927,84 @@ export default function PositionsPage() {
       )}
 
       {/* Import Dialog */}
-      <Dialog open={isImportDialogOpen} onOpenChange={setIsImportDialogOpen}>
-        <DialogContent>
+      <Dialog open={isImportDialogOpen} onOpenChange={(open) => {
+        setIsImportDialogOpen(open)
+        if (!open) {
+          setImportFile(null)
+          setImportError(null)
+        }
+      }}>
+        <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle>导入岗位</DialogTitle>
-            <DialogDescription>上传 Excel 或 CSV 文件批量导入岗位数据</DialogDescription>
+            <DialogDescription>上传 JSON 文件批量导入岗位数据</DialogDescription>
           </DialogHeader>
-          <div className="py-8">
-            <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
-              <Upload className="h-10 w-10 mx-auto text-muted-foreground mb-4" />
-              <p className="text-sm text-muted-foreground mb-2">
-                拖拽文件到此处，或点击选择文件
-              </p>
-              <Button variant="outline" size="sm">选择文件</Button>
-            </div>
+          <div className="py-4 space-y-4">
+            {!importFile ? (
+              <div
+                onDrop={handleImportDrop}
+                onDragOver={(e) => e.preventDefault()}
+                onClick={() => fileInputRef.current?.click()}
+                className="border-2 border-dashed border-border rounded-lg p-8 text-center cursor-pointer hover:bg-muted/50 transition-colors"
+              >
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".json,application/json"
+                  className="hidden"
+                  onChange={(e) => handleImportFileSelect(e.target.files)}
+                />
+                <Upload className="h-10 w-10 mx-auto text-muted-foreground mb-4" />
+                <p className="text-sm text-muted-foreground mb-2">
+                  拖拽文件到此处，或点击选择文件
+                </p>
+                <p className="text-xs text-muted-foreground">仅支持 .json 格式</p>
+              </div>
+            ) : (
+              <div className="rounded-lg border bg-muted/30 p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary/10">
+                      <Upload className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium">{importFile.name}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {(importFile.size / 1024).toFixed(1)} KB
+                      </p>
+                    </div>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => { setImportFile(null); setImportError(null) }}
+                    disabled={isImporting}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            )}
+            {importError && (
+              <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
+                {importError}
+              </div>
+            )}
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsImportDialogOpen(false)}>取消</Button>
-            <Button onClick={() => { alert("导入功能演示：文件已上传，正在解析..."); setIsImportDialogOpen(false) }}>开始导入</Button>
+            <Button
+              variant="outline"
+              onClick={() => setIsImportDialogOpen(false)}
+              disabled={isImporting}
+            >
+              取消
+            </Button>
+            <Button
+              onClick={handleImport}
+              disabled={!importFile || isImporting}
+            >
+              {isImporting ? '导入中...' : '开始导入'}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
