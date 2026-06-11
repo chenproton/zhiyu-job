@@ -61,7 +61,7 @@
         /* Page Header Card */
         .page-header-card { background: var(--bg-white); border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow-sm); margin-bottom: 24px; }
         .job-header { display: flex; gap: 24px; }
-        .job-cover { width: 280px; height: 180px; border-radius: var(--radius-md); background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; overflow: hidden; }
+        .job-cover { width: 280px; min-height: 180px; border-radius: var(--radius-md); background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; overflow: hidden; align-self: stretch; }
         .job-cover-text { color: white; font-size: 48px; font-weight: bold; opacity: 0.3; }
         .job-code { position: absolute; bottom: 12px; right: 12px; background: rgba(0,0,0,0.5); color: white; padding: 4px 12px; border-radius: var(--radius-sm); font-size: 12px; }
         .job-info { flex: 1; position: relative; }
@@ -76,7 +76,7 @@
         .tag.dept { background: #e6f4ff; border-color: #91caff; color: #0958d9; }
         
         /* 共建单位外显 */
-        .job-co-builders { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
+        .job-co-builders { display: flex; align-items: center; flex-wrap: nowrap; gap: 10px; margin-bottom: 16px; }
         .co-builder-tag { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; background: #fafafa; border: 1px solid #e0e0e0; border-radius: 20px; font-size: 13px; color: var(--text-primary); }
         
         .job-meta { display: flex; flex-wrap: wrap; gap: 24px; margin-bottom: 16px; }
@@ -115,9 +115,17 @@
         .career-arrow { color: var(--text-tertiary); font-size: 20px; }
 
         /* Tab 2: Tasks (Job Duties) */
-        .requirements-section { background: #fafafa; border: 1px solid #f0f0f0; border-radius: var(--radius-md); padding: 20px; margin-bottom: 24px; }
-        .requirements-section h4 { color: var(--text-primary); font-size: 15px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-        .requirements-text { color: var(--text-secondary); font-size: 14px; line-height: 1.8; white-space: pre-line; }
+        .requirements-section { background: #fff; border: 1px solid #f0f0f0; border-radius: var(--radius-lg); padding: 24px; margin-bottom: 24px; }
+        .requirements-section h4 { color: var(--text-primary); font-size: 16px; font-weight: 500; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .requirements-list { list-style: none; padding: 0; margin: 0; }
+        .requirements-list li { color: var(--text-secondary); font-size: 14px; line-height: 1.8; padding: 10px 0; padding-left: 28px; position: relative; border-bottom: 1px solid #f5f5f5; }
+        .requirements-list li:last-child { border-bottom: none; }
+        .requirements-list li::before { content: attr(data-index); position: absolute; left: 0; top: 10px; width: 18px; height: 18px; background: #f0f0f0; color: #999; border-radius: 50%; font-size: 11px; display: flex; align-items: center; justify-content: center; font-weight: 500; }
+        .task-table { width: 100%; border-collapse: collapse; }
+        .task-table th, .task-table td { padding: 16px 16px; text-align: left; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
+        .task-table th { background: #fafafa; font-weight: 500; color: var(--text-secondary); }
+        .task-table tr:hover { background: #fafafa; }
+        .task-id { color: var(--text-tertiary); font-size: 12px; font-weight: 500; }
         .task-table { width: 100%; border-collapse: collapse; }
         .task-table th, .task-table td { padding: 16px 16px; text-align: left; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
         .task-table th { background: #fafafa; font-weight: 500; color: var(--text-secondary); }
@@ -246,8 +254,63 @@
         /* Specific Modals */
         #dutyAbilitiesModalOverlay { z-index: 1500; } /* Lower than KG modal */
         #kgModalOverlay { z-index: 2500; } /* Highest */
-        .duty-ability-list .ability-point { padding: 12px; margin: 0; border: 1px solid #f0f0f0; margin-bottom: 8px; border-radius: var(--radius-md); }
-        .duty-ability-list .ability-point:hover { border-color: var(--primary-color); background: #fafafa; }
+        
+        /* 职责能力点弹窗 - 左右布局 */
+        .duty-ability-layout { display: flex; height: 480px; }
+        .duty-ability-sidebar { width: 240px; flex-shrink: 0; background: #fafafa; border-right: 1px solid #f0f0f0; padding: 16px; overflow-y: auto; }
+        .duty-ability-sidebar::-webkit-scrollbar { width: 4px; }
+        .duty-ability-sidebar::-webkit-scrollbar-thumb { background: #d9d9d9; border-radius: 2px; }
+        .duty-ability-item { display: flex; align-items: center; gap: 10px; padding: 12px; border-radius: var(--radius-md); cursor: pointer; transition: all 0.2s; margin-bottom: 8px; border: 1px solid transparent; }
+        .duty-ability-item:hover { background: white; border-color: #d9d9d9; }
+        .duty-ability-item.active { background: var(--primary-bg); border-color: var(--primary-color); }
+        .duty-ability-item.active .ability-item-name { color: var(--primary-color); font-weight: 500; }
+        .ability-item-icon { width: 32px; height: 32px; border-radius: 50%; background: white; color: var(--primary-color); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; border: 1px solid #e0e0e0; }
+        .duty-ability-item.active .ability-item-icon { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+        .ability-item-name { font-size: 14px; color: var(--text-primary); }
+        .ability-item-code { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; }
+        .duty-ability-detail { flex: 1; padding: 24px; overflow-y: auto; background: white; }
+        .duty-ability-detail::-webkit-scrollbar { width: 4px; }
+        .duty-ability-detail::-webkit-scrollbar-thumb { background: #d9d9d9; border-radius: 2px; }
+        .ability-detail-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid #f0f0f0; }
+        .ability-detail-badge { padding: 4px 12px; background: #f6ffed; color: #52c41a; border: 1px solid #b7eb8f; border-radius: 20px; font-size: 12px; }
+        .ability-detail-title { font-size: 18px; font-weight: 600; color: var(--text-primary); }
+        .ability-detail-desc { color: var(--text-primary); line-height: 1.8; margin-bottom: 20px; }
+        .ability-detail-section { background: #fafafa; border-radius: var(--radius-md); padding: 16px; border: 1px solid #f0f0f0; }
+        .ability-detail-section h5 { color: var(--text-primary); font-size: 14px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .ability-detail-section ul { padding-left: 20px; color: #555; font-size: 13px; line-height: 1.8; }
+        
+        /* 证书卡片 */
+        .cert-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+        .cert-card-item { background: white; border-radius: var(--radius-lg); border: 1px solid #f0f0f0; overflow: hidden; transition: all 0.3s; }
+        .cert-card-item:hover { box-shadow: var(--shadow-md); border-color: #d9d9d9; }
+        .cert-card-cover { height: 160px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; position: relative; }
+        .cert-card-cover i { font-size: 56px; opacity: 0.4; }
+        .cert-card-body { padding: 20px; }
+        .cert-card-name { font-size: 16px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; }
+        .cert-card-org { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; }
+        .cert-card-org i { color: var(--text-tertiary); }
+        .cert-card-desc-wrap { position: relative; margin-bottom: 12px; }
+        .cert-card-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.7; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .cert-card-desc.expanded { -webkit-line-clamp: unset; display: block; }
+        .cert-desc-toggle { 
+            font-size: 12px; 
+            color: var(--primary-color); 
+            cursor: pointer; 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 4px; 
+            font-weight: 500;
+            position: absolute;
+            bottom: 2px;
+            right: 0;
+            padding-left: 20px;
+            background: linear-gradient(90deg, transparent, white 15px);
+            white-space: nowrap;
+        }
+        .cert-desc-toggle:hover { text-decoration: underline; }
+        .cert-card-link { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; background: var(--primary-bg); color: var(--primary-color); border-radius: var(--radius-sm); font-size: 13px; text-decoration: none; transition: all 0.2s; }
+        .cert-card-link:hover { background: var(--primary-color); color: white; }
+        .cert-card-link.disabled { background: #f5f5f5; color: #bfbfbf; cursor: not-allowed; pointer-events: none; }
         
         /* KG Detail Modal Specifics */
         .kg-modal-badge { font-size: 11px; padding: 2px 8px; border-radius: 12px; font-weight: normal; }
@@ -263,6 +326,124 @@
         .kg-res-info { flex: 1; }
         .kg-res-name { font-size: 13px; font-weight: 500; color: var(--text-primary); margin-bottom: 2px; }
         .kg-res-meta { font-size: 11px; color: var(--text-tertiary); }
+
+        /* ===== 岗位学习路径 ===== */
+        .learning-path-container { position: relative; }
+        .learning-path-header { text-align: center; margin-bottom: 16px; }
+        .learning-path-header h2 { font-size: 20px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+        .learning-path-header p { color: var(--text-secondary); font-size: 13px; }
+
+        /* 阶段导航 - 时间线样式 */
+        .stage-nav-wrapper { position: relative; padding: 40px 20px 50px; overflow-x: auto; overflow-y: hidden; scroll-behavior: smooth; }
+        .stage-nav-wrapper::-webkit-scrollbar { height: 6px; }
+        .stage-nav-wrapper::-webkit-scrollbar-thumb { background: #d9d9d9; border-radius: 3px; }
+        .stage-nav-track { display: flex; align-items: flex-start; gap: 0; padding: 20px 0; position: relative; min-width: max-content; }
+        
+        /* 连接线 */
+        .stage-nav-track::before {
+            content: '';
+            position: absolute;
+            top: 56px;
+            left: 80px;
+            right: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, #1677ff, #52c41a, #faad14, #eb2f96, #722ed1, #fa541c, #fadb14);
+            border-radius: 2px;
+            z-index: 0;
+        }
+        
+        .stage-nav-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: all 0.3s ease; position: relative; z-index: 1; min-width: 180px; padding: 0 24px; padding-bottom: 20px; }
+        
+        /* 阶段图标 */
+        .stage-icon { 
+            width: 72px; height: 72px; 
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; 
+            color: white; font-size: 28px;
+            margin-bottom: 16px;
+            position: relative;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        /* 底部滑轨 */
+        .stage-scroll-track {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .stage-scroll-thumb {
+            width: 20px;
+            height: 100%;
+            background: linear-gradient(90deg, #1677ff, #69b1ff);
+            border-radius: 2px;
+            transition: transform 0.3s ease;
+        }
+        
+        /* 各阶段颜色 */
+        .stage-nav-item[data-stage="0"] .stage-icon { background: linear-gradient(135deg, #1677ff, #69b1ff); }
+        .stage-nav-item[data-stage="1"] .stage-icon { background: linear-gradient(135deg, #52c41a, #73d13d); }
+        .stage-nav-item[data-stage="2"] .stage-icon { background: linear-gradient(135deg, #faad14, #ffc53d); }
+        .stage-nav-item[data-stage="3"] .stage-icon { background: linear-gradient(135deg, #eb2f96, #f759ab); }
+        .stage-nav-item[data-stage="4"] .stage-icon { background: linear-gradient(135deg, #722ed1, #b37feb); }
+        .stage-nav-item[data-stage="5"] .stage-icon { background: linear-gradient(135deg, #fa541c, #ff7a45); }
+        .stage-nav-item[data-stage="6"] .stage-icon { background: linear-gradient(135deg, #fadb14, #ffec3d); color: #666; }
+        
+        /* 起始/终点标识 */
+        .stage-nav-item.start::before,
+        .stage-nav-item.end::before {
+            content: attr(data-label);
+            position: absolute;
+            top: -28px;
+            font-size: 12px;
+            color: var(--text-tertiary);
+            white-space: nowrap;
+            font-weight: 500;
+        }
+        .stage-nav-item.start::before { left: 24px; }
+        .stage-nav-item.end::before { right: 24px; }
+        
+        .stage-label { 
+            font-size: 15px; font-weight: 600; color: var(--text-primary); 
+            text-align: center; margin-bottom: 6px; white-space: nowrap;
+        }
+        .stage-meta { 
+            font-size: 13px; color: var(--text-tertiary); text-align: center; white-space: nowrap;
+        }
+        
+        /* 当前阶段高亮 */
+        .stage-nav-item.active .stage-icon { 
+            transform: scale(1.1);
+            box-shadow: 0 6px 24px rgba(22,119,255,0.35);
+        }
+        .stage-nav-item.active .stage-label { 
+            color: var(--primary-color); font-weight: 600;
+        }
+        
+        /* 左右导航按钮 */
+        .stage-nav-arrow { 
+            position: absolute; top: 50%; transform: translateY(-50%); 
+            width: 36px; height: 36px; border-radius: 50%; 
+            background: white; border: 1px solid #e0e0e0; 
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; color: var(--text-secondary); font-size: 12px;
+            transition: all 0.2s; z-index: 10; box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .stage-nav-arrow:hover { background: var(--primary-bg); color: var(--primary-color); border-color: var(--primary-color); }
+        .stage-nav-arrow.prev { left: 0px; }
+        .stage-nav-arrow.next { right: 0px; }
+        .skill-item-icon { width: 32px; height: 32px; border-radius: 50%; background: var(--primary-bg); color: var(--primary-color); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+        .skill-item-content h4 { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+        .skill-item-content p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+        .knowledge-progress { margin-top: 20px; }
+        .progress-bar { height: 8px; background: #f0f0f0; border-radius: 4px; overflow: hidden; margin-top: 8px; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #1677ff, #69b1ff); border-radius: 4px; transition: width 0.5s ease; }
     </style>
 </head>
 <body>
@@ -311,20 +492,19 @@
                     </div>
                     
                     <div class="job-co-builders">
-                        <span style="color: var(--text-secondary); font-size: 13px;">共建单位：</span>
-                        <span class="co-builder-tag"><i class="fas fa-building" style="color:#1677ff;"></i> 河南职业技术学院</span>
-                        <span class="co-builder-tag"><i class="fas fa-industry" style="color:#52c41a;"></i> 字节跳动</span>
-                        <span class="co-builder-tag"><i class="fab fa-alipay" style="color:#1677ff;"></i> 蚂蚁集团</span>
+                        <span class="co-builder-tag"><i class="fas fa-user" style="color:#1677ff;"></i> 创建人：杭州知与未来科技有限公司</span>
+                        <span class="co-builder-tag"><i class="fas fa-users" style="color:#52c41a;"></i> 共建人：知与未来</span>
                     </div>
 
                     <div class="job-meta">
                         <div class="meta-item"><i class="fas fa-money-bill-wave"></i><span class="salary">8K-15K</span></div>
-                        <div class="meta-item"><i class="fas fa-user"></i><span>赵威 | 杭州知与未来科技有限公司</span></div>
-                        <div class="meta-item"><i class="fas fa-calendar"></i><span>2024-12-20 创建</span></div>
-                        <div class="meta-item"><i class="fas fa-edit"></i><span>2025-01-10 更新</span></div>
+                        <div class="meta-item"><i class="fas fa-calendar"></i><span>创建时间：2024-12-20</span></div>
+                        <div class="meta-item"><i class="fas fa-edit"></i><span>更新时间：2025-01-10</span></div>
                     </div>
                     <div class="job-actions">
-                        <button class="btn primary lg"><i class="fas fa-play-circle"></i> 开始学习</button>
+                        <button class="btn primary lg" onclick="window.location.href='learning-route.html'">
+                            <i class="fas fa-play-circle"></i> 开始学习
+                        </button>
                         <button class="btn" id="btnLike"><i class="far fa-thumbs-up"></i> 点赞</button>
                         <button class="btn" onclick="openModal('relatedJobsModal')"><i class="fas fa-project-diagram"></i> 相关岗位 (3)</button>
                     </div>
@@ -350,6 +530,7 @@
                     <div class="tab-item" data-tab="competency">胜任标准</div>
                     <div class="tab-item" data-tab="graph">知识图谱</div>
                     <div class="tab-item" data-tab="scenes">实践场景</div>
+                    <div class="tab-item" data-tab="learning">岗位学习路径</div>
                 </div>
 
                 <div class="tab-content fade-in" id="tab-overview">
@@ -378,17 +559,12 @@
                 </div>
 
                 <div class="tab-content" id="tab-tasks" style="display: none;">
-                    <div class="requirements-section">
-                        <h4><i class="fas fa-user-check" style="color: var(--primary-color);"></i> 任职要求</h4>
-                        <div class="requirements-text">1. 计算机相关专业本科及以上学历，具备3年以上前端开发经验，拥有扎实的计算机基础知识；
-2. 精通HTML5、CSS3、JavaScript等前端核心技术，能够独立完成高保真页面还原与复杂交互开发；
-3. 深入理解并熟练应用至少一种主流前端框架（如Vue3或React），掌握其核心原理、状态管理（如Pinia/Redux）及前端路由机制；
-4. 熟练使用现代前端工程化构建工具（如Vite、Webpack），具备前端性能调优、代码规范落地及复杂线上问题排查能力；
-5. 熟悉HTTP网络协议与RESTful API设计标准，能够与后端团队高效进行接口联调与数据交互；
-6. 熟练掌握Git版本控制工具及主流分支管理策略，具备良好的代码编写习惯与技术文档沉淀能力；
-7. 具备较强的业务理解能力、逻辑思维能力及团队协作精神，能够主导或独立完成中大型复杂项目的前端架构设计与落地实施。</div>
+                    <div style="margin-bottom: 16px;">
+                        <h4 style="font-size: 16px; font-weight: 500; color: var(--text-primary); margin: 0;">
+                            <i class="fas fa-tasks" style="color: var(--primary-color); margin-right: 8px;"></i>
+                            岗位职责(<strong style="color: var(--primary-color);">6</strong>项)
+                        </h4>
                     </div>
-                    <div style="margin-bottom: 16px;"><span style="color: var(--text-secondary);">共 <strong style="color: var(--primary-color);">6</strong> 项岗位职责</span></div>
                     <table class="task-table">
                         <thead>
                             <tr>
@@ -430,32 +606,96 @@
                             </tr>
                         </tbody>
                     </table>
+                    
+                    <div style="margin-top: 24px; margin-bottom: 16px;">
+                        <h4 style="font-size: 16px; font-weight: 500; color: var(--text-primary); margin: 0;">
+                            <i class="fas fa-user-check" style="color: var(--primary-color); margin-right: 8px;"></i>
+                            任职要求(<strong style="color: var(--primary-color);">7</strong>项)
+                        </h4>
+                    </div>
+                    <div class="requirements-section">
+                        <ul class="requirements-list">
+                            <li data-index="1">计算机相关专业本科及以上学历，具备3年以上前端开发经验，拥有扎实的计算机基础知识；</li>
+                            <li data-index="2">精通HTML5、CSS3、JavaScript等前端核心技术，能够独立完成高保真页面还原与复杂交互开发；</li>
+                            <li data-index="3">深入理解并熟练应用至少一种主流前端框架（如Vue3或React），掌握其核心原理、状态管理（如Pinia/Redux）及前端路由机制；</li>
+                            <li data-index="4">熟练使用现代前端工程化构建工具（如Vite、Webpack），具备前端性能调优、代码规范落地及复杂线上问题排查能力；</li>
+                            <li data-index="5">熟悉HTTP网络协议与RESTful API设计标准，能够与后端团队高效进行接口联调与数据交互；</li>
+                            <li data-index="6">熟练掌握Git版本控制工具及主流分支管理策略，具备良好的代码编写习惯与技术文档沉淀能力；</li>
+                            <li data-index="7">具备较强的业务理解能力、逻辑思维能力及团队协作精神，能够主导或独立完成中大型复杂项目的前端架构设计与落地实施。</li>
+                        </ul>
+                    </div>
                 </div>
 
                 <div class="tab-content" id="tab-certs" style="display: none;">
-                    <div style="margin-bottom: 16px;"><span style="color: var(--text-secondary);">共涉及 <strong style="color: var(--primary-color);">3</strong> 个相关证书</span></div>
-                    <div class="cert-card">
-                        <div class="cert-image"><i class="fas fa-certificate" style="font-size: 32px;"></i></div>
-                        <div class="cert-info">
-                            <div class="cert-name">Web前端开发职业技能等级证书（中级）</div>
-                            <div class="cert-desc">由工业和信息化部教育与考试中心颁发，是国家认可的职业技能等级证书，涵盖HTML5、CSS3、JavaScript、Vue等前端核心技术能力认证。</div>
-                            <a href="#" class="cert-link"><i class="fas fa-external-link-alt"></i> 查看证书详情</a>
-                        </div>
+                    <div style="margin-bottom: 20px;">
+                        <span style="color: var(--text-secondary);">共涉及 <strong style="color: var(--primary-color);">3</strong> 个相关证书</span>
                     </div>
-                    <div class="cert-card">
-                        <div class="cert-image"><i class="fas fa-certificate" style="font-size: 32px;"></i></div>
-                        <div class="cert-info">
-                            <div class="cert-name">1+X Web前端开发职业技能等级证书</div>
-                            <div class="cert-desc">教育部批准的职业教育培训评价组织颁发的职业技能等级证书，分为初级、中级、高级三个等级。</div>
-                            <a href="#" class="cert-link"><i class="fas fa-external-link-alt"></i> 查看证书详情</a>
+                    <div class="cert-grid">
+                        <div class="cert-card-item">
+                            <div class="cert-card-cover">
+                                <i class="fas fa-certificate"></i>
+                            </div>
+                            <div class="cert-card-body">
+                                <div class="cert-card-name">Web前端开发职业技能等级证书（中级）</div>
+                                <div class="cert-card-org">
+                                    <i class="fas fa-building"></i> 工业和信息化部教育与考试中心
+                                </div>
+                                <div class="cert-card-desc-wrap">
+                                    <div class="cert-card-desc" id="certDesc0">
+                                        国家认可的职业技能等级证书，涵盖HTML5、CSS3、JavaScript、Vue等前端核心技术能力认证，是前端开发人员专业能力的重要证明。
+                                    </div>
+                                    <span class="cert-desc-toggle" onclick="toggleCertDesc('certDesc0', this)" data-expanded="false">
+                                        <i class="fas fa-chevron-down"></i> <span>展示</span>
+                                    </span>
+                                </div>
+                                <a href="#" class="cert-card-link">
+                                    <i class="fas fa-external-link-alt"></i> 查看证书详情
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                    <div class="cert-card">
-                        <div class="cert-image"><i class="fas fa-certificate" style="font-size: 32px;"></i></div>
-                        <div class="cert-info">
-                            <div class="cert-name">阿里云前端开发专项认证</div>
-                            <div class="cert-desc">阿里云官方认证的前端开发能力证书，涵盖现代前端开发技术栈和阿里云前端相关服务的使用能力。</div>
-                            <a href="https://edu.aliyun.com" class="cert-link" target="_blank"><i class="fas fa-external-link-alt"></i> https://edu.aliyun.com</a>
+                        <div class="cert-card-item">
+                            <div class="cert-card-cover" style="background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%);">
+                                <i class="fas fa-certificate"></i>
+                            </div>
+                            <div class="cert-card-body">
+                                <div class="cert-card-name">1+X Web前端开发职业技能等级证书</div>
+                                <div class="cert-card-org">
+                                    <i class="fas fa-building"></i> 教育部职业教育培训评价组织
+                                </div>
+                                <div class="cert-card-desc-wrap">
+                                    <div class="cert-card-desc" id="certDesc1">
+                                        教育部批准的职业教育培训评价组织颁发的职业技能等级证书，分为初级、中级、高级三个等级，是职业技能水平的重要凭证。
+                                    </div>
+                                    <span class="cert-desc-toggle" onclick="toggleCertDesc('certDesc1', this)" data-expanded="false">
+                                        <i class="fas fa-chevron-down"></i> <span>展示</span>
+                                    </span>
+                                </div>
+                                <a href="#" class="cert-card-link">
+                                    <i class="fas fa-external-link-alt"></i> 查看证书详情
+                                </a>
+                            </div>
+                        </div>
+                        <div class="cert-card-item">
+                            <div class="cert-card-cover" style="background: linear-gradient(135deg, #faad14 0%, #ffc53d 100%);">
+                                <i class="fas fa-certificate"></i>
+                            </div>
+                            <div class="cert-card-body">
+                                <div class="cert-card-name">阿里云前端开发专项认证</div>
+                                <div class="cert-card-org">
+                                    <i class="fas fa-building"></i> 阿里云官方认证
+                                </div>
+                                <div class="cert-card-desc-wrap">
+                                    <div class="cert-card-desc" id="certDesc2">
+                                        阿里云官方认证的前端开发能力证书，涵盖现代前端开发技术栈和阿里云前端相关服务的使用能力，证明开发者具备云原生开发技能。
+                                    </div>
+                                    <span class="cert-desc-toggle" onclick="toggleCertDesc('certDesc2', this)" data-expanded="false">
+                                        <i class="fas fa-chevron-down"></i> <span>展示</span>
+                                    </span>
+                                </div>
+                                <a href="https://edu.aliyun.com" class="cert-card-link" target="_blank">
+                                    <i class="fas fa-external-link-alt"></i> https://edu.aliyun.com
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -617,7 +857,7 @@
                             <div class="scene-header" onclick="toggleScene(this)">
                                 <div class="scene-header-left">
                                     <div class="scene-icon"><i class="fas fa-laptop-code"></i></div>
-                                    <div><div class="scene-name">企业官网开发</div><div class="scene-meta">4个任务 · 8课时 · 关联6个能力点</div></div>
+                                    <div><div class="scene-name">基础学习</div><div class="scene-meta">4个任务 · 8课时 · 关联6个能力点</div></div>
                                 </div>
                                 <div class="scene-actions">
                                     <button class="btn primary" style="padding: 6px 16px; font-size: 13px;"><i class="fas fa-play"></i> 去学习</button>
@@ -766,6 +1006,30 @@
                     </div>
                 </div>
 
+                <div class="tab-content" id="tab-learning" style="display: none;">
+                    <div class="learning-path-container">
+                        <div class="learning-path-header">
+                            <h2><i class="fas fa-route" style="color: var(--primary-color); margin-right: 10px;"></i>前端开发工程师学习路径</h2>
+                            <p>沿着学习路线，从「起点站」出发，逐步通关 6 大实践场景，抵达全栈实战「终点站」</p>
+                        </div>
+
+                        <div class="stage-nav-wrapper">
+                            <div class="stage-nav-arrow prev" onclick="navigateStage(-1)"><i class="fas fa-chevron-left"></i></div>
+                            <div class="stage-nav-arrow next" onclick="navigateStage(1)"><i class="fas fa-chevron-right"></i></div>
+                            
+                            <div class="stage-nav-track" id="stageNavTrack">
+                                <!-- JS动态渲染 -->
+                            </div>
+                            
+                            <div class="stage-scroll-track">
+                                <div class="stage-scroll-thumb" id="stageScrollThumb"></div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
             </div>
         </div>
     </main>
@@ -794,7 +1058,7 @@
     </div>
 
     <div class="modal-overlay" id="dutyAbilitiesModalOverlay">
-        <div class="modal-box" style="width: 480px;">
+        <div class="modal-box" style="width: 700px; max-height: 80vh; overflow: hidden;">
             <div class="modal-header">
                 <div>
                     <div class="modal-title">职责关联能力点</div>
@@ -802,9 +1066,11 @@
                 </div>
                 <i class="fas fa-times modal-close" onclick="closeModal('dutyAbilitiesModal')"></i>
             </div>
-            <div class="modal-body">
-                <div class="duty-ability-list" id="dutyAbilitiesList">
-                    </div>
+            <div class="modal-body" style="padding: 0; overflow: hidden;">
+                <div class="duty-ability-layout" id="dutyAbilitiesLayout">
+                    <div class="duty-ability-sidebar" id="dutyAbilitiesSidebar"></div>
+                    <div class="duty-ability-detail" id="dutyAbilitiesDetail"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -910,21 +1176,64 @@
         };
 
         function showDutyAbilities(dutyName) {
-            const listEl = document.getElementById('dutyAbilitiesList');
             document.getElementById('dutyModalSub').textContent = `正在查看：${dutyName}`;
             const abilities = DUTY_ABILITY_MAP[dutyName] || [];
             
-            listEl.innerHTML = abilities.map(ab => `
-                <div class="ability-point" onclick="showKgDetailModal({name:'${ab.name}', type:'ability', id:'${ab.id}'})">
-                    <div class="ability-point-name">
-                        <i class="fas fa-cube" style="color:var(--text-tertiary);"></i> 
-                        <span>${ab.name}</span>
+            // 渲染左侧能力点列表
+            const sidebar = document.getElementById('dutyAbilitiesSidebar');
+            const detail = document.getElementById('dutyAbilitiesDetail');
+            
+            sidebar.innerHTML = abilities.map((ab, i) => `
+                <div class="duty-ability-item ${i === 0 ? 'active' : ''}" data-index="${i}" onclick="showAbilityDetail(this, '${ab.id}', '${ab.name}')">
+                    <div class="ability-item-icon"><i class="fas fa-cube"></i></div>
+                    <div>
+                        <div class="ability-item-name">${ab.name}</div>
+                        <div class="ability-item-code">${ab.id.toUpperCase().replace('A', 'AP-0')}</div>
                     </div>
-                    <div class="ability-point-type"><span class="type-tag skill">能力点</span></div>
                 </div>
             `).join('');
             
+            // 默认显示第一个能力点详情
+            if (abilities.length > 0) {
+                showAbilityDetail(sidebar.querySelector('.duty-ability-item'), abilities[0].id, abilities[0].name);
+            }
+            
             openModal('dutyAbilitiesModal');
+        }
+        
+        function showAbilityDetail(el, abId, abName) {
+            // 更新激活状态
+            document.querySelectorAll('.duty-ability-item').forEach(item => item.classList.remove('active'));
+            el.classList.add('active');
+            
+            // 渲染右侧详情
+            const detail = document.getElementById('dutyAbilitiesDetail');
+            detail.innerHTML = `
+                <div class="ability-detail-header">
+                    <div>
+                        <div class="ability-detail-title">${abName}</div>
+                        <div style="margin-top:4px;"><span class="ability-detail-badge"><i class="fas fa-check-circle"></i> 能力点 ${abId.toUpperCase().replace('A', 'AP-0')}</span></div>
+                    </div>
+                </div>
+                <div class="ability-detail-desc">
+                    <p>该能力要求掌握在现代前端工程体系中，如何基于 <strong>${abName}</strong> 的核心原理，设计高可用、高复用性的解决方案。能够独立排查并解决业务边界问题。</p>
+                </div>
+                <div class="ability-detail-section">
+                    <h5><i class="fas fa-star" style="color:#52c41a;"></i> 胜任要求参考</h5>
+                    <ul>
+                        <li>能独立主导完成中等复杂度以上的功能模块设计。</li>
+                        <li>产出代码符合团队前端规范与最佳实践指南。</li>
+                        <li>具备较强的线上排错与性能调优能力。</li>
+                    </ul>
+                </div>
+            `;
+            
+            // 淡入动画
+            detail.style.opacity = '0';
+            setTimeout(() => {
+                detail.style.transition = 'opacity 0.3s';
+                detail.style.opacity = '1';
+            }, 10);
         }
 
         // ================= 统一能力详情弹窗 =================
@@ -1219,6 +1528,182 @@
             document.getElementById('kgZoomOut').onclick=()=>kgSvgSel.transition().call(kgZoomBehavior.scaleBy,0.75);
             document.getElementById('kgReset').onclick=()=>kgSvgSel.transition().duration(600).call(kgZoomBehavior.transform, d3.zoomIdentity.translate(W/2,H/2).scale(0.7).translate(-W/2,-H/2));
         }
+
+        // ================= 岗位学习路径 =================
+        const learningPathData = [
+            {
+                name: '基础学习',
+                stage: '第1站',
+                icon: 'fa-flag',
+                tasks: 4,
+                hours: 8,
+                label: 'START · 起点'
+            },
+            {
+                name: '电商后台管理系统',
+                stage: '第2站',
+                icon: 'fa-shopping-cart',
+                tasks: 6,
+                hours: 12,
+                label: '第2站'
+            },
+            {
+                name: '移动端H5活动页',
+                stage: '第3站',
+                icon: 'fa-mobile-alt',
+                tasks: 4,
+                hours: 6,
+                label: '第3站'
+            },
+            {
+                name: '数据可视化大屏',
+                stage: '第4站',
+                icon: 'fa-chart-line',
+                tasks: 4,
+                hours: 8,
+                label: '第4站'
+            },
+            {
+                name: '前端工程化实践',
+                stage: '第5站',
+                icon: 'fa-code-branch',
+                tasks: 3,
+                hours: 6,
+                label: '第5站'
+            },
+            {
+                name: '团队协作开发实战',
+                stage: '第6站',
+                icon: 'fa-users-cog',
+                tasks: 3,
+                hours: 8,
+                label: '第6站'
+            },
+            {
+                name: '全栈实战',
+                stage: '终点站',
+                icon: 'fa-trophy',
+                tasks: 1,
+                hours: 0,
+                label: 'GOAL · 终点'
+            }
+        ];
+
+        let currentStageIndex = 0;
+
+        function showLearningStage(index) {
+            currentStageIndex = index;
+            
+            const track = document.getElementById('stageNavTrack');
+            
+            // 渲染所有阶段
+            let html = '';
+            learningPathData.forEach((item, i) => {
+                const isStart = i === 0;
+                const isEnd = i === learningPathData.length - 1;
+                const isActive = i === index;
+                const extraClass = isActive ? 'active' : '';
+                const labelAttr = isStart ? 'START · 起点' : (isEnd ? 'GOAL · 终点' : `第${i}站`);
+                const metaText = isEnd ? '达成认证' : `${item.tasks}任务 · ${item.hours}课时`;
+                
+                html += `
+                    <div class="stage-nav-item ${extraClass} ${isStart ? 'start' : ''} ${isEnd ? 'end' : ''}" data-stage="${i}" data-label="${labelAttr}" onclick="setActiveStage(${i})">
+                        <div class="stage-icon"><i class="fas ${item.icon}"></i></div>
+                        <div class="stage-label">${item.name}</div>
+                        <div class="stage-meta">${metaText}</div>
+                    </div>
+                `;
+            });
+            
+            track.innerHTML = html;
+        }
+        
+        function setActiveStage(index) {
+            currentStageIndex = index;
+            
+            // 更新激活状态
+            document.querySelectorAll('.stage-nav-item').forEach((item, i) => {
+                if (i === index) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+            
+            // 更新滑轨位置
+            updateScrollThumb();
+        }
+        
+        function updateScrollThumb() {
+            const wrapper = document.querySelector('.stage-nav-wrapper');
+            const thumb = document.getElementById('stageScrollThumb');
+            if (!wrapper || !thumb) return;
+            
+            const scrollLeft = wrapper.scrollLeft;
+            const maxScroll = wrapper.scrollWidth - wrapper.clientWidth;
+            const percentage = maxScroll > 0 ? scrollLeft / maxScroll : 0;
+            const thumbWidth = 20;
+            const trackWidth = 40;
+            const maxTranslate = trackWidth - thumbWidth;
+            thumb.style.transform = `translateX(${percentage * maxTranslate}px)`;
+        }
+        
+        // 监听滚动事件
+        document.addEventListener('DOMContentLoaded', function() {
+            const wrapper = document.querySelector('.stage-nav-wrapper');
+            if (wrapper) {
+                wrapper.addEventListener('scroll', updateScrollThumb);
+            }
+        });
+
+        function navigateStage(direction) {
+            const newIndex = currentStageIndex + direction;
+            if (newIndex >= 0 && newIndex < learningPathData.length) {
+                setActiveStage(newIndex);
+                // 滚动到新的激活项
+                const track = document.getElementById('stageNavTrack');
+                const items = track.querySelectorAll('.stage-nav-item');
+                if (items[newIndex]) {
+                    items[newIndex].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                }
+            }
+        }
+
+        // 证书描述展开/收起
+        function toggleCertDesc(descId, btn) {
+            const desc = document.getElementById(descId);
+            const isExpanded = btn.getAttribute('data-expanded') === 'true';
+            const icon = btn.querySelector('i');
+            const text = btn.querySelector('span');
+            const wrap = desc.parentElement;
+            
+            if (isExpanded) {
+                // 收起：恢复3行显示，按钮回到右下角
+                desc.classList.remove('expanded');
+                btn.setAttribute('data-expanded', 'false');
+                icon.className = 'fas fa-chevron-down';
+                text.textContent = '展示';
+                wrap.style.marginBottom = '12px';
+                btn.style.position = 'absolute';
+                btn.style.right = '0';
+                btn.style.bottom = '2px';
+                btn.style.paddingLeft = '20px';
+                btn.style.background = 'linear-gradient(90deg, transparent, white 15px)';
+            } else {
+                // 展开：显示完整内容，按钮跟在文字后面
+                desc.classList.add('expanded');
+                btn.setAttribute('data-expanded', 'true');
+                icon.className = 'fas fa-chevron-up';
+                text.textContent = '收起';
+                wrap.style.marginBottom = '8px';
+                btn.style.position = 'static';
+                btn.style.paddingLeft = '0';
+                btn.style.background = 'transparent';
+            }
+        }
+
+        // 初始化第一页
+        showLearningStage(0);
     </script>
 </body>
 </html>

@@ -36,30 +36,12 @@ export const careerNavigationConfig: PlatformNavigationConfig = {
     },
     {
       id: "ai-assisted",
-      label: "AI 辅助版本",
+      label: "AI 辅助功能",
       icon: "sparkles",
       children: [
-        { id: "ai-assisted-positions", label: "岗位资源编辑(AI辅助)", href: "/ai-assisted/positions", matchers: ["/ai-assisted/positions"] },
-        { id: "ai-assisted-batch", label: "批量岗位生成(AI辅助)", href: "/ai-assisted/positions/batch-generate", matchers: ["/ai-assisted/positions/batch-generate"] },
-        { id: "ai-assisted-student", label: "职业岗位查看(AI辅助)", href: "/student-ai-assisted.html", matchers: ["/student-ai-assisted.html"] },
-      ],
-    },
-    {
-      id: "ai-assisted-2",
-      label: "AI 辅助版本 V2",
-      icon: "sparkles",
-      children: [
-        { id: "ai-assisted-2-positions", label: "岗位资源编辑(AI辅助V2)", href: "/ai-assisted_2/positions", matchers: ["/ai-assisted_2/positions"] },
-      ],
-    },
-    {
-      id: "ai-first",
-      label: "AI 主导版本",
-      icon: "sparkles",
-      children: [
-        { id: "ai-first-positions", label: "岗位资源编辑(AI主导)", href: "/ai-first/positions", matchers: ["/ai-first/positions"] },
-        { id: "ai-first-batch", label: "批量岗位生成(AI主导)", href: "/ai-first/positions/batch-generate", matchers: ["/ai-first/positions/batch-generate"] },
-        { id: "ai-first-student", label: "职业岗位查看(AI主导)", href: "/student-ai-first.html", matchers: ["/student-ai-first.html"] },
+        { id: "ai-assisted-2-positions", label: "岗位资源编辑(AI辅助)", href: "/ai-assisted_2/positions", matchers: ["/ai-assisted_2/positions"] },
+        { id: "ai-batch-agent", label: "批量岗位创建(智能体)", href: "http://111.170.170.202:5000/", external: true },
+        { id: "ai-first-student", label: "学生岗位导览(AI辅助)", href: "/student-ai-first.html", matchers: ["/student-ai-first.html"] },
       ],
     },
   ],

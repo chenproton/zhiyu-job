@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>前端开发工程师学习路径</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1f2e 0%, #162034 100%);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* 头部信息 */
+        .header-info {
+            padding: 40px 60px 20px;
+            background: rgba(255,255,255,0.03);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .header-info h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #fff, #69b1ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .header-meta {
+            display: flex;
+            gap: 40px;
+            font-size: 15px;
+        }
+        
+        .header-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .header-meta-item .label {
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .header-meta-item .value {
+            color: #69b1ff;
+            font-weight: 500;
+        }
+        
+        /* 主内容区 */
+        .main-content {
+            padding: 40px 60px;
+        }
+        
+        /* 学习路径标题 */
+        .path-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .path-title h2 {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            background: linear-gradient(90deg, #1677ff, #69b1ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .path-title p {
+            color: rgba(255,255,255,0.6);
+            font-size: 14px;
+        }
+        
+        /* 时间线 */
+        .timeline-container {
+            position: relative;
+            padding: 40px 0;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+        
+        .timeline-container::-webkit-scrollbar {
+            height: 6px;
+        }
+        
+        .timeline-container::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
+        }
+        
+        .timeline-track {
+            display: flex;
+            align-items: flex-start;
+            position: relative;
+            min-width: max-content;
+            padding: 0 40px;
+        }
+        
+        /* 连接线 */
+        .timeline-track::before {
+            content: '';
+            position: absolute;
+            top: 46px;
+            left: 80px;
+            right: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, #1677ff, #52c41a, #faad14, #eb2f96, #722ed1, #fa541c, #fadb14);
+            border-radius: 2px;
+            z-index: 0;
+        }
+        
+        .timeline-node {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+            min-width: 160px;
+            padding: 0 20px;
+            cursor: pointer;
+        }
+        
+        .node-label-top {
+            font-size: 12px;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 8px;
+            white-space: nowrap;
+        }
+        
+        .node-circle {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 22px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: 3px solid rgba(255,255,255,0.2);
+        }
+        
+        /* 各阶段颜色 */
+        .timeline-node[data-stage="0"] .node-circle { background: linear-gradient(135deg, #1677ff, #69b1ff); }
+        .timeline-node[data-stage="1"] .node-circle { background: linear-gradient(135deg, #52c41a, #73d13d); }
+        .timeline-node[data-stage="2"] .node-circle { background: linear-gradient(135deg, #faad14, #ffc53d); }
+        .timeline-node[data-stage="3"] .node-circle { background: linear-gradient(135deg, #eb2f96, #f759ab); }
+        .timeline-node[data-stage="4"] .node-circle { background: linear-gradient(135deg, #722ed1, #b37feb); }
+        .timeline-node[data-stage="5"] .node-circle { background: linear-gradient(135deg, #fa541c, #ff7a45); }
+        .timeline-node[data-stage="6"] .node-circle { background: linear-gradient(135deg, #fadb14, #ffec3d); color: #333; }
+        
+        .node-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 6px;
+            white-space: nowrap;
+        }
+        
+        .node-meta {
+            font-size: 12px;
+            color: rgba(255,255,255,0.5);
+            text-align: center;
+            white-space: nowrap;
+        }
+        
+        /* 任务区域 */
+        .tasks-container {
+            margin-top: 60px;
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 24px;
+        }
+        
+        .task-column {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .task-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s;
+        }
+        
+        .task-card:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+        
+        .task-num {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary-color, #1677ff);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .task-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+        
+        .task-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        
+        .task-tag {
+            padding: 3px 10px;
+            background: rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.7);
+            border-radius: 20px;
+            font-size: 11px;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        
+        .more-tasks {
+            text-align: center;
+            padding: 12px;
+            color: rgba(255,255,255,0.5);
+            font-size: 13px;
+            border: 1px dashed rgba(255,255,255,0.15);
+            border-radius: 12px;
+        }
+        
+        /* 返回按钮 */
+        .back-nav {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+        
+        .back-nav a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        
+        .back-nav a:hover {
+            background: rgba(255,255,255,0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="back-nav">
+        <a href="student.html">
+            <i class="fas fa-arrow-left"></i> 返回岗位详情
+        </a>
+    </div>
+    
+    <div class="header-info">
+        <h1>前端开发工程师的学习路径</h1>
+        <div class="header-meta">
+            <div class="header-meta-item">
+                <span class="label">目标岗位：</span>
+                <span class="value">前端开发</span>
+            </div>
+            <div class="header-meta-item">
+                <span class="label">心意岗位：</span>
+                <span class="value">前端架构工程师</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="main-content">
+        <div class="path-title">
+            <h2>前端开发工程师学习路径地图</h2>
+            <p>沿着学习路线，从「起点站」出发，逐步通关 6 大实践场景，抵达全栈实战「终点站」</p>
+        </div>
+        
+        <div class="timeline-container">
+            <div class="timeline-track" id="timelineTrack">
+                <div class="timeline-node" data-stage="0">
+                    <div class="node-label-top">START · 第1站</div>
+                    <div class="node-circle"><i class="fas fa-flag"></i></div>
+                    <div class="node-title">基础学习</div>
+                    <div class="node-meta">4 任务 · 8 课时</div>
+                </div>
+                <div class="timeline-node" data-stage="1">
+                    <div class="node-label-top">第2站</div>
+                    <div class="node-circle"><i class="fas fa-shopping-cart"></i></div>
+                    <div class="node-title">电商后台管理系统</div>
+                    <div class="node-meta">6 任务 · 12 课时</div>
+                </div>
+                <div class="timeline-node" data-stage="2">
+                    <div class="node-label-top">第3站</div>
+                    <div class="node-circle"><i class="fas fa-mobile-alt"></i></div>
+                    <div class="node-title">移动端H5活动页</div>
+                    <div class="node-meta">4 任务 · 6 课时</div>
+                </div>
+                <div class="timeline-node" data-stage="3">
+                    <div class="node-label-top">第4站</div>
+                    <div class="node-circle"><i class="fas fa-chart-line"></i></div>
+                    <div class="node-title">数据可视化大屏</div>
+                    <div class="node-meta">4 任务 · 8 课时</div>
+                </div>
+                <div class="timeline-node" data-stage="4">
+                    <div class="node-label-top">第5站</div>
+                    <div class="node-circle"><i class="fas fa-code-branch"></i></div>
+                    <div class="node-title">前端工程化实践</div>
+                    <div class="node-meta">3 任务 · 6 课时</div>
+                </div>
+                <div class="timeline-node" data-stage="5">
+                    <div class="node-label-top">第6站</div>
+                    <div class="node-circle"><i class="fas fa-users-cog"></i></div>
+                    <div class="node-title">团队协作开发实战</div>
+                    <div class="node-meta">3 任务 · 8 课时</div>
+                </div>
+                <div class="timeline-node" data-stage="6">
+                    <div class="node-label-top">GOAL · 终点</div>
+                    <div class="node-circle"><i class="fas fa-trophy"></i></div>
+                    <div class="node-title">全栈实战</div>
+                    <div class="node-meta">达成认证</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tasks-container">
+            <div class="task-column">
+                <div class="task-card">
+                    <div class="task-num">1</div>
+                    <div class="task-name">Banner轮播图开发</div>
+                    <div class="task-tags">
+                        <span class="task-tag">HTML5</span>
+                        <span class="task-tag">CSS动画</span>
+                    </div>
+                </div>
+                <div class="task-card">
+                    <div class="task-num">2</div>
+                    <div class="task-name">响应式导航菜单</div>
+                    <div class="task-tags">
+                        <span class="task-tag">Flex</span>
+                        <span class="task-tag">媒体查询</span>
+                    </div>
+                </div>
+                <div class="task-card">
+                    <div class="task-num">3</div>
+                    <div class="task-name">产品展示区块</div>
+                    <div class="task-tags">
+                        <span class="task-tag">Grid</span>
+                        <span class="task-tag">过渡</span>
+                    </div>
+                </div>
+                <div class="task-card">
+                    <div class="task-num">4</div>
+                    <div class="task-name">页脚与回到顶部</div>
+                    <div class="task-tags">
+                        <span class="task-tag">滚动事件</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="task-column">
+                <div class="task-card">
+                    <div class="task-num" style="background: #52c41a;">1</div>
+                    <div class="task-name">Vue3项目初始化</div>
+                    <div class="task-tags">
+                        <span class="task-tag">Vite</span>
+                        <span class="task-tag">Vue3</span>
+                    </div>
+                </div>
+                <div class="task-card">
+                    <div class="task-num" style="background: #52c41a;">2</div>
+                    <div class="task-name">登录鉴权模块</div>
+                    <div class="task-tags">
+                        <span class="task-tag">Token</span>
+                        <span class="task-tag">路由守卫</span>
+                    </div>
+                </div>
+                <div class="task-card">
+                    <div class="task-num" style="background: #52c41a;">3</div>
+                    <div class="task-name">商品管理CRUD</div>
+                    <div class="task-tags">
+                        <span class="task-tag">Element</span>
+                        <span class="task-tag">API</span>
+                    </div>
+                </div>
+                <div class="more-tasks">+ 还有3个进阶任务</div>
+            </div>
+            
+            <div class="task-column">
+                <div class="task-card">
+                    <div class="task-num" style="background: #faad14;">1</div>
+                    <div class="task-name">移动端适配方案</div>
+                    <div class="task-tags">
+                        <span class="task-tag">rem/vw</span>
+                        <span class="task-tag">viewport</span>
+                    </div>
+                </div>
+                <div class="task-card">
+                    <div class="task-num" style="background: #faad14;">2</div>
+                    <div class="task-name">活动页面布局</div>
+                    <div class="task-tags">
+                        <span class="task-tag">全屏滚动</span>
+                        <span class="task-tag">触摸</span>
+                    </div>
+                </div>
+                <div class="more-tasks">+ 还有2个进阶任务</div>
+            </div>
+            
+            <div class="task-column">
+                <div class="task-card">
+                    <div class="task-num" style="background: #eb2f96;">1</div>
+                    <div class="task-name">大屏布局自适应</div>
+                    <div class="task-tags">
+                        <span class="task-tag">Scale</span>
+                        <span class="task-tag">Grid</span>
+                    </div>
+                </div>
+                <div class="task-card">
+                    <div class="task-num" style="background: #eb2f96;">2</div>
+                    <div class="task-name">ECharts图表配置</div>
+                    <div class="task-tags">
+                        <span class="task-tag">ECharts</span>
+                    </div>
+                </div>
+                <div class="more-tasks">+ 还有2个进阶任务</div>
+            </div>
+            
+            <div class="task-column">
+                <div class="task-card">
+                    <div class="task-num" style="background: #722ed1;">1</div>
+                    <div class="task-name">Git工作流实践</div>
+                    <div class="task-tags">
+                        <span class="task-tag">Git Flow</span>
+                    </div>
+                </div>
+                <div class="task-card">
+                    <div class="task-num" style="background: #722ed1;">2</div>
+                    <div class="task-name">自动化部署</div>
+                    <div class="task-tags">
+                        <span class="task-tag">CI/CD</span>
+                        <span class="task-tag">Actions</span>
+                    </div>
+                </div>
+                <div class="more-tasks">+ 还有1个进阶任务</div>
+            </div>
+            
+            <div class="task-column">
+                <div class="task-card">
+                    <div class="task-num" style="background: #fa541c;">1</div>
+                    <div class="task-name">需求分析与拆分</div>
+                    <div class="task-tags">
+                        <span class="task-tag">敏捷</span>
+                    </div>
+                </div>
+                <div class="task-card">
+                    <div class="task-num" style="background: #fa541c;">2</div>
+                    <div class="task-name">代码评审与重构</div>
+                    <div class="task-tags">
+                        <span class="task-tag">Review</span>
+                        <span class="task-tag">重构</span>
+                    </div>
+                </div>
+                <div class="more-tasks">+ 还有1个进阶任务</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

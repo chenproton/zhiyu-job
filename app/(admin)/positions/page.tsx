@@ -367,7 +367,7 @@ export default function PositionsPage() {
         <CardContent className="p-4">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div>
-              <h1 className="text-xl font-semibold text-slate-900">XXXXXX</h1>
+              <h1 className="text-xl font-semibold text-slate-900">岗位资源管理</h1>
               <p className="text-xs text-slate-500 mt-0.5">
                 维护岗位信息、能力模型等岗位资源管理功能
               </p>
