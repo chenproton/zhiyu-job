@@ -7,149 +7,191 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+
+        :root {
+            --primary-color: #1677ff;
+            --primary-hover: #4096ff;
+            --primary-bg: #e6f4ff;
+            --success-color: #52c41a;
+            --warning-color: #faad14;
+            --error-color: #ff4d4f;
+            --text-primary: #000000e0;
+            --text-secondary: #00000073;
+            --text-tertiary: #00000040;
+            --border-color: #d9d9d9;
+            --bg-color: #f5f0e6;
+            --bg-white: #ffffff;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.03), 0 1px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px 0 rgba(0, 0, 0, 0.02);
+            --shadow-md: 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #1a1f2e 0%, #162034 100%);
-            color: #fff;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
             min-height: 100vh;
             overflow-x: hidden;
+            line-height: 1.5714285714;
+            font-size: 14px;
         }
-        
+
+        /* Header */
+        .header { background: var(--bg-white); height: 64px; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow-sm); position: fixed; top: 0; left: 0; right: 0; z-index: 1000; }
+        .header-left, .header-right { display: flex; align-items: center; gap: 24px; }
+        .header-right { gap: 20px; }
+        .logo { display: flex; align-items: center; gap: 12px; font-size: 18px; font-weight: 600; color: var(--primary-color); }
+        .logo-icon { width: 36px; height: 36px; background: linear-gradient(135deg, var(--primary-color), #69b1ff); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; }
+        .back-btn, .header-btn { padding: 6px 12px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); background: var(--bg-white); color: var(--text-primary); cursor: pointer; transition: all 0.2s; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+        .header-btn { padding: 8px 16px; }
+        .back-btn:hover, .header-btn:hover { color: var(--primary-color); border-color: var(--primary-color); }
+        .header-btn.primary { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+        .header-btn.primary:hover { background: var(--primary-hover); }
+        .header-time { color: var(--text-secondary); font-size: 14px; font-family: 'Courier New', monospace; letter-spacing: 0.5px; }
+        .user-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--primary-bg); display: flex; align-items: center; justify-content: center; color: var(--primary-color); cursor: pointer; }
+
+        /* 主内容区 */
+        .main-wrapper { margin-top: 64px; padding: 24px; max-width: 1440px; margin-left: auto; margin-right: auto; }
+
         /* 头部信息 */
         .header-info {
-            padding: 40px 60px 20px;
-            background: rgba(255,255,255,0.03);
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 24px;
         }
-        
+
         .header-info h1 {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 600;
-            margin-bottom: 20px;
-            background: linear-gradient(90deg, #fff, #69b1ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            margin-bottom: 16px;
+            color: var(--text-primary);
         }
-        
+
         .header-meta {
             display: flex;
             gap: 40px;
             font-size: 15px;
         }
-        
+
         .header-meta-item {
             display: flex;
             align-items: center;
             gap: 10px;
         }
-        
+
         .header-meta-item .label {
-            color: rgba(255,255,255,0.5);
+            color: var(--text-secondary);
         }
-        
+
         .header-meta-item .value {
-            color: #69b1ff;
+            color: var(--primary-color);
             font-weight: 500;
         }
-        
-        /* 主内容区 */
-        .main-content {
-            padding: 40px 60px;
-        }
-        
+
         /* 学习路径标题 */
         .path-title {
             text-align: center;
             margin-bottom: 40px;
         }
-        
+
         .path-title h2 {
             font-size: 32px;
             font-weight: 600;
             margin-bottom: 12px;
-            background: linear-gradient(90deg, #1677ff, #69b1ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--text-primary);
         }
-        
+
         .path-title p {
-            color: rgba(255,255,255,0.6);
+            color: var(--text-secondary);
             font-size: 14px;
         }
-        
+
         /* 时间线 */
         .timeline-container {
             position: relative;
-            padding: 40px 0;
+            padding: 48px 0;
             overflow-x: auto;
             overflow-y: hidden;
         }
-        
+
         .timeline-container::-webkit-scrollbar {
-            height: 6px;
+            height: 8px;
         }
-        
+
         .timeline-container::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,0.2);
-            border-radius: 3px;
+            background: #d9d9d9;
+            border-radius: 4px;
         }
-        
+
         .timeline-track {
             display: flex;
             align-items: flex-start;
+            justify-content: center;
             position: relative;
             min-width: max-content;
-            padding: 0 40px;
+            padding: 0 60px;
+            gap: 16px;
         }
-        
+
         /* 连接线 */
         .timeline-track::before {
             content: '';
             position: absolute;
-            top: 46px;
-            left: 80px;
-            right: 80px;
-            height: 4px;
+            top: 62px;
+            left: 100px;
+            right: 100px;
+            height: 5px;
             background: linear-gradient(90deg, #1677ff, #52c41a, #faad14, #eb2f96, #722ed1, #fa541c, #fadb14);
-            border-radius: 2px;
+            border-radius: 3px;
             z-index: 0;
         }
-        
+
         .timeline-node {
             display: flex;
             flex-direction: column;
             align-items: center;
             position: relative;
             z-index: 1;
-            min-width: 160px;
-            padding: 0 20px;
+            min-width: 220px;
+            padding: 0 24px;
             cursor: pointer;
+            transition: transform 0.2s;
         }
-        
+
+        .timeline-node:hover {
+            transform: translateY(-4px);
+        }
+
+        .timeline-node.active .node-title {
+            color: var(--primary-color);
+        }
+
         .node-label-top {
-            font-size: 12px;
-            color: rgba(255,255,255,0.5);
-            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--text-tertiary);
+            margin-bottom: 12px;
             white-space: nowrap;
+            font-weight: 500;
         }
-        
+
         .node-circle {
-            width: 56px;
-            height: 56px;
+            width: 76px;
+            height: 76px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 22px;
-            margin-bottom: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            border: 3px solid rgba(255,255,255,0.2);
+            font-size: 28px;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.14);
+            border: 4px solid rgba(255,255,255,0.9);
         }
-        
+
         /* 各阶段颜色 */
         .timeline-node[data-stage="0"] .node-circle { background: linear-gradient(135deg, #1677ff, #69b1ff); }
         .timeline-node[data-stage="1"] .node-circle { background: linear-gradient(135deg, #52c41a, #73d13d); }
@@ -158,337 +200,785 @@
         .timeline-node[data-stage="4"] .node-circle { background: linear-gradient(135deg, #722ed1, #b37feb); }
         .timeline-node[data-stage="5"] .node-circle { background: linear-gradient(135deg, #fa541c, #ff7a45); }
         .timeline-node[data-stage="6"] .node-circle { background: linear-gradient(135deg, #fadb14, #ffec3d); color: #333; }
-        
+
         .node-title {
-            font-size: 15px;
+            font-size: 17px;
             font-weight: 600;
-            color: #fff;
+            color: var(--text-primary);
             text-align: center;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             white-space: nowrap;
         }
-        
+
         .node-meta {
-            font-size: 12px;
-            color: rgba(255,255,255,0.5);
+            font-size: 13px;
+            color: var(--text-secondary);
             text-align: center;
             white-space: nowrap;
         }
-        
+
         /* 任务区域 */
-        .tasks-container {
+        .tasks-section {
             margin-top: 60px;
-            display: grid;
+            min-height: 300px;
+        }
+
+        .stage-cards {
+            display: none;
             grid-template-columns: repeat(6, 1fr);
             gap: 24px;
+            align-items: start;
         }
-        
+
+        .stage-cards.active {
+            display: grid;
+        }
+
         .task-column {
             display: flex;
             flex-direction: column;
             gap: 16px;
         }
-        
+
         .task-card {
-            background: rgba(255,255,255,0.05);
+            background: var(--bg-white);
             border-radius: 12px;
-            padding: 16px;
-            border: 1px solid rgba(255,255,255,0.1);
+            padding: 14px 16px;
+            border: 1px solid #f0f0f0;
+            border-left: 5px solid;
+            box-shadow: var(--shadow-sm);
             transition: all 0.3s;
         }
-        
+
         .task-card:hover {
-            background: rgba(255,255,255,0.08);
-            border-color: rgba(255,255,255,0.2);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             transform: translateY(-2px);
         }
-        
+
+        .task-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
         .task-num {
             width: 24px;
             height: 24px;
             border-radius: 50%;
-            background: var(--primary-color, #1677ff);
             color: white;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 12px;
             font-weight: 600;
-            margin-bottom: 10px;
+            flex-shrink: 0;
         }
-        
+
         .task-name {
             font-size: 14px;
             font-weight: 500;
-            color: #fff;
-            margin-bottom: 8px;
+            color: var(--text-primary);
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
-        
+
         .task-tags {
             display: flex;
             flex-wrap: wrap;
             gap: 6px;
         }
-        
+
         .task-tag {
             padding: 3px 10px;
-            background: rgba(255,255,255,0.1);
-            color: rgba(255,255,255,0.7);
+            background: #f5f5f5;
+            color: var(--text-secondary);
             border-radius: 20px;
             font-size: 11px;
-            border: 1px solid rgba(255,255,255,0.15);
+            border: 1px solid #f0f0f0;
         }
-        
-        .more-tasks {
-            text-align: center;
-            padding: 12px;
-            color: rgba(255,255,255,0.5);
-            font-size: 13px;
-            border: 1px dashed rgba(255,255,255,0.15);
-            border-radius: 12px;
-        }
-        
-        /* 返回按钮 */
-        .back-nav {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1000;
-        }
-        
-        .back-nav a {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 20px;
-            background: rgba(255,255,255,0.1);
-            color: #fff;
-            text-decoration: none;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: all 0.3s;
-            border: 1px solid rgba(255,255,255,0.15);
-        }
-        
-        .back-nav a:hover {
-            background: rgba(255,255,255,0.2);
-        }
+
+        /* 各阶段颜色对齐 */
+        .stage-cards[data-stage="0"] .task-card { border-left-color: #1677ff; }
+        .stage-cards[data-stage="0"] .task-num { background: #1677ff; }
+
+        .stage-cards[data-stage="1"] .task-card { border-left-color: #52c41a; }
+        .stage-cards[data-stage="1"] .task-num { background: #52c41a; }
+
+        .stage-cards[data-stage="2"] .task-card { border-left-color: #faad14; }
+        .stage-cards[data-stage="2"] .task-num { background: #faad14; }
+
+        .stage-cards[data-stage="3"] .task-card { border-left-color: #eb2f96; }
+        .stage-cards[data-stage="3"] .task-num { background: #eb2f96; }
+
+        .stage-cards[data-stage="4"] .task-card { border-left-color: #722ed1; }
+        .stage-cards[data-stage="4"] .task-num { background: #722ed1; }
+
+        .stage-cards[data-stage="5"] .task-card { border-left-color: #fa541c; }
+        .stage-cards[data-stage="5"] .task-num { background: #fa541c; }
+
+        .stage-cards[data-stage="6"] .task-card { border-left-color: #faad14; }
+        .stage-cards[data-stage="6"] .task-num { background: #faad14; }
     </style>
 </head>
 <body>
-    <div class="back-nav">
-        <a href="student.html">
-            <i class="fas fa-arrow-left"></i> 返回岗位详情
-        </a>
-    </div>
-    
-    <div class="header-info">
-        <h1>前端开发工程师的学习路径</h1>
-        <div class="header-meta">
-            <div class="header-meta-item">
-                <span class="label">目标岗位：</span>
-                <span class="value">前端开发</span>
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">
+                <div class="logo-icon">知</div>
+                <span>职业岗位查看平台</span>
             </div>
-            <div class="header-meta-item">
-                <span class="label">心意岗位：</span>
-                <span class="value">前端架构工程师</span>
+            <button class="back-btn" onclick="history.back()">
+                <i class="fas fa-arrow-left"></i>返回岗位详情
+            </button>
+        </div>
+        <div class="header-right">
+            <span class="header-time" id="currentTime"></span>
+            <div class="user-avatar"><i class="fas fa-user"></i></div>
+        </div>
+    </header>
+
+    <div class="main-wrapper">
+        <div class="header-info">
+            <h1>前端开发工程师的学习路径</h1>
+            <div class="header-meta">
+                <div class="header-meta-item">
+                    <span class="label">目标岗位：</span>
+                    <span class="value">前端开发</span>
+                </div>
+                <div class="header-meta-item">
+                    <span class="label">心仪岗位：</span>
+                    <span class="value">前端架构工程师</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="path-title">
+                <h2>前端开发工程师学习路径地图</h2>
+                <p>点击上方阶段图标，查看该阶段的学习任务</p>
+            </div>
+
+            <div class="timeline-container">
+                <div class="timeline-track" id="timelineTrack">
+                    <div class="timeline-node active" data-stage="0">
+                        <div class="node-label-top">START · 第1站</div>
+                        <div class="node-circle"><i class="fas fa-flag"></i></div>
+                        <div class="node-title">基础学习</div>
+                        <div class="node-meta">8 任务 · 16 课时</div>
+                    </div>
+                    <div class="timeline-node" data-stage="1">
+                        <div class="node-label-top">第2站</div>
+                        <div class="node-circle"><i class="fas fa-shopping-cart"></i></div>
+                        <div class="node-title">电商后台管理系统</div>
+                        <div class="node-meta">5 任务 · 12 课时</div>
+                    </div>
+                    <div class="timeline-node" data-stage="2">
+                        <div class="node-label-top">第3站</div>
+                        <div class="node-circle"><i class="fas fa-mobile-alt"></i></div>
+                        <div class="node-title">移动端H5活动页</div>
+                        <div class="node-meta">4 任务 · 8 课时</div>
+                    </div>
+                    <div class="timeline-node" data-stage="3">
+                        <div class="node-label-top">第4站</div>
+                        <div class="node-circle"><i class="fas fa-chart-line"></i></div>
+                        <div class="node-title">数据可视化大屏</div>
+                        <div class="node-meta">4 任务 · 8 课时</div>
+                    </div>
+                    <div class="timeline-node" data-stage="4">
+                        <div class="node-label-top">第5站</div>
+                        <div class="node-circle"><i class="fas fa-code-branch"></i></div>
+                        <div class="node-title">前端工程化实践</div>
+                        <div class="node-meta">4 任务 · 8 课时</div>
+                    </div>
+                    <div class="timeline-node" data-stage="5">
+                        <div class="node-label-top">第6站</div>
+                        <div class="node-circle"><i class="fas fa-users-cog"></i></div>
+                        <div class="node-title">团队协作开发实战</div>
+                        <div class="node-meta">4 任务 · 8 课时</div>
+                    </div>
+                    <div class="timeline-node" data-stage="6">
+                        <div class="node-label-top">GOAL · 终点</div>
+                        <div class="node-circle"><i class="fas fa-trophy"></i></div>
+                        <div class="node-title">全栈实战</div>
+                        <div class="node-meta">4 任务 · 认证</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tasks-section" id="tasksSection">
+                <!-- 基础学习 -->
+                <div class="stage-cards active" data-stage="0">
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">1</div>
+                            <div class="task-name">HTML5 语义化标签</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">HTML5</span>
+                            <span class="task-tag">语义化</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">2</div>
+                            <div class="task-name">CSS3 核心选择器</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">CSS3</span>
+                            <span class="task-tag">选择器</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">3</div>
+                            <div class="task-name">Flex 弹性布局</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">Flex</span>
+                            <span class="task-tag">布局</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">4</div>
+                            <div class="task-name">Grid 网格布局</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">Grid</span>
+                            <span class="task-tag">响应式</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">5</div>
+                            <div class="task-name">JavaScript 基础语法</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">JS</span>
+                            <span class="task-tag">ES6</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">6</div>
+                            <div class="task-name">DOM 操作与事件</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">DOM</span>
+                            <span class="task-tag">事件</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">7</div>
+                            <div class="task-name">CSS 动画与过渡</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">动画</span>
+                            <span class="task-tag">Transition</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">8</div>
+                            <div class="task-name">基础综合实战</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">实战</span>
+                            <span class="task-tag">作品集</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 电商后台管理系统 -->
+                <div class="stage-cards" data-stage="1">
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">1</div>
+                            <div class="task-name">Vue3 项目初始化</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">Vite</span>
+                            <span class="task-tag">Vue3</span>
+                            <span class="task-tag">组合式 API</span>
+                            <span class="task-tag">Pinia</span>
+                            <span class="task-tag">Vue Router</span>
+                            <span class="task-tag">TypeScript</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">2</div>
+                            <div class="task-name">登录鉴权模块</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">Token</span>
+                            <span class="task-tag">路由守卫</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">3</div>
+                            <div class="task-name">商品管理 CRUD</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">Element Plus</span>
+                            <span class="task-tag">API</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">4</div>
+                            <div class="task-name">订单与权限管理</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">权限</span>
+                            <span class="task-tag">表格</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">5</div>
+                            <div class="task-name">后台界面优化</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">UI</span>
+                            <span class="task-tag">交互</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">6</div>
+                            <div class="task-name">数据报表与导出</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">ECharts</span>
+                            <span class="task-tag">Excel</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">7</div>
+                            <div class="task-name">表单校验与提交</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">Form</span>
+                            <span class="task-tag">Rules</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 移动端H5活动页 -->
+                <div class="stage-cards" data-stage="2">
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">1</div>
+                            <div class="task-name">移动端适配方案</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">rem/vw</span>
+                            <span class="task-tag">viewport</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">2</div>
+                            <div class="task-name">活动页面布局</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">全屏滚动</span>
+                            <span class="task-tag">触摸</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">3</div>
+                            <div class="task-name">H5 动画特效</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">动画</span>
+                            <span class="task-tag">Canvas</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">4</div>
+                            <div class="task-name">微信分享与埋点</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">微信</span>
+                            <span class="task-tag">埋点</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">5</div>
+                            <div class="task-name">微信授权登录</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">OAuth</span>
+                            <span class="task-tag">JS-SDK</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">6</div>
+                            <div class="task-name">活动抽奖动画</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">Canvas</span>
+                            <span class="task-tag">动画</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">7</div>
+                            <div class="task-name">H5 性能优化</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">懒加载</span>
+                            <span class="task-tag">压缩</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 数据可视化大屏 -->
+                <div class="stage-cards" data-stage="3">
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">1</div>
+                            <div class="task-name">大屏布局自适应</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">Scale</span>
+                            <span class="task-tag">Grid</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">2</div>
+                            <div class="task-name">ECharts 图表配置</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">ECharts</span>
+                            <span class="task-tag">图表</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">3</div>
+                            <div class="task-name">数据实时刷新</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">WebSocket</span>
+                            <span class="task-tag">Mock</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">4</div>
+                            <div class="task-name">大屏主题与动效</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">主题</span>
+                            <span class="task-tag">动效</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">5</div>
+                            <div class="task-name">地图可视化</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">Map</span>
+                            <span class="task-tag">GeoJSON</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">6</div>
+                            <div class="task-name">实时数据推送</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">SSE</span>
+                            <span class="task-tag">WebSocket</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">7</div>
+                            <div class="task-name">大屏适配与投屏</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">4K</span>
+                            <span class="task-tag">自适应</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 前端工程化实践 -->
+                <div class="stage-cards" data-stage="4">
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">1</div>
+                            <div class="task-name">Git 工作流实践</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">Git Flow</span>
+                            <span class="task-tag">分支</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">2</div>
+                            <div class="task-name">自动化部署</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">CI/CD</span>
+                            <span class="task-tag">Actions</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">3</div>
+                            <div class="task-name">代码规范与 ESLint</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">ESLint</span>
+                            <span class="task-tag">Prettier</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">4</div>
+                            <div class="task-name">构建性能优化</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">Webpack</span>
+                            <span class="task-tag">Vite</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">5</div>
+                            <div class="task-name">单元测试与覆盖率</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">Jest</span>
+                            <span class="task-tag">Vitest</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">6</div>
+                            <div class="task-name">组件库封装</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">Storybook</span>
+                            <span class="task-tag">Monorepo</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">7</div>
+                            <div class="task-name">性能监控与埋点</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">Sentry</span>
+                            <span class="task-tag">埋点</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 团队协作开发实战 -->
+                <div class="stage-cards" data-stage="5">
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">1</div>
+                            <div class="task-name">需求分析与拆分</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">敏捷</span>
+                            <span class="task-tag">PRD</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">2</div>
+                            <div class="task-name">代码评审与重构</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">Review</span>
+                            <span class="task-tag">重构</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">3</div>
+                            <div class="task-name">接口联调与文档</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">Swagger</span>
+                            <span class="task-tag">Mock</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">4</div>
+                            <div class="task-name">项目上线与复盘</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">上线</span>
+                            <span class="task-tag">复盘</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">5</div>
+                            <div class="task-name">跨部门沟通协作</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">敏捷</span>
+                            <span class="task-tag">会议</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">6</div>
+                            <div class="task-name">技术方案评审</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">方案</span>
+                            <span class="task-tag">文档</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">7</div>
+                            <div class="task-name">线上问题应急响应</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">OnCall</span>
+                            <span class="task-tag">复盘</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 全栈实战 -->
+                <div class="stage-cards" data-stage="6">
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">1</div>
+                            <div class="task-name">Node.js 接口开发</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">Node.js</span>
+                            <span class="task-tag">Koa</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">2</div>
+                            <div class="task-name">数据库设计与操作</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">MySQL</span>
+                            <span class="task-tag">ORM</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">3</div>
+                            <div class="task-name">前后端联调部署</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">联调</span>
+                            <span class="task-tag">部署</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">4</div>
+                            <div class="task-name">全栈项目答辩</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">答辩</span>
+                            <span class="task-tag">认证</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">5</div>
+                            <div class="task-name">用户认证与权限</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">JWT</span>
+                            <span class="task-tag">RBAC</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">6</div>
+                            <div class="task-name">服务端接口测试</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">Postman</span>
+                            <span class="task-tag">接口文档</span>
+                        </div>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-row">
+                            <div class="task-num">7</div>
+                            <div class="task-name">项目部署与运维</div>
+                        </div>
+                        <div class="task-tags">
+                            <span class="task-tag">Nginx</span>
+                            <span class="task-tag">Docker</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    
-    <div class="main-content">
-        <div class="path-title">
-            <h2>前端开发工程师学习路径地图</h2>
-            <p>沿着学习路线，从「起点站」出发，逐步通关 6 大实践场景，抵达全栈实战「终点站」</p>
-        </div>
-        
-        <div class="timeline-container">
-            <div class="timeline-track" id="timelineTrack">
-                <div class="timeline-node" data-stage="0">
-                    <div class="node-label-top">START · 第1站</div>
-                    <div class="node-circle"><i class="fas fa-flag"></i></div>
-                    <div class="node-title">基础学习</div>
-                    <div class="node-meta">4 任务 · 8 课时</div>
-                </div>
-                <div class="timeline-node" data-stage="1">
-                    <div class="node-label-top">第2站</div>
-                    <div class="node-circle"><i class="fas fa-shopping-cart"></i></div>
-                    <div class="node-title">电商后台管理系统</div>
-                    <div class="node-meta">6 任务 · 12 课时</div>
-                </div>
-                <div class="timeline-node" data-stage="2">
-                    <div class="node-label-top">第3站</div>
-                    <div class="node-circle"><i class="fas fa-mobile-alt"></i></div>
-                    <div class="node-title">移动端H5活动页</div>
-                    <div class="node-meta">4 任务 · 6 课时</div>
-                </div>
-                <div class="timeline-node" data-stage="3">
-                    <div class="node-label-top">第4站</div>
-                    <div class="node-circle"><i class="fas fa-chart-line"></i></div>
-                    <div class="node-title">数据可视化大屏</div>
-                    <div class="node-meta">4 任务 · 8 课时</div>
-                </div>
-                <div class="timeline-node" data-stage="4">
-                    <div class="node-label-top">第5站</div>
-                    <div class="node-circle"><i class="fas fa-code-branch"></i></div>
-                    <div class="node-title">前端工程化实践</div>
-                    <div class="node-meta">3 任务 · 6 课时</div>
-                </div>
-                <div class="timeline-node" data-stage="5">
-                    <div class="node-label-top">第6站</div>
-                    <div class="node-circle"><i class="fas fa-users-cog"></i></div>
-                    <div class="node-title">团队协作开发实战</div>
-                    <div class="node-meta">3 任务 · 8 课时</div>
-                </div>
-                <div class="timeline-node" data-stage="6">
-                    <div class="node-label-top">GOAL · 终点</div>
-                    <div class="node-circle"><i class="fas fa-trophy"></i></div>
-                    <div class="node-title">全栈实战</div>
-                    <div class="node-meta">达成认证</div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="tasks-container">
-            <div class="task-column">
-                <div class="task-card">
-                    <div class="task-num">1</div>
-                    <div class="task-name">Banner轮播图开发</div>
-                    <div class="task-tags">
-                        <span class="task-tag">HTML5</span>
-                        <span class="task-tag">CSS动画</span>
-                    </div>
-                </div>
-                <div class="task-card">
-                    <div class="task-num">2</div>
-                    <div class="task-name">响应式导航菜单</div>
-                    <div class="task-tags">
-                        <span class="task-tag">Flex</span>
-                        <span class="task-tag">媒体查询</span>
-                    </div>
-                </div>
-                <div class="task-card">
-                    <div class="task-num">3</div>
-                    <div class="task-name">产品展示区块</div>
-                    <div class="task-tags">
-                        <span class="task-tag">Grid</span>
-                        <span class="task-tag">过渡</span>
-                    </div>
-                </div>
-                <div class="task-card">
-                    <div class="task-num">4</div>
-                    <div class="task-name">页脚与回到顶部</div>
-                    <div class="task-tags">
-                        <span class="task-tag">滚动事件</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="task-column">
-                <div class="task-card">
-                    <div class="task-num" style="background: #52c41a;">1</div>
-                    <div class="task-name">Vue3项目初始化</div>
-                    <div class="task-tags">
-                        <span class="task-tag">Vite</span>
-                        <span class="task-tag">Vue3</span>
-                    </div>
-                </div>
-                <div class="task-card">
-                    <div class="task-num" style="background: #52c41a;">2</div>
-                    <div class="task-name">登录鉴权模块</div>
-                    <div class="task-tags">
-                        <span class="task-tag">Token</span>
-                        <span class="task-tag">路由守卫</span>
-                    </div>
-                </div>
-                <div class="task-card">
-                    <div class="task-num" style="background: #52c41a;">3</div>
-                    <div class="task-name">商品管理CRUD</div>
-                    <div class="task-tags">
-                        <span class="task-tag">Element</span>
-                        <span class="task-tag">API</span>
-                    </div>
-                </div>
-                <div class="more-tasks">+ 还有3个进阶任务</div>
-            </div>
-            
-            <div class="task-column">
-                <div class="task-card">
-                    <div class="task-num" style="background: #faad14;">1</div>
-                    <div class="task-name">移动端适配方案</div>
-                    <div class="task-tags">
-                        <span class="task-tag">rem/vw</span>
-                        <span class="task-tag">viewport</span>
-                    </div>
-                </div>
-                <div class="task-card">
-                    <div class="task-num" style="background: #faad14;">2</div>
-                    <div class="task-name">活动页面布局</div>
-                    <div class="task-tags">
-                        <span class="task-tag">全屏滚动</span>
-                        <span class="task-tag">触摸</span>
-                    </div>
-                </div>
-                <div class="more-tasks">+ 还有2个进阶任务</div>
-            </div>
-            
-            <div class="task-column">
-                <div class="task-card">
-                    <div class="task-num" style="background: #eb2f96;">1</div>
-                    <div class="task-name">大屏布局自适应</div>
-                    <div class="task-tags">
-                        <span class="task-tag">Scale</span>
-                        <span class="task-tag">Grid</span>
-                    </div>
-                </div>
-                <div class="task-card">
-                    <div class="task-num" style="background: #eb2f96;">2</div>
-                    <div class="task-name">ECharts图表配置</div>
-                    <div class="task-tags">
-                        <span class="task-tag">ECharts</span>
-                    </div>
-                </div>
-                <div class="more-tasks">+ 还有2个进阶任务</div>
-            </div>
-            
-            <div class="task-column">
-                <div class="task-card">
-                    <div class="task-num" style="background: #722ed1;">1</div>
-                    <div class="task-name">Git工作流实践</div>
-                    <div class="task-tags">
-                        <span class="task-tag">Git Flow</span>
-                    </div>
-                </div>
-                <div class="task-card">
-                    <div class="task-num" style="background: #722ed1;">2</div>
-                    <div class="task-name">自动化部署</div>
-                    <div class="task-tags">
-                        <span class="task-tag">CI/CD</span>
-                        <span class="task-tag">Actions</span>
-                    </div>
-                </div>
-                <div class="more-tasks">+ 还有1个进阶任务</div>
-            </div>
-            
-            <div class="task-column">
-                <div class="task-card">
-                    <div class="task-num" style="background: #fa541c;">1</div>
-                    <div class="task-name">需求分析与拆分</div>
-                    <div class="task-tags">
-                        <span class="task-tag">敏捷</span>
-                    </div>
-                </div>
-                <div class="task-card">
-                    <div class="task-num" style="background: #fa541c;">2</div>
-                    <div class="task-name">代码评审与重构</div>
-                    <div class="task-tags">
-                        <span class="task-tag">Review</span>
-                        <span class="task-tag">重构</span>
-                    </div>
-                </div>
-                <div class="more-tasks">+ 还有1个进阶任务</div>
-            </div>
-        </div>
-    </div>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const pad = n => String(n).padStart(2, '0');
+            const str = now.getFullYear() + '年' +
+                        pad(now.getMonth() + 1) + '月' +
+                        pad(now.getDate()) + '日' +
+                        pad(now.getHours()) + ':' +
+                        pad(now.getMinutes()) + ':' +
+                        pad(now.getSeconds());
+            document.getElementById('currentTime').textContent = str;
+        }
+        updateTime();
+        setInterval(updateTime, 1000);
+
+        // 阶段切换交互
+        const nodes = document.querySelectorAll('.timeline-node');
+        const stageCards = document.querySelectorAll('.stage-cards');
+
+        nodes.forEach(node => {
+            node.addEventListener('click', () => {
+                const stage = node.getAttribute('data-stage');
+
+                nodes.forEach(n => n.classList.remove('active'));
+                node.classList.add('active');
+
+                stageCards.forEach(cards => {
+                    if (cards.getAttribute('data-stage') === stage) {
+                        cards.classList.add('active');
+                    } else {
+                        cards.classList.remove('active');
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

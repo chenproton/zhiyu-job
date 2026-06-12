@@ -352,7 +352,8 @@
             z-index: 0;
         }
         
-        .stage-nav-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: all 0.3s ease; position: relative; z-index: 1; min-width: 180px; padding: 0 24px; padding-bottom: 20px; }
+        .stage-nav-item { display: flex; flex-direction: column; align-items: center; transition: all 0.3s ease; position: relative; z-index: 1; min-width: 180px; padding: 0 24px; padding-bottom: 20px; }
+        .stage-link { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: inherit; cursor: pointer; }
         
         /* 阶段图标 */
         .stage-icon { 
@@ -1608,8 +1609,10 @@
                 
                 html += `
                     <div class="stage-nav-item ${extraClass} ${isStart ? 'start' : ''} ${isEnd ? 'end' : ''}" data-stage="${i}" data-label="${labelAttr}" onclick="setActiveStage(${i})">
-                        <div class="stage-icon"><i class="fas ${item.icon}"></i></div>
-                        <div class="stage-label">${item.name}</div>
+                        <a href="/learning-route" class="stage-link">
+                            <div class="stage-icon"><i class="fas ${item.icon}"></i></div>
+                            <div class="stage-label">${item.name}</div>
+                        </a>
                         <div class="stage-meta">${metaText}</div>
                     </div>
                 `;

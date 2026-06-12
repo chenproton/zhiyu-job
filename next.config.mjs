@@ -9,15 +9,6 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  
-  async rewrites() {
-    return [
-      {
-        source: '/learning-route',
-        destination: '/learning-route.html',
-      },
-    ]
-  },
 }
 
 export default nextConfig

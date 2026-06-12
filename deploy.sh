@@ -13,49 +13,61 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 STANDALONE_DIR="$SCRIPT_DIR/.next/standalone"
 STATIC_DIR="$SCRIPT_DIR/.next/static"
 PUBLIC_DIR="$SCRIPT_DIR/public"
+SERVER_DIR="$SCRIPT_DIR/.next/server"
 
 # ==================== 主入口 ====================
 
 echo ""
-echo "🚀 启动本地构建发布: [$SITE_NAME]"
+echo "🚀 启动本地 standalone 构建发布: [$SITE_NAME] -> port $PORT"
 echo ""
 
 cd "$SCRIPT_DIR"
 
-# ── 1. 本地构建 ──────────────────────────────────────────────────────
-echo "[1/2] 本地构建中..."
-rm -rf "$STANDALONE_DIR"
+# ── 1. 清理旧构建 ──────────────────────────────────────────────────────
+echo "[1/4] 清理旧构建..."
+rm -rf "$STANDALONE_DIR" "$STATIC_DIR" "$SERVER_DIR"
 
-# 智能依赖安装：已存在则跳过，避免每次重新比对版本
+# ── 2. 安装依赖 ───────────────────────────────────────────────────────
 if [ ! -d "node_modules" ] || [ "${FORCE_INSTALL:-0}" = "1" ]; then
-  echo "  📦 安装依赖..."
+  echo "[2/4] 安装依赖..."
   pnpm install --prefer-offline --no-frozen-lockfile
 else
-  echo "  ⏩ node_modules 已存在，跳过依赖安装（设置 FORCE_INSTALL=1 可强制重新安装）"
+  echo "[2/4] node_modules 已存在，跳过依赖安装（设置 FORCE_INSTALL=1 可强制重新安装）"
 fi
 
+# ── 3. 构建 ───────────────────────────────────────────────────────────
+echo "[3/4] 本地构建中..."
 pnpm build
 
-# 组装产物
-rsync -a --delete --exclude='*.map' "$STATIC_DIR/" "$STANDALONE_DIR/.next/static/"
-if [ -d "$PUBLIC_DIR" ]; then
-  rsync -a --delete --exclude='*.map' "$PUBLIC_DIR/" "$STANDALONE_DIR/public/"
+# ── 4. 组装 standalone 产物 ───────────────────────────────────────────
+echo "[4/4] 组装 standalone 产物..."
+
+# 修复 Next.js 16 + Turbopack standalone 输出不完整的问题
+# 将完整 server 目录复制到 standalone
+if [ -d "$SERVER_DIR" ]; then
+  mkdir -p "$STANDALONE_DIR/.next/server"
+  rsync -a --delete --exclude="*.map" "$SERVER_DIR/" "$STANDALONE_DIR/.next/server/"
 fi
 
-echo "✅ 本地构建完成"
+if [ -d "$STATIC_DIR" ]; then
+  mkdir -p "$STANDALONE_DIR/.next/static"
+  rsync -a --delete --exclude="*.map" "$STATIC_DIR/" "$STANDALONE_DIR/.next/static/"
+fi
 
-# ── 2. 本地 PM2 启动 ────────────────────────────────────────────────
+if [ -d "$PUBLIC_DIR" ]; then
+  mkdir -p "$STANDALONE_DIR/public"
+  rsync -a --delete --exclude="*.map" "$PUBLIC_DIR/" "$STANDALONE_DIR/public/"
+fi
+
+# ── 5. PM2 启动 ───────────────────────────────────────────────────────
 echo ""
-echo "[2/2] 本地 PM2 启动服务..."
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+echo "[5/4] 本地 PM2 启动服务..."
 
 # 彻底删除旧进程防止残留
 pm2 delete "$SITE_NAME" &>/dev/null || true
 
 cd "$STANDALONE_DIR"
-NODE_BIN=$(which node)
+NODE_BIN=$(command -v node || echo "/usr/local/bin/node")
 
 # 启动新进程
 PORT="$PORT" HOSTNAME="0.0.0.0" pm2 start server.js \
