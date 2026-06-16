@@ -28,6 +28,7 @@ interface PositionListProps {
   onWithdrawApproval?: (position: Position) => void
   className?: string
   basePath?: string
+  configureStepParam?: string
 }
 
 export function PositionList({
@@ -41,6 +42,7 @@ export function PositionList({
   onWithdrawApproval,
   className,
   basePath = "/positions",
+  configureStepParam = "1",
 }: PositionListProps) {
   if (positions.length === 0) return null
 
@@ -132,7 +134,7 @@ export function PositionList({
                     </Link>
                   </Button>
                   <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" asChild>
-                    <Link href={`${basePath}/${position.id}/edit?step=1`}>
+                    <Link href={`${basePath}/${position.id}/edit?step=${configureStepParam}`}>
                       <GitBranch className="mr-1 h-3 w-3" />
                       配置能力
                     </Link>

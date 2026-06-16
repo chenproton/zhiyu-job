@@ -380,25 +380,6 @@ export function StepAbilityModeling({ position, onUpdate, aiMode = false }: Step
               <CardDescription className="text-gray-400">共 {totalResponsibilities} 项职责</CardDescription>
             </div>
             <div className="flex items-center gap-2">
-              {aiMode ? (
-                <AiGenerateButton
-                  onClick={handleOpenAiRespDialog}
-                  loading={aiRespLoading}
-                  label="AI 补充工作职责"
-                  size="sm"
-                />
-              ) : (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleOpenAiRespDialog}
-                  disabled={aiRespLoading}
-                  className="h-8 text-xs border-purple-200 text-purple-700 hover:bg-purple-50 hover:text-purple-800 gap-1.5"
-                >
-                  {aiRespLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />}
-                  AI 补充工作职责
-                </Button>
-              )}
               <Button
                 size="sm"
                 className="h-8 px-3 shrink-0 bg-primary hover:bg-gray-800 text-primary-foreground text-xs"

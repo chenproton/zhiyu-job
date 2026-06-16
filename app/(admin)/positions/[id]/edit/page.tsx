@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, use } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useData } from '@/lib/stores/data-context'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -17,7 +17,7 @@ import {
 import { X, Save, Eye, ArrowRight, ArrowLeft, Check, ImagePlus, UserPlus } from 'lucide-react'
 import { StepBasicInfo } from '@/components/position-builder/step-basic-info'
 import { StepAbilityModeling } from '@/components/position-builder/step-ability-modeling'
-import { StepCompetencyConfig } from '@/components/position-builder/step-competency-config'
+import { Step3ResultTable } from '@/components/position-builder/ai-assisted-2/step3-result-table'
 import type { Position } from '@/lib/types'
 import {
   Dialog,
@@ -37,6 +37,7 @@ interface PageProps {
 export default function PositionEditPage({ params }: PageProps) {
   const { id } = use(params)
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { positions, batches, updatePosition, submitForApproval } = useData()
   const [activeStep, setActiveStep] = useState('basic')
   const [isSaving, setIsSaving] = useState(false)
@@ -49,6 +50,16 @@ export default function PositionEditPage({ params }: PageProps) {
       setPosition({ ...found })
     }
   }, [id, positions])
+
+  // 处理 URL ?step= 参数
+  useEffect(() => {
+    const stepParam = searchParams.get('step')
+    if (stepParam === '2') {
+      setActiveStep('ability')
+    } else if (stepParam === '3') {
+      setActiveStep('competency')
+    }
+  }, [searchParams])
 
   if (!position) {
     return (
@@ -287,7 +298,13 @@ export default function PositionEditPage({ params }: PageProps) {
               <StepAbilityModeling position={position} onUpdate={updatePositionData} />
             )}
             {activeStep === 'competency' && (
-              <StepCompetencyConfig position={position} onUpdate={updatePositionData} onSubmit={handleSubmit} />
+              <Step3ResultTable
+                position={position}
+                onUpdate={updatePositionData}
+                onPrev={handlePrev}
+                onSave={handleSave}
+                showAiFill={false}
+              />
             )}
           </div>
         )}

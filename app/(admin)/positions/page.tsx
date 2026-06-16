@@ -701,6 +701,7 @@ export default function PositionsPage() {
               onDelete={handleDelete}
               onSubmitApproval={handleSubmitApproval}
               onWithdrawApproval={handleWithdrawApproval}
+              configureStepParam="2"
               className="border-0 rounded-none"
             />
           </CardContent>
@@ -745,6 +746,7 @@ export default function PositionsPage() {
                         onDelete={handleDelete}
                         onSubmitApproval={handleSubmitApproval}
                         onWithdrawApproval={handleWithdrawApproval}
+                        configureStepParam="2"
                       />
                     </div>
                   </CollapsibleContent>
@@ -772,6 +774,7 @@ export default function PositionsPage() {
                   onDelete={handleDelete}
                   onSubmitApproval={handleSubmitApproval}
                   onWithdrawApproval={handleWithdrawApproval}
+                  configureStepParam="2"
                 />
               </div>
             </div>

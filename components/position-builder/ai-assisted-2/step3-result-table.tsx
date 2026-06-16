@@ -39,9 +39,10 @@ interface Step3ResultTableProps {
   onUpdate: (data: Partial<Position>) => void
   onPrev: () => void
   onSave: () => void
+  showAiFill?: boolean
 }
 
-export function Step3ResultTable({ position, onUpdate, onPrev, onSave }: Step3ResultTableProps) {
+export function Step3ResultTable({ position, onUpdate, onPrev, onSave, showAiFill = true }: Step3ResultTableProps) {
   const bindings = position.abilityBindings
   const [aiOpen, setAiOpen] = useState(false)
   const [aiProgress, setAiProgress] = useState(0)
@@ -103,17 +104,17 @@ export function Step3ResultTable({ position, onUpdate, onPrev, onSave }: Step3Re
           <p className="text-sm text-gray-500 mt-0.5">确认拆解结果并配置胜任力标准，保存后岗位将进入草稿状态</p>
         </div>
         <div className="flex items-center gap-2">
-
-          <Button
-            variant="outline"
-            className="border-purple-200 text-purple-700 hover:bg-purple-50 hover:text-purple-800 gap-1"
-            onClick={handleAiFillAll}
-            disabled={aiOpen || bindings.length === 0}
-          >
-            <Sparkles className="h-4 w-4" />
-            {aiOpen ? 'AI 填充中...' : 'AI 辅助编写'}
-          </Button>
-
+          {showAiFill && (
+            <Button
+              variant="outline"
+              className="border-purple-200 text-purple-700 hover:bg-purple-50 hover:text-purple-800 gap-1"
+              onClick={handleAiFillAll}
+              disabled={aiOpen || bindings.length === 0}
+            >
+              <Sparkles className="h-4 w-4" />
+              {aiOpen ? 'AI 填充中...' : 'AI 辅助编写'}
+            </Button>
+          )}
         </div>
       </div>
 
