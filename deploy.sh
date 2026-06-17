@@ -36,8 +36,8 @@ else
 fi
 
 # ── 3. 构建 ───────────────────────────────────────────────────────────
-echo "[3/4] 本地构建中..."
-pnpm build
+echo "[3/4] 本地构建中（使用 webpack 以绕过 Turbopack standalone 问题）..."
+pnpm exec next build --webpack
 
 # ── 4. 组装 standalone 产物 ───────────────────────────────────────────
 echo "[4/4] 组装 standalone 产物..."

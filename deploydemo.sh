@@ -110,13 +110,13 @@ echo "[2/5] 清理旧构建..."
 rm -rf "$STANDALONE_DIR" "$STATIC_DIR" "$SERVER_DIR"
 
 echo ""
-echo "[3/5] 安装依赖并构建..."
+echo "[3/5] 安装依赖并构建（使用 webpack 以绕过 Turbopack standalone 问题）..."
 if [ ! -d "node_modules" ] || [ "${FORCE_INSTALL:-0}" = "1" ]; then
   pnpm install --prefer-offline --no-frozen-lockfile
 else
   echo "node_modules 已存在，跳过依赖安装（设置 FORCE_INSTALL=1 可强制重新安装）"
 fi
-pnpm build
+pnpm exec next build --webpack
 
 echo ""
 echo "[4/5] 组装 standalone 产物..."
@@ -182,6 +182,10 @@ $SSH_CMD $SSH_OPTS "$DEMO_USER@$DEMO_HOST" \
 
   pm2 save > /dev/null
 REMOTE_EOF
+
+# 尝试远程刷新后等待服务就绪
+$SSH_CMD $SSH_OPTS "$DEMO_USER@$DEMO_HOST" \
+  "pm2 restart '$SITE_NAME' --update-env" >/dev/null 2>&1 || true
 
 echo ""
 echo "✨ [$SITE_NAME] 演示环境部署完成！"
