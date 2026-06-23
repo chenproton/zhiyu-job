@@ -550,7 +550,7 @@ export function StepBasicInfo({ position, onUpdate, aiMode = false, variant = 'd
           {/* Row 2: Industry + Major */}
           <div className="grid grid-cols-2 gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="industry">所属行业</Label>
+              <Label htmlFor="industry">面向行业</Label>
               <Select
                 value={position.industry}
                 onValueChange={(value) => onUpdate({ industry: value })}
@@ -568,7 +568,7 @@ export function StepBasicInfo({ position, onUpdate, aiMode = false, variant = 'd
               </Select>
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="major">面向专业</Label>
+              <Label htmlFor="major">适用专业</Label>
               <Select
                 value={position.majors[0] || ''}
                 onValueChange={(value) => onUpdate({ majors: [value] })}

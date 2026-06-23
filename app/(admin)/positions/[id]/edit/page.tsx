@@ -328,11 +328,11 @@ export default function PositionEditPage({ params }: PageProps) {
                 <p className="font-medium text-sm">{batch?.name || '未关联'}</p>
               </div>
               <div className="p-3 bg-gray-50 rounded-lg">
-                <p className="text-xs text-gray-500 mb-1">所属行业</p>
+                <p className="text-xs text-gray-500 mb-1">面向行业</p>
                 <p className="font-medium text-sm">{position.industry || '-'}</p>
               </div>
               <div className="p-3 bg-gray-50 rounded-lg">
-                <p className="text-xs text-gray-500 mb-1">面向专业</p>
+                <p className="text-xs text-gray-500 mb-1">适用专业</p>
                 <p className="font-medium text-sm">{position.majors.join('、') || '-'}</p>
               </div>
               <div className="p-3 bg-gray-50 rounded-lg">
