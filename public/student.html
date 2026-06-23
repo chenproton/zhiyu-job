@@ -299,29 +299,62 @@
         #dutyAbilitiesModalOverlay { z-index: 1500; } /* Lower than KG modal */
         #kgModalOverlay { z-index: 2500; } /* Highest */
         
-        /* 职责能力点弹窗 - 左右布局 */
-        .duty-ability-layout { display: flex; height: 480px; }
-        .duty-ability-sidebar { width: 240px; flex-shrink: 0; background: #fafafa; border-right: 1px solid #f5f5f4; padding: 16px; overflow-y: auto; }
-        .duty-ability-sidebar::-webkit-scrollbar { width: 4px; }
-        .duty-ability-sidebar::-webkit-scrollbar-thumb { background: #d9d9d9; border-radius: 2px; }
-        .duty-ability-item { display: flex; align-items: center; gap: 10px; padding: 12px; border-radius: var(--radius-md); cursor: pointer; transition: all 0.2s; margin-bottom: 8px; border: 1px solid transparent; }
-        .duty-ability-item:hover { background: white; border-color: #d9d9d9; }
-        .duty-ability-item.active { background: var(--primary-bg); border-color: var(--primary-color); }
-        .duty-ability-item.active .ability-item-name { color: var(--primary-color); font-weight: 500; }
-        .ability-item-icon { width: 32px; height: 32px; border-radius: 50%; background: white; color: var(--primary-color); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; border: 1px solid #e0e0e0; }
-        .duty-ability-item.active .ability-item-icon { background: var(--primary-color); color: white; border-color: var(--primary-color); }
-        .ability-item-name { font-size: 14px; color: var(--text-primary); }
-        .ability-item-code { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; }
-        .duty-ability-detail { flex: 1; padding: 24px; overflow-y: auto; background: white; }
-        .duty-ability-detail::-webkit-scrollbar { width: 4px; }
-        .duty-ability-detail::-webkit-scrollbar-thumb { background: #d9d9d9; border-radius: 2px; }
-        .ability-detail-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid #f5f5f4; }
-        .ability-detail-badge { padding: 4px 12px; background: #f6ffed; color: #52c41a; border: 1px solid #b7eb8f; border-radius: 20px; font-size: 12px; }
-        .ability-detail-title { font-size: 18px; font-weight: 600; color: var(--text-primary); }
-        .ability-detail-desc { color: var(--text-primary); line-height: 1.8; margin-bottom: 20px; }
-        .ability-detail-section { background: #fafafa; border-radius: var(--radius-md); padding: 16px; border: 1px solid #f5f5f4; }
-        .ability-detail-section h5 { color: var(--text-primary); font-size: 14px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-        .ability-detail-section ul { padding-left: 20px; color: #555; font-size: 13px; line-height: 1.8; }
+        /* 职责能力点弹窗 - 浅色时间线/卡片风格 */
+        #dutyAbilitiesModalOverlay .modal-box { width: 1000px; max-height: 86vh; background: #ffffff; border: 1px solid #e5e7eb; box-shadow: 0 24px 64px rgba(0,0,0,0.15); border-radius: 16px; overflow: hidden; }
+        #dutyAbilitiesModalOverlay .modal-header { padding: 18px 24px; border-bottom: 1px solid #f1f5f9; background: #ffffff; }
+        #dutyAbilitiesModalOverlay .modal-title { font-size: 18px; font-weight: 600; color: #1f2937; }
+        #dutyAbilitiesModalOverlay .modal-close { color: #94a3b8; font-size: 18px; }
+        #dutyAbilitiesModalOverlay .modal-close:hover { color: #1f2937; }
+        #dutyAbilitiesModalOverlay .modal-body { background: #f8fafc; }
+        #dutyModalSub { color: #64748b !important; }
+
+        .duty-ability-dark-layout { display: flex; flex-direction: column; height: 580px; }
+        .duty-timeline { display: flex; align-items: center; padding: 18px 24px 10px; gap: 8px; overflow-x: auto; background: #ffffff; }
+        .duty-timeline::-webkit-scrollbar { height: 4px; }
+        .duty-timeline::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 2px; }
+        .duty-timeline-start { font-size: 11px; color: #64748b; font-weight: 500; white-space: nowrap; }
+        .duty-timeline-track { display: flex; align-items: center; flex: 1; min-width: max-content; }
+        .duty-timeline-node { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; transition: transform 0.2s; }
+        .duty-timeline-node:hover { transform: translateY(-2px); }
+        .duty-timeline-dot { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; border: 2px solid transparent; transition: all 0.2s; }
+        .duty-timeline-node.active .duty-timeline-dot { border-color: #ffffff; box-shadow: 0 0 0 4px rgba(59,130,246,0.15); transform: scale(1.1); }
+        .duty-timeline-label { font-size: 11px; color: #64748b; white-space: nowrap; }
+        .duty-timeline-line { flex: 1; height: 3px; min-width: 40px; background: linear-gradient(90deg, #3b82f6, #10b981, #f59e0b, #8b5cf6, #ec4899, #f97316); border-radius: 2px; opacity: 0.6; }
+        .duty-timeline-end { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+        .duty-timeline-end .duty-timeline-dot { background: linear-gradient(135deg, #facc15, #eab308); }
+
+        .duty-cards-stage { flex: 1; position: relative; overflow: hidden; background: #f8fafc; }
+        .duty-cards-track { display: flex; height: 100%; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .duty-cards-slide { flex: 0 0 100%; width: 100%; height: 100%; padding: 20px 28px; box-sizing: border-box; overflow-y: auto; }
+        .duty-cards-slide::-webkit-scrollbar { width: 6px; }
+        .duty-cards-slide::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        .duty-cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+        .duty-ability-card-dark { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 18px; transition: all 0.25s; position: relative; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+        .duty-ability-card-dark:hover { transform: translateY(-4px); border-color: #cbd5e1; box-shadow: 0 12px 28px rgba(0,0,0,0.08); }
+        .duty-ability-card-dark::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #3b82f6, #10b981); opacity: 0.8; }
+        .duty-ability-card-header { display: flex; gap: 12px; margin-bottom: 14px; }
+        .duty-ability-card-num { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 13px; font-weight: 600; flex-shrink: 0; background: linear-gradient(135deg, #3b82f6, #60a5fa); }
+        .duty-ability-card-title { font-size: 15px; font-weight: 600; color: #1f2937; line-height: 1.4; }
+        .duty-ability-card-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+        .duty-ability-card-tag { font-size: 11px; padding: 3px 8px; border-radius: 4px; background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+        .duty-ability-card-tag.level { color: #d97706; background: #fffbeb; border-color: #fde68a; }
+        .duty-ability-card-desc { color: #64748b; font-size: 12px; line-height: 1.7; margin-bottom: 14px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .duty-ability-card-desc.expanded { -webkit-line-clamp: unset; }
+        .duty-ability-card-reqs { border-top: 1px solid #f1f5f9; padding-top: 12px; }
+        .duty-ability-card-reqs-title { font-size: 12px; color: #1f2937; font-weight: 500; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+        .duty-ability-card-reqs ul { padding-left: 14px; margin: 0; color: #64748b; font-size: 11px; line-height: 1.8; }
+        .duty-ability-card-reqs li { margin-bottom: 4px; }
+        .duty-ability-card-more { margin-top: 10px; font-size: 11px; color: #2563eb; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; }
+        .duty-ability-card-more:hover { color: #1d4ed8; }
+
+        .duty-cards-nav { position: absolute; top: 50%; transform: translateY(-50%); z-index: 10; width: 38px; height: 38px; border-radius: 50%; border: 1px solid #e2e8f0; background: rgba(255,255,255,0.95); color: #64748b; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .duty-cards-nav:hover { background: #eff6ff; color: #2563eb; border-color: #bfdbfe; }
+        .duty-cards-nav.prev { left: 10px; }
+        .duty-cards-nav.next { right: 10px; }
+        .duty-cards-dots { display: flex; justify-content: center; gap: 8px; padding: 12px 0; background: #ffffff; }
+        .duty-cards-dot { width: 8px; height: 8px; border-radius: 50%; background: #e2e8f0; cursor: pointer; transition: all 0.2s; }
+        .duty-cards-dot.active { background: #3b82f6; width: 20px; border-radius: 4px; }
+        .duty-cards-hint { text-align: center; font-size: 12px; color: #94a3b8; padding-bottom: 14px; background: #ffffff; }
         
         /* 证书卡片 */
         .cert-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
@@ -550,7 +583,7 @@
                         <button class="btn primary lg" onclick="window.location.href='/learning-route'">
                             <i class="fas fa-play-circle"></i> 开始学习
                         </button>
-                        <button class="btn" id="btnLike"><i class="far fa-thumbs-up"></i> 点赞</button>
+                        <button class="btn" id="btnLike"><i class="far fa-heart"></i> 设为心仪岗位</button>
                         <button class="btn" onclick="openModal('relatedJobsModal')"><i class="fas fa-project-diagram"></i> 相关岗位 (3)</button>
                     </div>
                     <div class="job-stats-mini">
@@ -1110,7 +1143,7 @@
     </div>
 
     <div class="modal-overlay" id="dutyAbilitiesModalOverlay">
-        <div class="modal-box" style="width: 700px; max-height: 80vh; overflow: hidden;">
+        <div class="modal-box" style="width: 1000px; max-height: 86vh; overflow: hidden;">
             <div class="modal-header">
                 <div>
                     <div class="modal-title">职责关联能力点</div>
@@ -1119,9 +1152,15 @@
                 <i class="fas fa-times modal-close" onclick="closeModal('dutyAbilitiesModal')"></i>
             </div>
             <div class="modal-body" style="padding: 0; overflow: hidden;">
-                <div class="duty-ability-layout" id="dutyAbilitiesLayout">
-                    <div class="duty-ability-sidebar" id="dutyAbilitiesSidebar"></div>
-                    <div class="duty-ability-detail" id="dutyAbilitiesDetail"></div>
+                <div class="duty-ability-dark-layout" id="dutyAbilitiesLayout">
+                    <div class="duty-timeline" id="dutyTimeline"></div>
+                    <div class="duty-cards-stage" id="dutyCardsStage">
+                        <button class="duty-cards-nav prev" onclick="dutyCardsMove(-1)"><i class="fas fa-chevron-left"></i></button>
+                        <div class="duty-cards-track" id="dutyCardsTrack"></div>
+                        <button class="duty-cards-nav next" onclick="dutyCardsMove(1)"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                    <div class="duty-cards-dots" id="dutyCardsDots"></div>
+                    <div class="duty-cards-hint" id="dutyCardsHint"></div>
                 </div>
             </div>
         </div>
@@ -1155,19 +1194,77 @@
         }
         setInterval(updateTime, 1000); updateTime();
 
-        // 点赞交互
-        document.getElementById('btnLike').addEventListener('click', function() {
-            const icon = this.querySelector('i');
-            if(icon.classList.contains('far')) {
-                icon.className = 'fas fa-thumbs-up';
-                this.style.color = 'var(--primary-color)';
-                this.style.borderColor = 'var(--primary-color)';
-            } else {
-                icon.className = 'far fa-thumbs-up';
-                this.style.color = '';
-                this.style.borderColor = '';
+        // 心仪岗位交互
+        const HEART_JOBS_KEY = 'zhiyu_heart_jobs';
+
+        function loadHeartJobs() {
+            try {
+                return JSON.parse(localStorage.getItem(HEART_JOBS_KEY) || '[]');
+            } catch (e) {
+                return [];
             }
+        }
+
+        function saveHeartJobs(jobs) {
+            localStorage.setItem(HEART_JOBS_KEY, JSON.stringify(jobs));
+        }
+
+        function getCurrentJob() {
+            const titleEl = document.querySelector('.job-title');
+            const codeEl = document.querySelector('.job-code');
+            const industryEl = document.querySelector('.tag.industry');
+            const majorEl = document.querySelector('.tag.major');
+            const salaryEl = document.querySelector('.salary');
+            const descEl = document.querySelector('.job-desc');
+            return {
+                id: 'job_' + (titleEl ? titleEl.textContent.trim() : 'unknown'),
+                name: titleEl ? titleEl.textContent.trim() : '未知岗位',
+                code: codeEl ? codeEl.textContent.trim() : '',
+                industry: industryEl ? industryEl.textContent.trim().replace(/^.*\s/, '') : '',
+                major: majorEl ? majorEl.textContent.trim().replace(/^.*\s/, '') : '',
+                salary: salaryEl ? salaryEl.textContent.trim() : '',
+                description: descEl ? descEl.textContent.trim().substring(0, 120) + (descEl.textContent.trim().length > 120 ? '...' : '') : '',
+                coverImage: '',
+                addedAt: new Date().toISOString()
+            };
+        }
+
+        function isHeartJob(jobId) {
+            return loadHeartJobs().some(j => j.id === jobId);
+        }
+
+        function updateLikeButton() {
+            const btn = document.getElementById('btnLike');
+            const icon = btn.querySelector('i');
+            const job = getCurrentJob();
+            if (isHeartJob(job.id)) {
+                icon.className = 'fas fa-heart';
+                btn.style.color = 'var(--primary-color)';
+                btn.style.borderColor = 'var(--primary-color)';
+                btn.innerHTML = '<i class="fas fa-heart"></i> 已设为心仪岗位';
+            } else {
+                icon.className = 'far fa-heart';
+                btn.style.color = '';
+                btn.style.borderColor = '';
+                btn.innerHTML = '<i class="far fa-heart"></i> 设为心仪岗位';
+            }
+        }
+
+        document.getElementById('btnLike').addEventListener('click', function() {
+            const job = getCurrentJob();
+            let jobs = loadHeartJobs();
+            const index = jobs.findIndex(j => j.id === job.id);
+            if (index >= 0) {
+                jobs.splice(index, 1);
+                saveHeartJobs(jobs);
+            } else {
+                jobs.push(job);
+                saveHeartJobs(jobs);
+            }
+            updateLikeButton();
         });
+
+        updateLikeButton();
 
         // ================= MODALS CONTROLLER =================
         function openModal(modalName) {
@@ -1218,74 +1315,211 @@
         }
 
         // ================= 岗位职责 -> 能力点联动弹窗 =================
-        const DUTY_ABILITY_MAP = {
-            '页面开发与还原': [{id:'a01', name:'HTML5/CSS3基础知识'}, {id:'a04', name:'响应式页面开发'}, {id:'a08', name:'跨浏览器兼容处理'}],
-            '交互功能实现': [{id:'a05', name:'JavaScript核心原理'}, {id:'a07', name:'数据结构与常见算法'}],
-            '前端框架应用': [{id:'a09', name:'Vue3/React组件化开发'}, {id:'a10', name:'状态管理与路由配置'}],
-            '接口对接与数据处理': [{id:'a06', name:'计算机网络与HTTP协议'}, {id:'a20', name:'复杂数据交互处理'}],
-            '性能优化与调试': [{id:'a11', name:'前端性能优化实践'}, {id:'a14', name:'复杂线上问题排查'}],
-            '代码质量保障': [{id:'a12', name:'前端工程化与构建部署'}, {id:'a15', name:'技术文档编写能力'}]
+        const ABILITY_DATA = {
+            'a01': { name: 'HTML5语义化标签应用', domain: '专业工具', level: '熟练', desc: '正确运用HTML5语义化标签，理解文档对象模型，能够使用ARIA属性提升页面无障碍访问性，构建结构清晰、语义明确的Web页面。', requirements: ['准确选择 header、nav、main、article、section、aside、footer 等语义化标签', '为表单、按钮等交互元素添加恰当的ARIA角色与状态', '确保页面结构对屏幕阅读器友好，通过无障碍基础检测'] },
+            'a02': { name: 'CSS3布局与样式设计', domain: '专业工具', level: '精通', desc: '精通CSS3现代布局技术，包括Flexbox、Grid、媒体查询与CSS变量，能独立实现复杂响应式页面与流畅动画效果。', requirements: ['熟练使用 Flexbox 与 Grid 完成复杂页面布局', '能根据设计稿实现多断点响应式适配（PC/平板/手机）', '运用 CSS 变量、动画与过渡提升交互体验，保证性能'] },
+            'a03': { name: '响应式页面开发', domain: '专业工具', level: '熟练', desc: '掌握移动端与桌面端自适应开发方法，能够使用 rem/vw、流式布局、弹性图片等技术实现一套代码多端适配。', requirements: ['根据设计稿制定合理的响应式断点策略', '使用 rem/vw/vh 等单位实现元素自适应缩放', '保证图片、视频等资源在不同分辨率下的清晰与性能'] },
+            'a04': { name: '跨浏览器兼容处理', domain: '专业工具', level: '掌握', desc: '熟悉主流浏览器渲染差异，能够对常见兼容性问题进行诊断与修复，保证页面在 Chrome、Edge、Safari、Firefox 等浏览器中的一致性。', requirements: ['识别并修复 CSS 与 JS 在主流浏览器中的兼容性问题', '合理使用 Polyfill、Autoprefixer 等工具增强兼容性', '建立浏览器兼容性测试清单，覆盖核心功能路径'] },
+            'a05': { name: 'JavaScript核心原理', domain: '专业工具', level: '精通', desc: '深入理解 JavaScript 语言核心概念，包括作用域与闭包、原型链、事件循环、异步编程、ES6+ 新特性等，能编写高质量、可维护的 JS 代码。', requirements: ['准确解释作用域链、闭包、this 绑定与原型链机制', '熟练使用 Promise、async/await 处理异步流程', '灵活运用 ES6+ 语法（解构、可选链、模块化等）提升代码质量'] },
+            'a06': { name: '计算机网络与HTTP协议', domain: '专业工具', level: '掌握', desc: '理解 TCP/IP、HTTP/HTTPS、DNS、缓存、跨域等网络基础知识，能够结合业务场景进行接口设计与性能优化。', requirements: ['理解 HTTP 请求方法、状态码、头部字段与缓存机制', '掌握常见跨域解决方案（CORS、JSONP、代理）的原理与使用', '能基于网络知识排查接口慢、失败等线上问题'] },
+            'a07': { name: '数据结构与常见算法', domain: '专业工具', level: '理解', desc: '掌握常用数据结构（数组、对象、栈、队列、链表、树）与基础算法，能够根据问题选择合适的数据结构并评估复杂度。', requirements: ['熟练使用数组、对象、Map、Set 解决实际问题', '掌握排序、查找、递归、双指针等常见算法思想', '能够分析代码时间复杂度与空间复杂度'] },
+            'a08': { name: 'DOM操作与事件处理', domain: '专业工具', level: '熟练', desc: '熟练掌握 DOM 增删改查、事件监听、事件委托、BOM 操作等技能，能够高效、安全地操作页面元素与处理用户交互。', requirements: ['熟练使用原生 DOM API 完成动态页面渲染', '理解事件冒泡、捕获与委托机制，优化事件绑定', '使用 IntersectionObserver、MutationObserver 等现代 API'] },
+            'a09': { name: 'Vue3/React组件化开发', domain: '专业工具', level: '精通', desc: '精通至少一种现代前端框架（Vue3 或 React），能够进行组件化设计、状态管理、路由配置与复杂单页应用开发。', requirements: ['熟练使用组合式 API / Hooks 进行组件开发', '设计高复用、低耦合的组件体系，规范 props/emit/事件', '掌握生命周期、虚拟 DOM 原理与性能优化手段'] },
+            'a10': { name: '状态管理与路由配置', domain: '专业工具', level: '掌握', desc: '能够使用 Pinia/Vuex、Redux/Zustand 等状态管理工具，以及 Vue Router、React Router 进行应用状态与路由的规范化管理。', requirements: ['根据业务规模选择合适的状态管理方案', '实现跨组件、跨页面状态共享与持久化', '配置路由守卫、懒加载与动态路由，保证应用可维护性'] },
+            'a11': { name: '前端性能优化实践', domain: '专业工具', level: '熟练', desc: '掌握前端性能评估指标与优化手段，包括代码分割、懒加载、资源压缩、缓存策略、Web Vitals 优化等，持续提升页面加载与运行性能。', requirements: ['使用 Lighthouse、Web Vitals 分析页面性能瓶颈', '实施代码分割、路由懒加载、图片优化等策略', '建立性能监控与长期优化机制'] },
+            'a12': { name: '前端工程化与构建部署', domain: '团队协作', level: '掌握', desc: '熟悉现代前端工程化工具链，包括 Vite、Webpack、Babel、ESLint、Prettier、CI/CD 等，能够搭建规范化的开发、构建与部署流程。', requirements: ['配置并维护项目构建工具（Vite/Webpack）', '建立 ESLint、Prettier、Git Hook 等代码规范工具链', '了解 CI/CD 流程，能配合完成自动化构建与部署'] },
+            'a13': { name: '前端安全防护意识', domain: '专业工具', level: '理解', desc: '了解常见 Web 安全威胁，包括 XSS、CSRF、点击劫持、CSP 等，能够在开发中采取有效措施防范安全风险。', requirements: ['理解 XSS、CSRF 攻击原理与防御手段', '正确使用 CSP、HTTPS、Cookie 安全属性', '在代码评审中识别常见安全漏洞'] },
+            'a14': { name: '复杂线上问题排查', domain: '专业工具', level: '熟练', desc: '具备较强的线上问题定位与排查能力，能够利用浏览器 DevTools、日志、抓包、错误监控等工具快速定位并修复问题。', requirements: ['熟练使用 Chrome DevTools 进行断点、性能与网络分析', '能根据错误日志与监控信息还原问题现场', '建立线上问题排查 SOP 与复盘机制'] },
+            'a15': { name: '技术文档编写能力', domain: '通用素质', level: '掌握', desc: '能够编写清晰、规范的技术文档，包括接口文档、开发规范、README、CHANGELOG 等，提升团队协作效率与项目可维护性。', requirements: ['按照团队规范编写接口文档与开发说明', '维护 README、CHANGELOG、贡献指南等项目文档', '文档表达准确、结构清晰，便于新人快速上手'] },
+            'a16': { name: '代码评审与规范落地', domain: '团队协作', level: '掌握', desc: '能够参与并主导代码评审，识别代码中的设计、性能、安全与规范问题，推动团队编码规范的持续落地。', requirements: ['基于团队规范进行有效的 Code Review', '识别并反馈代码中的潜在缺陷与优化点', '通过复盘与分享持续改进团队代码质量'] },
+            'a17': { name: '版本控制与协作流程', domain: '团队协作', level: '熟练', desc: '熟练使用 Git 进行分支管理、代码合并、冲突解决，理解 Git Flow、Trunk-based 等协作流程，能高效参与团队开发。', requirements: ['熟练使用 Git 分支策略（feature/hotfix/release）', '能处理复杂合并冲突与版本回退', '理解 Rebase、Cherry-pick、Squash 等进阶操作'] },
+            'a18': { name: '敏捷迭代与任务管理', domain: '团队协作', level: '理解', desc: '了解敏捷开发流程，能够使用 Jira、禅道、飞书项目等工具进行任务拆分、进度跟踪与团队协作。', requirements: ['将需求拆分为可执行、可验收的开发任务', '及时更新任务状态，识别并反馈进度风险', '参与每日站会、迭代评审与回顾'] },
+            'a19': { name: '业务需求理解与转化', domain: '业务洞察', level: '掌握', desc: '能够理解产品需求与业务目标，将业务逻辑准确转化为技术方案，并在开发过程中与产品经理、设计师高效沟通。', requirements: ['准确理解产品需求文档与交互设计', '将业务需求转化为清晰的技术实现方案', '在需求变更时及时评估影响并沟通确认'] },
+            'a20': { name: '复杂数据交互处理', domain: '业务洞察', level: '熟练', desc: '能够处理复杂业务场景下的数据流转、状态同步与交互逻辑，保证数据展示的一致性与用户操作的流畅性。', requirements: ['设计合理的数据请求与缓存策略', '处理表单联动、分页、筛选、排序等复杂交互', '保证数据状态在组件间同步，避免脏数据'] },
+            'a21': { name: '用户体验与交互设计意识', domain: '创新思维', level: '理解', desc: '具备基础的用户体验意识，能够从用户视角审视页面交互，配合设计师优化信息架构与交互流程。', requirements: ['关注页面加载、反馈、容错等基础体验', '能提出合理的交互优化建议', '在实现中还原设计细节，保证视觉一致性'] },
+            'a22': { name: '技术方案设计能力', domain: '创新思维', level: '理解', desc: '能够针对中等复杂度的业务需求进行技术方案设计，评估可行性、成本与风险，输出清晰的实现计划。', requirements: ['根据需求选择合适的技术栈与实现方案', '评估开发成本、维护成本与技术风险', '输出可落地的技术方案文档'] }
         };
+
+        const DUTY_ABILITY_MAP = {
+            '页面开发与还原': ['a01','a02','a03','a04','a13','a21'],
+            '交互功能实现': ['a05','a07','a08','a19','a20','a21','a22','a13'],
+            '前端框架应用': ['a09','a10','a12','a16','a17','a19'],
+            '接口对接与数据处理': ['a06','a08','a19','a20'],
+            '性能优化与调试': ['a11','a14','a12','a17'],
+            '代码质量保障': ['a15','a16','a17','a18']
+        };
+
+        const DOMAIN_COLORS = {
+            '专业工具': ['#3b82f6', '#60a5fa'],
+            '团队协作': ['#10b981', '#34d399'],
+            '通用素质': ['#f59e0b', '#fbbf24'],
+            '业务洞察': ['#8b5cf6', '#a78bfa'],
+            '创新思维': ['#ec4899', '#f472b6']
+        };
+
+        const LEVEL_COLORS = {
+            '了解': '#94a3b8',
+            '理解': '#60a5fa',
+            '掌握': '#34d399',
+            '熟练': '#fbbf24',
+            '精通': '#f87171'
+        };
+
+        let dutyCardsIndex = 0;
+        let dutyCardsTotal = 0;
 
         function showDutyAbilities(dutyName) {
             document.getElementById('dutyModalSub').textContent = `正在查看：${dutyName}`;
-            const abilities = DUTY_ABILITY_MAP[dutyName] || [];
-            
-            // 渲染左侧能力点列表
-            const sidebar = document.getElementById('dutyAbilitiesSidebar');
-            const detail = document.getElementById('dutyAbilitiesDetail');
-            
-            sidebar.innerHTML = abilities.map((ab, i) => `
-                <div class="duty-ability-item ${i === 0 ? 'active' : ''}" data-index="${i}" onclick="showAbilityDetail(this, '${ab.id}', '${ab.name}')">
-                    <div class="ability-item-icon"><i class="fas fa-cube"></i></div>
-                    <div>
-                        <div class="ability-item-name">${ab.name}</div>
-                        <div class="ability-item-code">${ab.id.toUpperCase().replace('A', 'AP-0')}</div>
-                    </div>
-                </div>
-            `).join('');
-            
-            // 默认显示第一个能力点详情
-            if (abilities.length > 0) {
-                showAbilityDetail(sidebar.querySelector('.duty-ability-item'), abilities[0].id, abilities[0].name);
+            const abIds = DUTY_ABILITY_MAP[dutyName] || [];
+            const abilities = abIds.map(id => ({ id, ...ABILITY_DATA[id] })).filter(Boolean);
+
+            const perPage = 6;
+            const pages = [];
+            for (let i = 0; i < abilities.length; i += perPage) {
+                pages.push(abilities.slice(i, i + perPage));
             }
-            
-            openModal('dutyAbilitiesModal');
-        }
-        
-        function showAbilityDetail(el, abId, abName) {
-            // 更新激活状态
-            document.querySelectorAll('.duty-ability-item').forEach(item => item.classList.remove('active'));
-            el.classList.add('active');
-            
-            // 渲染右侧详情
-            const detail = document.getElementById('dutyAbilitiesDetail');
-            detail.innerHTML = `
-                <div class="ability-detail-header">
-                    <div>
-                        <div class="ability-detail-title">${abName}</div>
-                        <div style="margin-top:4px;"><span class="ability-detail-badge"><i class="fas fa-check-circle"></i> 能力点 ${abId.toUpperCase().replace('A', 'AP-0')}</span></div>
+            dutyCardsTotal = pages.length || 1;
+
+            const timeline = document.getElementById('dutyTimeline');
+            timeline.innerHTML = `
+                <span class="duty-timeline-start">START · 能力点</span>
+                <div class="duty-timeline-track" id="dutyTimelineTrack">
+                    ${pages.map((_, i) => `
+                        <div class="duty-timeline-node ${i === 0 ? 'active' : ''}" data-index="${i}" onclick="dutyCardsGoTo(${i})">
+                            <div class="duty-timeline-dot" style="background: linear-gradient(135deg, ${getTimelineColor(i)});"><i class="fas fa-cube"></i></div>
+                            <span class="duty-timeline-label">第${i + 1}页</span>
+                        </div>
+                        ${i < pages.length - 1 ? '<div class="duty-timeline-line"></div>' : ''}
+                    `).join('')}
+                    <div class="duty-timeline-end">
+                        <div class="duty-timeline-dot"><i class="fas fa-flag-checkered"></i></div>
+                        <span class="duty-timeline-label">达成</span>
                     </div>
-                </div>
-                <div class="ability-detail-desc">
-                    <p>该能力要求掌握在现代前端工程体系中，如何基于 <strong>${abName}</strong> 的核心原理，设计高可用、高复用性的解决方案。能够独立排查并解决业务边界问题。</p>
-                </div>
-                <div class="ability-detail-section">
-                    <h5><i class="fas fa-star" style="color:#52c41a;"></i> 胜任要求参考</h5>
-                    <ul>
-                        <li>能独立主导完成中等复杂度以上的功能模块设计。</li>
-                        <li>产出代码符合团队前端规范与最佳实践指南。</li>
-                        <li>具备较强的线上排错与性能调优能力。</li>
-                    </ul>
                 </div>
             `;
-            
-            // 淡入动画
-            detail.style.opacity = '0';
-            setTimeout(() => {
-                detail.style.transition = 'opacity 0.3s';
-                detail.style.opacity = '1';
-            }, 10);
+
+            const track = document.getElementById('dutyCardsTrack');
+            track.innerHTML = pages.map((page, pageIdx) => `
+                <div class="duty-cards-slide" data-page="${pageIdx}">
+                    <div class="duty-cards-grid">
+                        ${page.map((ab, idx) => {
+                            const globalIdx = pageIdx * perPage + idx;
+                            const colors = DOMAIN_COLORS[ab.domain] || DOMAIN_COLORS['专业工具'];
+                            const levelColor = LEVEL_COLORS[ab.level] || '#94a3b8';
+                            const reqTags = ab.requirements.slice(0, 2);
+                            const moreCount = ab.requirements.length - reqTags.length;
+                            return `
+                            <div class="duty-ability-card-dark">
+                                <div class="duty-ability-card-header">
+                                    <div class="duty-ability-card-num" style="background: linear-gradient(135deg, ${colors[0]}, ${colors[1]});">${globalIdx + 1}</div>
+                                    <div style="flex:1; min-width:0;">
+                                        <div class="duty-ability-card-title">${ab.name}</div>
+                                        <div class="duty-ability-card-tags">
+                                            <span class="duty-ability-card-tag">${ab.domain}</span>
+                                            <span class="duty-ability-card-tag level" style="color:${levelColor}; background:rgba(${hexToRgb(levelColor)},0.12); border-color:rgba(${hexToRgb(levelColor)},0.25);">${ab.level}</span>
+                                            <span class="duty-ability-card-tag">${ab.id.toUpperCase().replace('A', 'AP-0')}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="duty-ability-card-desc" id="dutyDesc-${pageIdx}-${idx}">${ab.desc}</div>
+                                <div class="duty-ability-card-reqs">
+                                    <div class="duty-ability-card-reqs-title"><i class="fas fa-star" style="color:#fbbf24;"></i> 胜任要求参考</div>
+                                    <ul>
+                                        ${reqTags.map(r => `<li>${r}</li>`).join('')}
+                                    </ul>
+                                    ${moreCount > 0 ? `<div class="duty-ability-card-more" onclick="toggleDutyReqs(this, '${ab.id}', ${pageIdx}, ${idx})">
+                                        <i class="fas fa-chevron-down"></i> 还有 ${moreCount} 个胜任要求
+                                    </div>` : ''}
+                                </div>
+                            </div>`;
+                        }).join('')}
+                    </div>
+                </div>
+            `).join('') || `
+                <div class="duty-cards-slide">
+                    <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:#64748b;">
+                        <i class="fas fa-inbox" style="font-size:48px; margin-bottom:16px; opacity:0.5;"></i>
+                        <div>该职责暂无关联能力点</div>
+                    </div>
+                </div>`;
+
+            document.getElementById('dutyCardsHint').innerHTML = `<i class="fas fa-hand-pointer"></i> 左右滑动或点击时间线节点查看全部 ${abilities.length} 个能力点`;
+
+            dutyCardsIndex = 0;
+            updateDutyCards();
+            openModal('dutyAbilitiesModal');
+        }
+
+        function getTimelineColor(index) {
+            const palette = [
+                ['#3b82f6', '#60a5fa'],
+                ['#10b981', '#34d399'],
+                ['#f59e0b', '#fbbf24'],
+                ['#8b5cf6', '#a78bfa'],
+                ['#ec4899', '#f472b6'],
+                ['#f97316', '#fb923c']
+            ];
+            return palette[index % palette.length].join(', ');
+        }
+
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '148, 163, 184';
+        }
+
+        function toggleDutyReqs(el, abId, pageIdx, idx) {
+            const ab = ABILITY_DATA[abId];
+            if (!ab) return;
+            const reqContainer = el.parentElement;
+            const list = reqContainer.querySelector('ul');
+            const descEl = document.getElementById(`dutyDesc-${pageIdx}-${idx}`);
+            const isExpanded = el.dataset.expanded === '1';
+
+            if (isExpanded) {
+                list.innerHTML = ab.requirements.slice(0, 2).map(r => `<li>${r}</li>`).join('');
+                el.dataset.expanded = '0';
+                el.innerHTML = `<i class="fas fa-chevron-down"></i> 还有 ${ab.requirements.length - 2} 个胜任要求`;
+                if (descEl) descEl.classList.remove('expanded');
+            } else {
+                list.innerHTML = ab.requirements.map(r => `<li>${r}</li>`).join('');
+                el.dataset.expanded = '1';
+                el.innerHTML = `<i class="fas fa-chevron-up"></i> 收起胜任要求`;
+                if (descEl) descEl.classList.add('expanded');
+            }
+        }
+
+        function dutyCardsMove(dir) {
+            if (dutyCardsTotal <= 1) return;
+            dutyCardsIndex = (dutyCardsIndex + dir + dutyCardsTotal) % dutyCardsTotal;
+            updateDutyCards();
+        }
+
+        function dutyCardsGoTo(index) {
+            dutyCardsIndex = index;
+            updateDutyCards();
+        }
+
+        function updateDutyCards() {
+            const track = document.getElementById('dutyCardsTrack');
+            if (track) {
+                track.style.transform = `translateX(-${dutyCardsIndex * 100}%)`;
+            }
+
+            document.querySelectorAll('.duty-timeline-node').forEach(node => {
+                node.classList.toggle('active', parseInt(node.dataset.index) === dutyCardsIndex);
+            });
+
+            const dots = document.getElementById('dutyCardsDots');
+            if (dots) {
+                dots.innerHTML = Array.from({ length: dutyCardsTotal }, (_, i) =>
+                    `<span class="duty-cards-dot ${i === dutyCardsIndex ? 'active' : ''}" onclick="dutyCardsGoTo(${i})"></span>`
+                ).join('');
+            }
+        }
+
+        function showAbilityDetail(el, abId, abName) {
+            const dutyName = document.getElementById('dutyModalSub')?.textContent?.replace('正在查看：', '') || '';
+            showDutyAbilities(dutyName);
         }
 
         // ================= 统一能力详情弹窗 =================

@@ -279,6 +279,35 @@
   }
   .hero-banner-title { font-size: 26px; font-weight: 800; margin-bottom: 10px; }
   .hero-banner-subtitle { font-size: 14px; opacity: 0.9; }
+  .hero-banner-slide {
+    position: absolute; inset: 0;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    cursor: pointer;
+  }
+  .hero-banner-slide.active { opacity: 1; z-index: 1; }
+  .hero-banner-dots {
+    position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 8px; z-index: 2;
+  }
+  .hero-banner-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: rgba(255,255,255,0.4); cursor: pointer;
+    transition: all 0.2s;
+  }
+  .hero-banner-dot.active { background: rgba(255,255,255,0.95); width: 20px; border-radius: 4px; }
+  .hero-banner-nav {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    width: 36px; height: 36px; border-radius: 50%;
+    background: rgba(255,255,255,0.15); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; z-index: 2; opacity: 0; transition: opacity 0.2s;
+    font-size: 14px;
+  }
+  .hero-banner:hover .hero-banner-nav { opacity: 1; }
+  .hero-banner-nav:hover { background: rgba(255,255,255,0.3); }
+  .hero-banner-nav.prev { left: 12px; }
+  .hero-banner-nav.next { right: 12px; }
 
   /* Stats */
   .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 28px; }
@@ -478,9 +507,9 @@
       <div class="logo-text">岗位化数智教学服务平台</div>
     </a>
     <div class="header-nav">
-      <a href="http://111.170.170.202:3001/portal" target="_blank" class="header-nav-item"><i class="fa fa-home"></i>门户首页</a>
-      <a href="http://111.170.170.202:3001/portal/workspace" target="_blank" class="header-nav-item"><i class="fa fa-th-large"></i>我的服务台</a>
-      <a href="http://111.170.170.202:3001/portal/apps" target="_blank" class="header-nav-item"><i class="fa fa-cog"></i>应用服务中心</a>
+      <a href="http://demo2.zhiyu.com.cn:3001/portal" target="_blank" class="header-nav-item"><i class="fa fa-home"></i>门户首页</a>
+      <a href="http://demo2.zhiyu.com.cn:3001/portal/workspace" target="_blank" class="header-nav-item"><i class="fa fa-th-large"></i>我的服务台</a>
+      <a href="http://demo2.zhiyu.com.cn:3001/portal/apps" target="_blank" class="header-nav-item"><i class="fa fa-cog"></i>应用服务中心</a>
     </div>
   </div>
   <div class="header-right">
@@ -533,12 +562,8 @@
         </div>
       </div>
 
-      <div class="hero-banner">
-        <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&h=400&fit=crop" alt="岗位Banner">
-        <div class="hero-banner-overlay">
-          <div class="hero-banner-title">岗位能力，精准对接</div>
-          <div class="hero-banner-subtitle">海量岗位能力模型，覆盖互联网、金融、电商、服务等热门行业</div>
-        </div>
+      <div class="hero-banner" id="heroBanner">
+        <!-- 动态生成轮播图 -->
       </div>
     </div>
   </div>
@@ -1027,11 +1052,108 @@
     });
   }
 
+  // =================== 轮播图展示 ===================
+  let bannerCarouselInterval = null;
+  let bannerCurrentIndex = 0;
+
+  function loadBannersFromStorage() {
+    try {
+      return JSON.parse(localStorage.getItem('zhiyu_banners') || '[]');
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function renderBannerCarousel() {
+    const container = document.getElementById('heroBanner');
+    const banners = loadBannersFromStorage().filter(b => b.status !== 'hidden');
+
+    if (banners.length === 0) {
+      container.innerHTML = `
+        <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&h=400&fit=crop" alt="岗位Banner">
+        <div class="hero-banner-overlay">
+          <div class="hero-banner-title">岗位能力，精准对接</div>
+          <div class="hero-banner-subtitle">海量岗位能力模型，覆盖互联网、金融、电商、服务等热门行业</div>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = `
+      ${banners.map((banner, idx) => `
+        <div class="hero-banner-slide ${idx === 0 ? 'active' : ''}" data-index="${idx}" data-jump="${banner.jumpPosition || ''}">
+          <img src="${banner.imageData}" alt="${banner.title || 'Banner'}">
+          <div class="hero-banner-overlay">
+            <div class="hero-banner-title">${banner.title || '岗位能力，精准对接'}</div>
+            <div class="hero-banner-subtitle">${banner.description || (banner.boundPosition ? '关联岗位：' + banner.boundPosition : '海量岗位能力模型，覆盖互联网、金融、电商、服务等热门行业')}</div>
+          </div>
+        </div>
+      `).join('')}
+      <div class="hero-banner-nav prev" id="bannerPrev"><i class="fa fa-chevron-left"></i></div>
+      <div class="hero-banner-nav next" id="bannerNext"><i class="fa fa-chevron-right"></i></div>
+      <div class="hero-banner-dots">
+        ${banners.map((_, idx) => `<div class="hero-banner-dot ${idx === 0 ? 'active' : ''}" data-index="${idx}"></div>`).join('')}
+      </div>
+    `;
+
+    bannerCurrentIndex = 0;
+    startBannerCarousel();
+
+    container.querySelectorAll('.hero-banner-slide').forEach(slide => {
+      slide.addEventListener('click', () => {
+        const jump = slide.dataset.jump;
+        if (jump) {
+          window.location.href = 'student.html?positionName=' + encodeURIComponent(jump);
+        }
+      });
+    });
+
+    document.getElementById('bannerPrev').addEventListener('click', (e) => {
+      e.stopPropagation();
+      const count = banners.length;
+      setBannerSlide((bannerCurrentIndex - 1 + count) % count);
+    });
+
+    document.getElementById('bannerNext').addEventListener('click', (e) => {
+      e.stopPropagation();
+      const count = banners.length;
+      setBannerSlide((bannerCurrentIndex + 1) % count);
+    });
+
+    container.querySelectorAll('.hero-banner-dot').forEach(dot => {
+      dot.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setBannerSlide(parseInt(dot.dataset.index));
+      });
+    });
+  }
+
+  function setBannerSlide(index) {
+    const container = document.getElementById('heroBanner');
+    const slides = container.querySelectorAll('.hero-banner-slide');
+    const dots = container.querySelectorAll('.hero-banner-dot');
+    if (!slides.length) return;
+
+    slides.forEach((s, i) => s.classList.toggle('active', i === index));
+    dots.forEach((d, i) => d.classList.toggle('active', i === index));
+    bannerCurrentIndex = index;
+  }
+
+  function startBannerCarousel() {
+    if (bannerCarouselInterval) clearInterval(bannerCarouselInterval);
+    bannerCarouselInterval = setInterval(() => {
+      const banners = loadBannersFromStorage().filter(b => b.status !== 'hidden');
+      if (banners.length <= 1) return;
+      setBannerSlide((bannerCurrentIndex + 1) % banners.length);
+    }, 5000);
+  }
+
   // =================== 初始化 ===================
   initPositionMap();
   initStats();
   initFilters();
   renderCards();
+  renderBannerCarousel();
   updateFilterSummary();
 
   // 更新日期时间

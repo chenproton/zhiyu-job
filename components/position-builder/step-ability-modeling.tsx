@@ -59,7 +59,7 @@ const COMPETENCY_LEVELS: { value: CompetencyLevel; label: string; description: s
   { value: 'expert', label: '精通', description: '行业专家水平，能创新和引领发展方向' },
 ]
 
-const DEFAULT_DOMAINS = [
+const ABILITY_DOMAINS = [
   '业务洞察',
   '专业工具',
   '通用素质',
@@ -134,6 +134,7 @@ export function StepAbilityModeling({ position, onUpdate, aiMode = false }: Step
       name: ability.name,
       category: ability.category,
       level: 'master',
+      domain: ABILITY_DOMAINS[0],
       rubricDescription: '',
       description: '',
       attributes: [],
@@ -151,6 +152,7 @@ export function StepAbilityModeling({ position, onUpdate, aiMode = false }: Step
       name: newAbilityName.trim(),
       category: newAbilityCategory,
       level: 'master',
+      domain: ABILITY_DOMAINS[0],
       rubricDescription: '',
       description: '',
       attributes: [],
@@ -175,7 +177,13 @@ export function StepAbilityModeling({ position, onUpdate, aiMode = false }: Step
   }
 
   const handleSetAttribute = (bindingId: string, attr: string) => {
-    handleUpdateBinding(bindingId, { attributes: [attr] })
+    const binding = position.abilityBindings.find((b) => b.id === bindingId)
+    if (!binding) return
+    const current = binding.attributes || []
+    const next = current.includes(attr)
+      ? current.filter((a) => a !== attr)
+      : [...current, attr]
+    handleUpdateBinding(bindingId, { attributes: next })
   }
 
   const handleAIGenerate = async () => {
@@ -197,6 +205,7 @@ export function StepAbilityModeling({ position, onUpdate, aiMode = false }: Step
           name: abilities[0]?.name || '编程开发',
           category: abilities[0]?.category || '专业技能',
           level: 'proficient' as const,
+          domain: ABILITY_DOMAINS[0],
           rubricDescription: '能够独立完成复杂业务模块的编码实现，代码质量达到团队规范要求',
           description: '掌握至少一门主流编程语言，熟悉常用开发框架和工具链',
           attributes: ['知识', '技能'],
@@ -209,6 +218,7 @@ export function StepAbilityModeling({ position, onUpdate, aiMode = false }: Step
           name: abilities[1]?.name || '系统设计',
           category: abilities[1]?.category || '专业技能',
           level: 'master' as const,
+          domain: ABILITY_DOMAINS[1 % ABILITY_DOMAINS.length],
           rubricDescription: '能够进行模块级设计，理解并能运用常见设计模式',
           description: '具备系统架构设计能力，能进行需求分析和方案选型',
           attributes: ['知识', '技能'],
@@ -220,6 +230,7 @@ export function StepAbilityModeling({ position, onUpdate, aiMode = false }: Step
           name: '代码审查',
           category: '通用能力',
           level: 'comprehend' as const,
+          domain: ABILITY_DOMAINS[2 % ABILITY_DOMAINS.length],
           rubricDescription: '能够发现代码中的明显缺陷，并提出改进建议',
           description: '熟悉代码规范和质量标准，能进行有效的代码评审',
           attributes: ['素养', '技能'],
@@ -236,7 +247,7 @@ export function StepAbilityModeling({ position, onUpdate, aiMode = false }: Step
     if (!selectedRespId || aiRecommendations.length === 0) return
 
     const toAdopt = aiRecommendations.filter(r => selectedAiRecIds.includes(r.id))
-    const newBindings: PositionAbilityBinding[] = toAdopt.map(rec => ({
+    const newBindings: PositionAbilityBinding[] = toAdopt.map((rec, i) => ({
       id: `bind-${Date.now()}-${rec.id}`,
       responsibilityId: selectedRespId,
       source: rec.id.startsWith('ai-ab-') && abilities.some(a => a.name === rec.name) ? 'public' : 'custom',
@@ -244,6 +255,7 @@ export function StepAbilityModeling({ position, onUpdate, aiMode = false }: Step
       name: rec.name,
       category: rec.category,
       level: rec.level,
+      domain: ABILITY_DOMAINS[i % ABILITY_DOMAINS.length],
       rubricDescription: rec.rubricDescription,
       description: '',
       attributes: [],
@@ -725,12 +737,30 @@ export function StepAbilityModeling({ position, onUpdate, aiMode = false }: Step
                       </div>
                     </div>
 
-                    {/* Attributes — single select */}
+                    {/* Domain */}
+                    <div className="space-y-1.5">
+                      <Label className="text-xs text-gray-400 font-medium">所属能力域</Label>
+                      <Select
+                        value={binding.domain || ABILITY_DOMAINS[0]}
+                        onValueChange={(v) => handleUpdateBinding(binding.id, { domain: v })}
+                      >
+                        <SelectTrigger className="h-8 text-sm w-full max-w-xs">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {ABILITY_DOMAINS.map((d) => (
+                            <SelectItem key={d} value={d}>{d}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Attributes — multi select */}
                     <div className="space-y-1.5">
                       <Label className="text-xs text-gray-400 font-medium">能力属性</Label>
                       <div className="flex gap-2">
                         {ABILITY_ATTRIBUTES.map((attr) => {
-                          const isSelected = (binding.attributes || [])[0] === attr
+                          const isSelected = (binding.attributes || []).includes(attr)
                           return (
                             <button
                               key={attr}

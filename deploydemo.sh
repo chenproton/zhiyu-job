@@ -23,6 +23,7 @@ STANDALONE_DIR="$SCRIPT_DIR/.next/standalone"
 STATIC_DIR="$SCRIPT_DIR/.next/static"
 PUBLIC_DIR="$SCRIPT_DIR/public"
 SERVER_DIR="$SCRIPT_DIR/.next/server"
+LOCAL_BACKUP_DIR="$SCRIPT_DIR/.next-standalone-local.bak"
 SSH_PORT="${SSH_PORT:-22}"
 
 # 安全提示
@@ -60,6 +61,7 @@ replace_ip() {
     --exclude-dir=.git \
     --exclude-dir=node_modules \
     --exclude-dir=.next \
+    --exclude-dir=.next-standalone-local.bak \
     --exclude-dir=dist \
     --exclude='*.demo-bak' \
     --exclude='deploydemo.sh' \
@@ -102,15 +104,25 @@ echo ""
 echo "🚀 启动演示环境部署: [$SITE_NAME] -> http://$DEMO_HOST:$PORT"
 echo ""
 
-echo "[1/5] 替换源码中的旧 IP ($OLD_IP -> $DEMO_HOST)..."
+echo "[1/6] 备份本地 standalone 产物（如存在）..."
+if [ -d "$STANDALONE_DIR" ]; then
+  rm -rf "$LOCAL_BACKUP_DIR"
+  cp -a "$STANDALONE_DIR" "$LOCAL_BACKUP_DIR"
+  echo "  已备份本地 standalone 产物到 $LOCAL_BACKUP_DIR"
+else
+  echo "  当前无 standalone 产物，跳过备份"
+fi
+
+echo ""
+echo "[2/6] 替换源码中的旧 IP ($OLD_IP -> $DEMO_HOST)..."
 replace_ip "$OLD_IP" "$DEMO_HOST"
 
 echo ""
-echo "[2/5] 清理旧构建..."
+echo "[3/6] 清理旧构建..."
 rm -rf "$STANDALONE_DIR" "$STATIC_DIR" "$SERVER_DIR"
 
 echo ""
-echo "[3/5] 安装依赖并构建（使用 webpack 以绕过 Turbopack standalone 问题）..."
+echo "[4/6] 安装依赖并构建（使用 webpack 以绕过 Turbopack standalone 问题）..."
 if [ ! -d "node_modules" ] || [ "${FORCE_INSTALL:-0}" = "1" ]; then
   pnpm install --prefer-offline --no-frozen-lockfile
 else
@@ -119,7 +131,7 @@ fi
 pnpm exec next build --webpack
 
 echo ""
-echo "[4/5] 组装 standalone 产物..."
+echo "[5/6] 组装 standalone 产物..."
 if [ -d "$SERVER_DIR" ]; then
   mkdir -p "$STANDALONE_DIR/.next/server"
   rsync -a --delete --exclude="*.map" "$SERVER_DIR/" "$STANDALONE_DIR/.next/server/"
@@ -134,7 +146,7 @@ if [ -d "$PUBLIC_DIR" ]; then
 fi
 
 echo ""
-echo "[5/5] 上传并部署到演示服务器 $DEMO_HOST..."
+echo "[6/6] 上传并部署到演示服务器 $DEMO_HOST..."
 
 # 远程清扫
 $SSH_CMD $SSH_OPTS "$DEMO_USER@$DEMO_HOST" \
@@ -190,4 +202,22 @@ $SSH_CMD $SSH_OPTS "$DEMO_USER@$DEMO_HOST" \
 echo ""
 echo "✨ [$SITE_NAME] 演示环境部署完成！"
 echo "   访问地址: http://$DEMO_HOST:$PORT"
+echo ""
+
+# ==================== 还原本地 standalone 产物 ====================
+echo ">>> 还原本地 standalone 产物，确保 localhost:$PORT 不受影响..."
+if [ -d "$LOCAL_BACKUP_DIR" ]; then
+  rm -rf "$STANDALONE_DIR"
+  cp -a "$LOCAL_BACKUP_DIR" "$STANDALONE_DIR"
+  rm -rf "$LOCAL_BACKUP_DIR"
+
+  if pm2 describe "$SITE_NAME" &>/dev/null; then
+    pm2 restart "$SITE_NAME" --update-env >/dev/null 2>&1 || true
+    echo "  已还原 standalone 产物并重启本地 $SITE_NAME 服务"
+  else
+    echo "  已还原 standalone 产物，但本地 $SITE_NAME 服务未运行"
+  fi
+else
+  echo "  无本地 standalone 产物备份，无需还原"
+fi
 echo ""

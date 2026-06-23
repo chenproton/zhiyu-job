@@ -31,14 +31,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
-import { Plus, Search, MoreHorizontal, Pencil, Trash2, FolderOpen, GitBranch } from 'lucide-react'
+import { Plus, Search, Pencil, Trash2, FolderOpen, GitBranch } from 'lucide-react'
 import Link from 'next/link'
 import type { Batch } from '@/lib/types'
 
@@ -270,7 +264,7 @@ export default function BatchesPage() {
                 </TableRow>
               ) : (
                 filteredBatches.map((batch) => (
-                  <TableRow key={batch.id}>
+                  <TableRow key={batch.id} className="group">
                     <TableCell>
                       <Link
                         href={`/batches/${batch.id}`}
@@ -292,30 +286,35 @@ export default function BatchesPage() {
                     </TableCell>
                     <TableCell>{batch.positionCount}</TableCell>
                     <TableCell>{batch.publishedCount}</TableCell>
-                    <TableCell className="text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => handleEdit(batch)}>
-                            <Pencil className="mr-2 h-4 w-4" />
-                            编辑
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleToggleStatus(batch)}>
-                            {batch.status === 'open' ? '截止批次' : '重新开放'}
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => handleDelete(batch.id)}
-                            className="text-destructive"
-                          >
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            删除
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                    <TableCell className="text-right relative">
+                      <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity absolute right-2 top-1/2 -translate-y-1/2 bg-white/95 backdrop-blur-sm z-10 px-2 py-1 rounded-lg shadow-sm border">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-7 px-2 text-xs"
+                          onClick={() => handleEdit(batch)}
+                        >
+                          <Pencil className="mr-1 h-3 w-3" />
+                          编辑
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-7 px-2 text-xs"
+                          onClick={() => handleToggleStatus(batch)}
+                        >
+                          {batch.status === 'open' ? '截止批次' : '重新开放'}
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-7 px-2 text-xs text-destructive"
+                          onClick={() => handleDelete(batch.id)}
+                        >
+                          <Trash2 className="mr-1 h-3 w-3" />
+                          删除
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))

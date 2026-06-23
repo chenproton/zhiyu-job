@@ -26,20 +26,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { 
   Search, 
   Clock,
   CheckCircle2,
   XCircle,
   AlertCircle,
-  MoreHorizontal,
   Eye,
   FileText,
   ArrowRight,
@@ -289,7 +281,7 @@ export default function ApprovalsPage() {
                 {filteredApprovals.map((approval) => {
                   const currentStep = getCurrentStep(approval)
                   return (
-                    <TableRow key={approval.id}>
+                    <TableRow key={approval.id} className="group">
                       <TableCell>
                         <div className="flex items-center gap-3">
                           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
@@ -335,44 +327,50 @@ export default function ApprovalsPage() {
                           locale: zhCN,
                         })}
                       </TableCell>
-                      <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon">
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => handleOpenDetail(approval)}>
-                              <Eye className="mr-2 h-4 w-4" />
-                              查看详情
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              <History className="mr-2 h-4 w-4" />
-                              审批历史
-                            </DropdownMenuItem>
-                            {approval.status === "pending" &&
-                              (user?.role === "admin" || user?.role === "reviewer") && (
-                                <>
-                                  <DropdownMenuSeparator />
-                                  <DropdownMenuItem
-                                    onClick={() => handleOpenAction(approval, "approve")}
-                                    className="text-success"
-                                  >
-                                    <CheckCircle2 className="mr-2 h-4 w-4" />
-                                    通过
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem
-                                    onClick={() => handleOpenAction(approval, "reject")}
-                                    className="text-destructive"
-                                  >
-                                    <XCircle className="mr-2 h-4 w-4" />
-                                    驳回
-                                  </DropdownMenuItem>
-                                </>
-                              )}
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                      <TableCell className="text-right relative">
+                        <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity absolute right-2 top-1/2 -translate-y-1/2 bg-white/95 backdrop-blur-sm z-10 px-2 py-1 rounded-lg shadow-sm border">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-7 px-2 text-xs"
+                            onClick={() => handleOpenDetail(approval)}
+                          >
+                            <Eye className="mr-1 h-3 w-3" />
+                            查看详情
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-7 px-2 text-xs"
+                            onClick={() => handleOpenDetail(approval)}
+                          >
+                            <History className="mr-1 h-3 w-3" />
+                            审批历史
+                          </Button>
+                          {approval.status === "pending" &&
+                            (user?.role === "admin" || user?.role === "reviewer") && (
+                              <>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-7 px-2 text-xs text-success"
+                                  onClick={() => handleOpenAction(approval, "approve")}
+                                >
+                                  <CheckCircle2 className="mr-1 h-3 w-3" />
+                                  通过
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-7 px-2 text-xs text-destructive"
+                                  onClick={() => handleOpenAction(approval, "reject")}
+                                >
+                                  <XCircle className="mr-1 h-3 w-3" />
+                                  驳回
+                                </Button>
+                              </>
+                            )}
+                        </div>
                       </TableCell>
                     </TableRow>
                   )

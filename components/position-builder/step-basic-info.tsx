@@ -48,6 +48,7 @@ interface StepBasicInfoProps {
   position: Position
   onUpdate: (data: Partial<Position>) => void
   aiMode?: boolean
+  variant?: 'default' | 'create'
 }
 
 // Mock 数据
@@ -138,7 +139,8 @@ const mockAIContent = {
   },
 }
 
-export function StepBasicInfo({ position, onUpdate, aiMode = false }: StepBasicInfoProps) {
+export function StepBasicInfo({ position, onUpdate, aiMode = false, variant = 'default' }: StepBasicInfoProps) {
+  const isCreate = variant === 'create'
   const [isGenerating, setIsGenerating] = useState<string | null>(null)
   const [aiSuggestions, setAiSuggestions] = useState<Partial<Record<AiSuggestionField, AiSuggestion>>>({})
   const [newResponsibility, setNewResponsibility] = useState('')
@@ -383,6 +385,15 @@ export function StepBasicInfo({ position, onUpdate, aiMode = false }: StepBasicI
   }
 
   const addResponsibility = () => {
+    if (isCreate) {
+      const newItem: PositionResponsibility = {
+        id: `resp-${Date.now()}`,
+        name: '',
+        description: '',
+      }
+      onUpdate({ responsibilities: [...position.responsibilities, newItem] })
+      return
+    }
     if (!newResponsibility.trim()) return
     const newItem: PositionResponsibility = {
       id: `resp-${Date.now()}`,
@@ -398,6 +409,10 @@ export function StepBasicInfo({ position, onUpdate, aiMode = false }: StepBasicI
   }
 
   const addRequirement = () => {
+    if (isCreate) {
+      onUpdate({ requirements: [...position.requirements, ''] })
+      return
+    }
     if (!newRequirement.trim()) return
     onUpdate({ requirements: [...position.requirements, newRequirement.trim()] })
     setNewRequirement('')
@@ -553,7 +568,7 @@ export function StepBasicInfo({ position, onUpdate, aiMode = false }: StepBasicI
               </Select>
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="major">关联专业</Label>
+              <Label htmlFor="major">面向专业</Label>
               <Select
                 value={position.majors[0] || ''}
                 onValueChange={(value) => onUpdate({ majors: [value] })}
@@ -576,36 +591,42 @@ export function StepBasicInfo({ position, onUpdate, aiMode = false }: StepBasicI
           <div className="grid gap-2">
             <Label>薪资范围（元/月）</Label>
             <div className="flex items-center gap-3">
-              <Input
-                type="number"
-                value={position.salaryRange[0]}
-                onChange={(e) =>
-                  onUpdate({
-                    salaryRange: [Number(e.target.value), position.salaryRange[1]],
-                  })
-                }
-                placeholder="最低"
-                className="w-32"
-              />
+              <div className="relative">
+                <Input
+                  type="number"
+                  value={position.salaryRange[0]}
+                  onChange={(e) =>
+                    onUpdate({
+                      salaryRange: [Number(e.target.value), position.salaryRange[1]],
+                    })
+                  }
+                  placeholder="最低"
+                  className={`${isCreate ? 'w-40' : 'w-32'} pr-8`}
+                />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">¥</span>
+              </div>
               <span className="text-muted-foreground">-</span>
-              <Input
-                type="number"
-                value={position.salaryRange[1]}
-                onChange={(e) =>
-                  onUpdate({
-                    salaryRange: [position.salaryRange[0], Number(e.target.value)],
-                  })
-                }
-                placeholder="最高"
-                className="w-32"
-              />
+              <div className="relative">
+                <Input
+                  type="number"
+                  value={position.salaryRange[1]}
+                  onChange={(e) =>
+                    onUpdate({
+                      salaryRange: [position.salaryRange[0], Number(e.target.value)],
+                    })
+                  }
+                  placeholder="最高"
+                  className={`${isCreate ? 'w-40' : 'w-32'} pr-8`}
+                />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">¥</span>
+              </div>
             </div>
           </div>
 
           {/* Description */}
           <div className="grid gap-2">
             <div className="flex items-center justify-between">
-              <Label htmlFor="description">岗位介绍</Label>
+              <Label htmlFor="description">{isCreate ? '岗位背景介绍' : '岗位介绍'}</Label>
               {renderAIButton('description', aiMode ? 'AI 生成文案' : 'AI 起草')}
             </div>
             <Textarea
@@ -613,7 +634,7 @@ export function StepBasicInfo({ position, onUpdate, aiMode = false }: StepBasicI
               value={position.description}
               onChange={(e) => onUpdate({ description: e.target.value })}
               placeholder="描述该岗位的主要工作内容和特点..."
-              rows={4}
+              rows={isCreate ? 6 : 4}
             />
             {aiMode && renderAiSuggestionCard('description')}
           </div>
@@ -630,9 +651,11 @@ export function StepBasicInfo({ position, onUpdate, aiMode = false }: StepBasicI
           <div className="space-y-3">
             {position.responsibilities.map((item, index) => (
               <div key={item.id} className="flex items-center gap-2">
-                <Badge variant="outline" className="shrink-0">
-                  {index + 1}
-                </Badge>
+                {!isCreate && (
+                  <Badge variant="outline" className="shrink-0">
+                    {index + 1}
+                  </Badge>
+                )}
                 <Input
                   value={item.name}
                   onChange={(e) => {
@@ -653,17 +676,27 @@ export function StepBasicInfo({ position, onUpdate, aiMode = false }: StepBasicI
                 </Button>
               </div>
             ))}
-            <div className="flex gap-2">
-              <Input
-                placeholder="添加工作职责..."
-                value={newResponsibility}
-                onChange={(e) => setNewResponsibility(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && addResponsibility()}
-              />
-              <Button variant="outline" onClick={addResponsibility}>
-                <Plus className="h-4 w-4" />
-              </Button>
-            </div>
+            {isCreate ? (
+              <div className="flex items-center gap-2">
+                <Button variant="outline" className="flex-1" onClick={addResponsibility}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  添加工作职责
+                </Button>
+                <div className="h-8 w-8 shrink-0" />
+              </div>
+            ) : (
+              <div className="flex gap-2">
+                <Input
+                  placeholder="添加工作职责..."
+                  value={newResponsibility}
+                  onChange={(e) => setNewResponsibility(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && addResponsibility()}
+                />
+                <Button variant="outline" onClick={addResponsibility}>
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
           </div>
           {aiMode && renderAiSuggestionCard('responsibilities')}
         </CardContent>
@@ -679,9 +712,11 @@ export function StepBasicInfo({ position, onUpdate, aiMode = false }: StepBasicI
           <div className="space-y-3">
             {position.requirements.map((item, index) => (
               <div key={index} className="flex items-center gap-2">
-                <Badge variant="outline" className="shrink-0">
-                  {index + 1}
-                </Badge>
+                {!isCreate && (
+                  <Badge variant="outline" className="shrink-0">
+                    {index + 1}
+                  </Badge>
+                )}
                 <Input
                   value={item}
                   onChange={(e) => {
@@ -702,17 +737,27 @@ export function StepBasicInfo({ position, onUpdate, aiMode = false }: StepBasicI
                 </Button>
               </div>
             ))}
-            <div className="flex gap-2">
-              <Input
-                placeholder="添加任职要求..."
-                value={newRequirement}
-                onChange={(e) => setNewRequirement(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && addRequirement()}
-              />
-              <Button variant="outline" onClick={addRequirement}>
-                <Plus className="h-4 w-4" />
-              </Button>
-            </div>
+            {isCreate ? (
+              <div className="flex items-center gap-2">
+                <Button variant="outline" className="flex-1" onClick={addRequirement}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  添加任职要求
+                </Button>
+                <div className="h-8 w-8 shrink-0" />
+              </div>
+            ) : (
+              <div className="flex gap-2">
+                <Input
+                  placeholder="添加任职要求..."
+                  value={newRequirement}
+                  onChange={(e) => setNewRequirement(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && addRequirement()}
+                />
+                <Button variant="outline" onClick={addRequirement}>
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
           </div>
           {aiMode && renderAiSuggestionCard('requirements')}
         </CardContent>
@@ -728,52 +773,86 @@ export function StepBasicInfo({ position, onUpdate, aiMode = false }: StepBasicI
           <div className="grid grid-cols-2 gap-6">
             <div>
               <p className="text-sm font-medium mb-2">横向发展</p>
-              <div className="flex flex-wrap gap-2 mb-2">
+              <div className="space-y-3">
                 {position.careerPath.horizontal.map((item, index) => (
-                  <Badge key={index} variant="secondary" className="gap-1">
-                    {item}
-                    <button onClick={() => removeHorizontalPath(index)}>
-                      <X className="h-3 w-3" />
-                    </button>
-                  </Badge>
+                  <div key={index} className="flex items-center gap-2">
+                    <Badge variant="outline" className="shrink-0">
+                      {index + 1}
+                    </Badge>
+                    <Input
+                      value={item}
+                      onChange={(e) => {
+                        const next = position.careerPath.horizontal.map((h, i) =>
+                          i === index ? e.target.value : h
+                        )
+                        onUpdate({ careerPath: { ...position.careerPath, horizontal: next } })
+                      }}
+                      className="flex-1 text-sm h-8"
+                    />
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                      onClick={() => removeHorizontalPath(index)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
                 ))}
-              </div>
-              <div className="flex gap-2">
-                <Input
-                  placeholder="添加横向发展方向..."
-                  value={newHorizontal}
-                  onChange={(e) => setNewHorizontal(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && addHorizontalPath()}
-                  className="flex-1"
-                />
-                <Button variant="outline" size="icon" onClick={addHorizontalPath}>
-                  <Plus className="h-4 w-4" />
-                </Button>
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="添加横向发展方向..."
+                    value={newHorizontal}
+                    onChange={(e) => setNewHorizontal(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && addHorizontalPath()}
+                    className="flex-1"
+                  />
+                  <Button variant="outline" size="icon" onClick={addHorizontalPath}>
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             </div>
             <div>
               <p className="text-sm font-medium mb-2">纵向发展</p>
-              <div className="flex flex-wrap gap-2 mb-2">
+              <div className="space-y-3">
                 {position.careerPath.vertical.map((item, index) => (
-                  <Badge key={index} variant="secondary" className="gap-1">
-                    {item}
-                    <button onClick={() => removeVerticalPath(index)}>
-                      <X className="h-3 w-3" />
-                    </button>
-                  </Badge>
+                  <div key={index} className="flex items-center gap-2">
+                    <Badge variant="outline" className="shrink-0">
+                      {index + 1}
+                    </Badge>
+                    <Input
+                      value={item}
+                      onChange={(e) => {
+                        const next = position.careerPath.vertical.map((v, i) =>
+                          i === index ? e.target.value : v
+                        )
+                        onUpdate({ careerPath: { ...position.careerPath, vertical: next } })
+                      }}
+                      className="flex-1 text-sm h-8"
+                    />
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                      onClick={() => removeVerticalPath(index)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
                 ))}
-              </div>
-              <div className="flex gap-2">
-                <Input
-                  placeholder="添加纵向发展方向..."
-                  value={newVertical}
-                  onChange={(e) => setNewVertical(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && addVerticalPath()}
-                  className="flex-1"
-                />
-                <Button variant="outline" size="icon" onClick={addVerticalPath}>
-                  <Plus className="h-4 w-4" />
-                </Button>
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="添加纵向发展方向..."
+                    value={newVertical}
+                    onChange={(e) => setNewVertical(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && addVerticalPath()}
+                    className="flex-1"
+                  />
+                  <Button variant="outline" size="icon" onClick={addVerticalPath}>
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             </div>
           </div>

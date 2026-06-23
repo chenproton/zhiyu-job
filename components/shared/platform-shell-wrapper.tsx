@@ -7,9 +7,9 @@ import { careerNavigationConfig } from "@/lib/navigation-config"
 import type { SideNavItem } from "@/components/platform-shell"
 
 const ROLE_SIDE_NAV_ACCESS: Record<string, string[]> = {
-  admin: ['job-construction', 'positions', 'batches', 'workflows', 'approvals', 'student-learning', 'ai-assisted', 'ai-assisted-2-positions', 'ai-batch-agent', 'ai-first-student'],
-  builder: ['job-construction', 'positions', 'batches', 'workflows', 'approvals', 'student-learning', 'ai-assisted', 'ai-assisted-2-positions', 'ai-batch-agent', 'ai-first-student'],
-  reviewer: ['job-construction', 'positions', 'batches', 'workflows', 'approvals', 'student-learning', 'ai-assisted', 'ai-assisted-2-positions', 'ai-batch-agent', 'ai-first-student'],
+  admin: ['job-construction', 'positions', 'batches', 'workflows', 'approvals', 'heart-jobs', 'banner-management', 'student-learning', 'ai-assisted', 'ai-assisted-2-positions', 'ai-batch-agent', 'ai-first-student'],
+  builder: ['job-construction', 'positions', 'batches', 'workflows', 'approvals', 'heart-jobs', 'banner-management', 'student-learning', 'ai-assisted', 'ai-assisted-2-positions', 'ai-batch-agent', 'ai-first-student'],
+  reviewer: ['job-construction', 'positions', 'batches', 'workflows', 'approvals', 'heart-jobs', 'banner-management', 'student-learning', 'ai-assisted', 'ai-assisted-2-positions', 'ai-batch-agent', 'ai-first-student'],
 }
 
 export function PlatformShellWrapper({ children }: { children: React.ReactNode }) {

@@ -11,9 +11,9 @@ export const careerNavigationConfig: PlatformNavigationConfig = {
   showCurrentTime: true,
   showUserMenu: false,
   topNavItems: [
-    { id: "portal", label: "门户首页", href: "http://111.170.170.202:3001/portal", icon: "home" },
-    { id: "workspace", label: "我的服务台", href: "http://111.170.170.202:3001/portal/workspace", icon: "briefcase" },
-    { id: "apps", label: "应用服务中心", href: "http://111.170.170.202:3001/portal/apps", icon: "layoutGrid" },
+    { id: "portal", label: "门户首页", href: "http://demo2.zhiyu.com.cn:3001/portal", icon: "home" },
+    { id: "workspace", label: "我的服务台", href: "http://demo2.zhiyu.com.cn:3001/portal/workspace", icon: "briefcase" },
+    { id: "apps", label: "应用服务中心", href: "http://demo2.zhiyu.com.cn:3001/portal/apps", icon: "layoutGrid" },
   ],
   sideNavItems: [
     {
@@ -25,6 +25,8 @@ export const careerNavigationConfig: PlatformNavigationConfig = {
         { id: "batches", label: "批次分组管理", href: "/batches", matchers: ["/batches"] },
         { id: "workflows", label: "审批流程管理", href: "/workflows", matchers: ["/workflows"] },
         { id: "approvals", label: "资源审批管理", href: "/approvals", matchers: ["/approvals"] },
+        { id: "heart-jobs", label: "我的心仪岗位", href: "/heart-jobs", matchers: ["/heart-jobs"] },
+        { id: "banner-management", label: "轮播图管理", href: "/banner-management", matchers: ["/banner-management"] },
       ],
     },
     {
@@ -40,7 +42,7 @@ export const careerNavigationConfig: PlatformNavigationConfig = {
       icon: "sparkles",
       children: [
         { id: "ai-assisted-2-positions", label: "岗位资源编辑(AI辅助)", href: "/ai-assisted_2/positions", matchers: ["/ai-assisted_2/positions"] },
-        { id: "ai-batch-agent", label: "批量岗位创建(智能体)", href: "http://111.170.170.202:5000/", external: true },
+        { id: "ai-batch-agent", label: "批量岗位创建(智能体)", href: "http://demo2.zhiyu.com.cn:5000/", external: true },
         { id: "ai-first-student", label: "学生岗位导览(AI辅助)", href: "/student-ai-first.html", matchers: ["/student-ai-first.html"] },
       ],
     },

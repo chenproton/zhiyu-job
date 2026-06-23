@@ -2,14 +2,14 @@ module.exports = {
   apps: [
     {
       name: 'job',
-      cwd: '/var/www/job',
-      script: 'pnpm',
-      args: 'start',
+      cwd: '/root/projects/zhiyu-job/.next/standalone',
+      script: 'server.js',
       instances: 1,
       exec_mode: 'fork',
       env: {
         NODE_ENV: 'production',
         PORT: 3002,
+        HOSTNAME: '0.0.0.0',
       },
       // 日志配置 - 使用相对路径或 PM2 默认路径，避免 /var/log/pm2 权限问题
       error_file: 'logs/error.log',

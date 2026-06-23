@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我的心仪岗位</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #F9FAFC;
+    min-height: 100vh;
+    color: #1f2937;
+  }
+
+  .header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 64px;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(226,232,240,0.8);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    z-index: 1000;
+  }
+  .header-left { display: flex; align-items: center; gap: 40px; }
+  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .logo-icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: linear-gradient(135deg, #3b82f6, #60a5fa);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 16px;
+  }
+  .logo-text { font-size: 18px; font-weight: 700; color: #0f172a; }
+  .header-nav { display: flex; align-items: center; gap: 6px; }
+  .header-nav-item {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 16px; font-size: 14px; color: #636363;
+    border-radius: 6px; text-decoration: none;
+    transition: all 0.15s;
+    position: relative;
+    line-height: 1.5;
+  }
+  .header-nav-item:hover { background: #f2f2f2; color: #222; }
+  .header-nav-item.active { color: #3b82f6; font-weight: 500; }
+  .header-nav-item.active::after {
+    content: "";
+    position: absolute; bottom: 0; left: 16px; right: 16px;
+    height: 2px; background: #3b82f6; border-radius: 1px;
+  }
+  .header-right { display: flex; align-items: center; gap: 18px; }
+  .header-time { font-size: 13px; color: #94a3b8; }
+  .header-user {
+    display: flex; align-items: center; gap: 8px;
+    padding: 4px 10px 4px 4px; border-radius: 20px;
+    background: #f8fafc; border: 1px solid #e2e8f0;
+    font-size: 14px; color: #475569; cursor: pointer;
+  }
+  .header-user-avatar {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: linear-gradient(135deg, #fef3c7, #bfdbfe);
+    display: flex; align-items: center; justify-content: center;
+    color: #2563eb; font-size: 12px;
+  }
+
+  .main { padding: 88px 32px 48px; max-width: 1400px; margin: 0 auto; }
+
+  .page-header {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    margin-bottom: 24px; gap: 20px; flex-wrap: wrap;
+  }
+  .page-title { font-size: 22px; font-weight: 800; color: #0f172a; }
+  .page-subtitle { font-size: 13px; color: #64748b; margin-top: 4px; }
+
+  .search-bar {
+    display: flex; align-items: center; gap: 12px;
+    background: #fff; border: 1px solid #e7e5e4;
+    border-radius: 12px; padding: 6px 6px 6px 16px;
+    min-width: 360px;
+  }
+  .search-bar input {
+    flex: 1; border: none; outline: none;
+    background: transparent; font-size: 14px; color: #334155;
+  }
+  .search-bar input::placeholder { color: #a8a29e; }
+  .search-bar button {
+    background: linear-gradient(135deg, #3b82f6, #60a5fa);
+    color: #fff; border: none; border-radius: 10px;
+    padding: 8px 18px; font-size: 14px; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .search-bar button:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(59,130,246,0.25); }
+
+  .toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .result-tip { font-size: 14px; color: #64748b; }
+  .result-tip b { color: #2563eb; font-weight: 700; }
+  .clear-all-btn {
+    font-size: 13px; color: #dc2626; cursor: pointer;
+    background: none; border: none; padding: 0;
+  }
+  .clear-all-btn:hover { text-decoration: underline; }
+  .clear-all-btn:disabled { color: #a8a29e; cursor: not-allowed; text-decoration: none; }
+
+  .card-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .job-card {
+    background: #fff; border-radius: 16px; overflow: hidden;
+    border: 1px solid #e7e5e4;
+    transition: transform 0.25s, box-shadow 0.25s;
+    cursor: pointer; position: relative;
+  }
+  .job-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(69,26,3,0.1);
+  }
+  .card-cover {
+    height: 160px; position: relative;
+    background-size: cover; background-position: center;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 16px; color: #fff;
+  }
+  .card-cover::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(69,26,3,0.85) 0%, rgba(69,26,3,0.2) 60%, transparent 100%);
+  }
+  .card-cover-content { position: relative; z-index: 1; }
+  .cover-title { font-size: 16px; font-weight: 700; margin-bottom: 6px; line-height: 1.4; }
+  .cover-meta { font-size: 12px; opacity: 0.9; }
+  .heart-badge {
+    position: absolute; top: 12px; right: 12px; z-index: 2;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(255,255,255,0.2); backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 14px;
+  }
+  .unlike-btn {
+    position: absolute; bottom: 12px; right: 12px; z-index: 3;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(255,255,255,0.9); color: #ef4444;
+    border: none; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 14px; opacity: 0; transition: opacity 0.2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  }
+  .job-card:hover .unlike-btn { opacity: 1; }
+  .unlike-btn:hover { background: #fff; transform: scale(1.05); }
+
+  .card-body { padding: 18px; }
+  .card-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .card-tag {
+    font-size: 12px; padding: 4px 10px; border-radius: 6px;
+    background: #f5f5f4; color: #475569;
+  }
+  .card-tag.orange { background: #ffedd5; color: #c2410c; }
+  .card-tag.blue { background: #dbeafe; color: #1d4ed8; }
+  .card-tag.green { background: #dcfce7; color: #15803d; }
+  .card-desc {
+    font-size: 13px; color: #64748b; line-height: 1.6;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    margin-bottom: 12px;
+  }
+  .card-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 12px; border-top: 1px solid #f5f5f4;
+  }
+  .card-salary { font-size: 15px; font-weight: 800; color: #dc2626; }
+  .card-time { font-size: 12px; color: #94a3b8; }
+
+  .empty-state {
+    text-align: center; padding: 100px 20px; color: #94a3b8;
+    grid-column: 1 / -1;
+  }
+  .empty-state i { font-size: 64px; margin-bottom: 20px; color: #fecaca; }
+  .empty-state div { font-size: 15px; margin-bottom: 8px; }
+  .empty-state p { font-size: 13px; }
+
+  @media (max-width: 1200px) {
+    .card-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 768px) {
+    .header { padding: 0 16px; }
+    .header-nav { display: none; }
+    .main { padding: 80px 16px 32px; }
+    .search-bar { min-width: 100%; }
+    .page-header { flex-direction: column; align-items: flex-start; }
+    .card-grid { grid-template-columns: 1fr; }
+    .unlike-btn { opacity: 1; }
+  }
+</style>
+</head>
+<body>
+
+<!-- 顶部导航 -->
+<div class="header">
+  <div class="header-left">
+    <a href="student_navigation.html" class="logo">
+      <div class="logo-icon"><i class="fa fa-briefcase"></i></div>
+      <div class="logo-text">岗位化数智教学服务平台</div>
+    </a>
+    <div class="header-nav">
+      <a href="student_navigation.html" class="header-nav-item"><i class="fa fa-sitemap"></i>岗位门户</a>
+      <a href="student.html" class="header-nav-item"><i class="fa fa-th-large"></i>岗位详情</a>
+      <a href="heart-jobs.html" class="header-nav-item active"><i class="fa fa-heart"></i>我的心仪岗位</a>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="header-time" id="headerTime">2026年05月09日 星期六 11:20</span>
+    <div class="header-user">
+      <div class="header-user-avatar"><i class="fa fa-user"></i></div>
+      <span>管理员</span>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="page-header">
+    <div>
+      <div class="page-title">我的心仪岗位</div>
+      <div class="page-subtitle">收藏感兴趣的岗位，方便随时查看与学习</div>
+    </div>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="搜索岗位名称、行业或专业...">
+      <button id="searchBtn"><i class="fa fa-search"></i> 搜索</button>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <div class="result-tip">当前共收藏 <b id="resultCount">0</b> 个岗位</div>
+    <button class="clear-all-btn" id="clearAllBtn" disabled><i class="fa fa-trash-o"></i> 清空收藏</button>
+  </div>
+
+  <div class="card-grid" id="cardGrid">
+    <div class="empty-state">
+      <i class="fa fa-heart-o"></i>
+      <div>暂无收藏岗位</div>
+      <p>在岗位详情页点击“设为心仪岗位”即可添加到这里</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const HEART_JOBS_KEY = 'zhiyu_heart_jobs';
+  const COVER_BACKUPS = [
+    "linear-gradient(135deg,#1e3a8a,#3b82f6)",
+    "linear-gradient(135deg,#7c2d12,#dc2626)",
+    "linear-gradient(135deg,#064e3b,#0891b2)",
+    "linear-gradient(135deg,#334155,#64748b)",
+    "linear-gradient(135deg,#581c87,#a855f7)",
+    "linear-gradient(135deg,#be123c,#f43f5e)",
+    "linear-gradient(135deg,#0f766e,#14b8a6)",
+    "linear-gradient(135deg,#92400e,#f59e0b)"
+  ];
+
+  function loadHeartJobs() {
+    try {
+      return JSON.parse(localStorage.getItem(HEART_JOBS_KEY) || '[]');
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveHeartJobs(jobs) {
+    localStorage.setItem(HEART_JOBS_KEY, JSON.stringify(jobs));
+  }
+
+  function formatDate(dateStr) {
+    const d = new Date(dateStr);
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+
+  function renderCards(keyword = '') {
+    const grid = document.getElementById('cardGrid');
+    const countEl = document.getElementById('resultCount');
+    const clearBtn = document.getElementById('clearAllBtn');
+    let jobs = loadHeartJobs();
+
+    if (keyword.trim()) {
+      const q = keyword.trim().toLowerCase();
+      jobs = jobs.filter(j =>
+        j.name.toLowerCase().includes(q) ||
+        (j.industry && j.industry.toLowerCase().includes(q)) ||
+        (j.major && j.major.toLowerCase().includes(q)) ||
+        (j.description && j.description.toLowerCase().includes(q))
+      );
+    }
+
+    countEl.textContent = jobs.length;
+    clearBtn.disabled = jobs.length === 0;
+
+    if (jobs.length === 0) {
+      grid.innerHTML = `
+        <div class="empty-state">
+          <i class="fa fa-heart-o"></i>
+          <div>${keyword ? '未找到匹配的岗位' : '暂无收藏岗位'}</div>
+          <p>${keyword ? '换个关键词试试' : '在岗位详情页点击“设为心仪岗位”即可添加到这里'}</p>
+        </div>
+      `;
+      return;
+    }
+
+    grid.innerHTML = jobs.map((job, idx) => {
+      const coverStyle = job.coverImage
+        ? `background-image:url('${job.coverImage}')`
+        : `background:${COVER_BACKUPS[idx % COVER_BACKUPS.length]}`;
+      return `
+        <div class="job-card" data-id="${job.id}">
+          <div class="card-cover" style="${coverStyle}">
+            <div class="heart-badge"><i class="fa fa-heart"></i></div>
+            <button class="unlike-btn" data-id="${job.id}" title="取消心仪"><i class="fa fa-trash-o"></i></button>
+            <div class="card-cover-content">
+              <div class="cover-title">${job.name}</div>
+              <div class="cover-meta">${job.code || ''} · ${job.industry || '未指定行业'}</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="card-tags">
+              <span class="card-tag orange">${job.industry || "未指定"}</span>
+              <span class="card-tag blue">${job.major || "未分类"}</span>
+              <span class="card-tag green">${job.salary || "薪资面议"}</span>
+            </div>
+            <div class="card-desc">${job.description || '暂无岗位描述'}</div>
+            <div class="card-footer">
+              <div class="card-salary">${job.salary || '薪资面议'}</div>
+              <div class="card-time">${job.addedAt ? formatDate(job.addedAt) : ''}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    grid.querySelectorAll('.job-card').forEach(card => {
+      card.addEventListener('click', (e) => {
+        if (e.target.closest('.unlike-btn')) return;
+        window.location.href = 'student.html';
+      });
+    });
+
+    grid.querySelectorAll('.unlike-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.dataset.id;
+        const list = loadHeartJobs().filter(j => j.id !== id);
+        saveHeartJobs(list);
+        renderCards(document.getElementById('searchInput').value);
+      });
+    });
+  }
+
+  const searchInput = document.getElementById('searchInput');
+  const searchBtn = document.getElementById('searchBtn');
+
+  searchInput.addEventListener('input', () => renderCards(searchInput.value));
+  searchBtn.addEventListener('click', () => renderCards(searchInput.value));
+  searchInput.addEventListener('keydown', e => { if(e.key === 'Enter') renderCards(searchInput.value); });
+
+  document.getElementById('clearAllBtn').addEventListener('click', () => {
+    if (!confirm('确定清空所有收藏岗位吗？')) return;
+    saveHeartJobs([]);
+    searchInput.value = '';
+    renderCards();
+  });
+
+  function updateDateTime() {
+    const now = new Date();
+    const weekDays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const weekDay = weekDays[now.getDay()];
+    const hour = String(now.getHours()).padStart(2, '0');
+    const minute = String(now.getMinutes()).padStart(2, '0');
+    const timeEl = document.getElementById('headerTime');
+    if (timeEl) timeEl.textContent = `${year}年${month}月${day}日 ${weekDay} ${hour}:${minute}`;
+  }
+
+  renderCards();
+  updateDateTime();
+  setInterval(updateDateTime, 60000);
+</script>
+
+</body>
+</html>
