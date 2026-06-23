@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -143,10 +143,19 @@ export function StepBasicInfo({ position, onUpdate, aiMode = false, variant = 'd
   const isCreate = variant === 'create'
   const [isGenerating, setIsGenerating] = useState<string | null>(null)
   const [aiSuggestions, setAiSuggestions] = useState<Partial<Record<AiSuggestionField, AiSuggestion>>>({})
-  const [newResponsibility, setNewResponsibility] = useState('')
-  const [newRequirement, setNewRequirement] = useState('')
   const [newHorizontal, setNewHorizontal] = useState('')
   const [newVertical, setNewVertical] = useState('')
+
+  // 默认至少保留一个输入框
+  useEffect(() => {
+    if (position.responsibilities.length === 0) {
+      onUpdate({ responsibilities: [{ id: `resp-${Date.now()}`, name: '', description: '' }] })
+    }
+    if (position.requirements.length === 0) {
+      onUpdate({ requirements: [''] })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // AI 方向输入弹窗
   const [aiDirectionOpen, setAiDirectionOpen] = useState(false)
@@ -385,23 +394,12 @@ export function StepBasicInfo({ position, onUpdate, aiMode = false, variant = 'd
   }
 
   const addResponsibility = () => {
-    if (isCreate) {
-      const newItem: PositionResponsibility = {
-        id: `resp-${Date.now()}`,
-        name: '',
-        description: '',
-      }
-      onUpdate({ responsibilities: [...position.responsibilities, newItem] })
-      return
-    }
-    if (!newResponsibility.trim()) return
     const newItem: PositionResponsibility = {
       id: `resp-${Date.now()}`,
-      name: newResponsibility.trim(),
+      name: '',
       description: '',
     }
     onUpdate({ responsibilities: [...position.responsibilities, newItem] })
-    setNewResponsibility('')
   }
 
   const removeResponsibility = (index: number) => {
@@ -409,13 +407,7 @@ export function StepBasicInfo({ position, onUpdate, aiMode = false, variant = 'd
   }
 
   const addRequirement = () => {
-    if (isCreate) {
-      onUpdate({ requirements: [...position.requirements, ''] })
-      return
-    }
-    if (!newRequirement.trim()) return
-    onUpdate({ requirements: [...position.requirements, newRequirement.trim()] })
-    setNewRequirement('')
+    onUpdate({ requirements: [...position.requirements, ''] })
   }
 
   const removeRequirement = (index: number) => {
@@ -626,7 +618,7 @@ export function StepBasicInfo({ position, onUpdate, aiMode = false, variant = 'd
           {/* Description */}
           <div className="grid gap-2">
             <div className="flex items-center justify-between">
-              <Label htmlFor="description">{isCreate ? '岗位背景介绍' : '岗位介绍'}</Label>
+              <Label htmlFor="description">岗位背景介绍</Label>
               {renderAIButton('description', aiMode ? 'AI 生成文案' : 'AI 起草')}
             </div>
             <Textarea
@@ -676,27 +668,22 @@ export function StepBasicInfo({ position, onUpdate, aiMode = false, variant = 'd
                 </Button>
               </div>
             ))}
-            {isCreate ? (
-              <div className="flex items-center gap-2">
-                <Button variant="outline" className="flex-1" onClick={addResponsibility}>
-                  <Plus className="h-4 w-4 mr-2" />
-                  添加工作职责
-                </Button>
-                <div className="h-8 w-8 shrink-0" />
-              </div>
-            ) : (
-              <div className="flex gap-2">
-                <Input
-                  placeholder="添加工作职责..."
-                  value={newResponsibility}
-                  onChange={(e) => setNewResponsibility(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && addResponsibility()}
-                />
-                <Button variant="outline" onClick={addResponsibility}>
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
-            )}
+            <div className="flex items-center gap-2">
+              {!isCreate && (
+                <Badge variant="outline" className="shrink-0 invisible">
+                  1
+                </Badge>
+              )}
+              <Button
+                variant="outline"
+                className="flex-1 h-8 border-dashed"
+                onClick={addResponsibility}
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                添加工作职责
+              </Button>
+              <div className="h-8 w-8 shrink-0" />
+            </div>
           </div>
           {aiMode && renderAiSuggestionCard('responsibilities')}
         </CardContent>
@@ -737,27 +724,22 @@ export function StepBasicInfo({ position, onUpdate, aiMode = false, variant = 'd
                 </Button>
               </div>
             ))}
-            {isCreate ? (
-              <div className="flex items-center gap-2">
-                <Button variant="outline" className="flex-1" onClick={addRequirement}>
-                  <Plus className="h-4 w-4 mr-2" />
-                  添加任职要求
-                </Button>
-                <div className="h-8 w-8 shrink-0" />
-              </div>
-            ) : (
-              <div className="flex gap-2">
-                <Input
-                  placeholder="添加任职要求..."
-                  value={newRequirement}
-                  onChange={(e) => setNewRequirement(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && addRequirement()}
-                />
-                <Button variant="outline" onClick={addRequirement}>
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
-            )}
+            <div className="flex items-center gap-2">
+              {!isCreate && (
+                <Badge variant="outline" className="shrink-0 invisible">
+                  1
+                </Badge>
+              )}
+              <Button
+                variant="outline"
+                className="flex-1 h-8 border-dashed"
+                onClick={addRequirement}
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                添加任职要求
+              </Button>
+              <div className="h-8 w-8 shrink-0" />
+            </div>
           </div>
           {aiMode && renderAiSuggestionCard('requirements')}
         </CardContent>

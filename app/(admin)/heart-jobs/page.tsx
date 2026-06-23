@@ -25,6 +25,7 @@ interface HeartJob {
   industry: string
   major: string
   salary: string
+  location?: string
   description: string
   coverImage?: string
   isFavorite: boolean
@@ -41,6 +42,7 @@ const SAMPLE_JOBS: Omit<HeartJob, "id" | "addedAt">[] = [
     industry: "互联网/IT",
     major: "软件技术",
     salary: "8K-15K",
+    location: "北京",
     description: "负责网站、Web应用、移动端H5页面等用户界面开发，使用HTML、CSS、JavaScript及Vue、React等现代前端框架。",
     isFavorite: true,
   },
@@ -50,6 +52,7 @@ const SAMPLE_JOBS: Omit<HeartJob, "id" | "addedAt">[] = [
     industry: "互联网/IT",
     major: "信息技术",
     salary: "10K-18K",
+    location: "上海",
     description: "使用Java语言进行企业级后端系统开发，熟悉Spring Boot、微服务架构及数据库设计。",
     isFavorite: true,
   },
@@ -59,6 +62,7 @@ const SAMPLE_JOBS: Omit<HeartJob, "id" | "addedAt">[] = [
     industry: "互联网/IT",
     major: "数据科学",
     salary: "9K-16K",
+    location: "深圳",
     description: "通过数据采集、清洗、分析与可视化，为业务决策提供数据支持，掌握Python、SQL及BI工具。",
     isFavorite: true,
   },
@@ -68,6 +72,7 @@ const SAMPLE_JOBS: Omit<HeartJob, "id" | "addedAt">[] = [
     industry: "电子商务",
     major: "电子商务",
     salary: "6K-12K",
+    location: "杭州",
     description: "负责电商平台店铺日常运营、活动策划、流量推广及销售数据分析，提升店铺转化率。",
     isFavorite: true,
   },
@@ -77,6 +82,7 @@ const SAMPLE_JOBS: Omit<HeartJob, "id" | "addedAt">[] = [
     industry: "金融",
     major: "财务管理",
     salary: "7K-13K",
+    location: "广州",
     description: "负责企业财务核算、报表编制、税务申报及成本管理，熟悉会计准则与财务软件操作。",
     isFavorite: true,
   },
@@ -86,6 +92,7 @@ const SAMPLE_JOBS: Omit<HeartJob, "id" | "addedAt">[] = [
     industry: "服务业",
     major: "市场营销",
     salary: "8K-15K",
+    location: "成都",
     description: "负责品牌定位、传播策略制定、市场推广活动策划及品牌形象维护，提升品牌影响力。",
     isFavorite: true,
   },
@@ -95,6 +102,7 @@ const SAMPLE_JOBS: Omit<HeartJob, "id" | "addedAt">[] = [
     industry: "教育",
     major: "小学教育",
     salary: "5K-10K",
+    location: "武汉",
     description: "负责小学阶段学科教学、班级管理及学生综合素质培养，具备良好的沟通能力与教学热情。",
     isFavorite: true,
   },
@@ -366,7 +374,7 @@ export default function HeartJobsPage() {
                 <div className="flex items-center gap-3 text-sm text-slate-500">
                   <span className="flex items-center gap-1.5">
                     <MapPin className="h-4 w-4" />
-                    全国
+                    {job.location || '-'}
                   </span>
                   <span className="flex items-center gap-1.5">
                     <Calendar className="h-4 w-4" />
