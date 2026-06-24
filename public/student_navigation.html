@@ -330,6 +330,69 @@
   .stat-icon.green { background: linear-gradient(135deg, #dcfce7, #bbf7d0); }
   .stat-icon.red { background: linear-gradient(135deg, #fee2e2, #fecaca); }
 
+  /* Favorite Positions */
+  .favorite-section {
+    background: #fff; border-radius: 16px;
+    border: 1px solid #e7e5e4;
+    padding: 20px 24px;
+    margin-bottom: 28px;
+  }
+  .favorite-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 16px;
+  }
+  .favorite-title {
+    font-size: 18px; font-weight: 700; color: #0f172a;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .favorite-nav {
+    display: flex; gap: 8px;
+  }
+  .favorite-arrow {
+    width: 32px; height: 32px; border-radius: 50%;
+    border: 1px solid #e7e5e4; background: #fff;
+    color: #475569; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .favorite-arrow:hover:not(:disabled) {
+    border-color: #3b82f6; color: #3b82f6;
+  }
+  .favorite-arrow:disabled {
+    opacity: 0.4; cursor: not-allowed;
+  }
+  .favorite-carousel {
+    position: relative;
+    overflow: hidden;
+  }
+  .favorite-track {
+    display: flex;
+    gap: 20px;
+    transition: transform 0.35s ease;
+  }
+  .favorite-track .job-card {
+    flex: 0 0 calc(25% - 15px);
+    min-width: calc(25% - 15px);
+  }
+  .favorite-empty {
+    text-align: center; padding: 60px 20px; color: #94a3b8;
+  }
+  .favorite-empty i { font-size: 56px; margin-bottom: 16px; color: #cbd5e1; }
+  .favorite-empty div { font-size: 15px; }
+
+  @media (max-width: 1200px) {
+    .favorite-track .job-card {
+      flex: 0 0 calc(33.333% - 13.333px);
+      min-width: calc(33.333% - 13.333px);
+    }
+  }
+  @media (max-width: 768px) {
+    .favorite-track .job-card {
+      flex: 0 0 calc(50% - 10px);
+      min-width: calc(50% - 10px);
+    }
+  }
+
   /* Filter */
   .filter-box {
     background: #fff; border-radius: 16px;
@@ -597,6 +660,29 @@
         <div class="stat-value" id="statPositions">0</div>
       </div>
       <div class="stat-icon red">👁</div>
+    </div>
+  </div>
+
+  <!-- 心仪岗位 -->
+  <div class="favorite-section" id="favoriteSection">
+    <div class="favorite-header">
+      <div class="favorite-title">
+        <i class="fa fa-heart" style="color: #ef4444;"></i>
+        <span>心仪岗位</span>
+      </div>
+      <div class="favorite-nav">
+        <button class="favorite-arrow" id="favoritePrev" disabled><i class="fa fa-chevron-left"></i></button>
+        <button class="favorite-arrow" id="favoriteNext"><i class="fa fa-chevron-right"></i></button>
+      </div>
+    </div>
+    <div class="favorite-carousel">
+      <div class="favorite-track" id="favoriteTrack">
+        <!-- 动态生成 -->
+      </div>
+      <div class="favorite-empty" id="favoriteEmpty" style="display:none;">
+        <i class="fa fa-heart-o"></i>
+        <div>暂无心仪岗位，快去添加吧</div>
+      </div>
     </div>
   </div>
 
@@ -1148,9 +1234,131 @@
     }, 5000);
   }
 
+  // =================== 心仪岗位 ===================
+  const FAVORITE_JOBS = [
+    JOBS[0], JOBS[1], JOBS[4], JOBS[8], JOBS[9], JOBS[10]
+  ];
+
+  function renderFavoriteJobs() {
+    const track = document.getElementById('favoriteTrack');
+    const empty = document.getElementById('favoriteEmpty');
+    const prevBtn = document.getElementById('favoritePrev');
+    const nextBtn = document.getElementById('favoriteNext');
+
+    if (!FAVORITE_JOBS.length) {
+      track.innerHTML = '';
+      empty.style.display = 'block';
+      prevBtn.disabled = true;
+      nextBtn.disabled = true;
+      return;
+    }
+
+    empty.style.display = 'none';
+    track.innerHTML = FAVORITE_JOBS.map((s, idx) => {
+      const status = STATUS_MAP[s.status] || STATUS_MAP.draft;
+      const dateStr = s.publishTime ? s.publishTime.split(' ')[0] : s.updatedAt;
+      const displayDate = dateStr || '2024-01-01';
+      const coverStyle = s.coverImage ? `background-image:url('${s.coverImage}')` : `background:${COVER_BACKUPS[idx % COVER_BACKUPS.length]}`;
+      const viewCount = 120 + Math.floor(Math.random() * 880);
+      const relatedScenes = Math.floor(Math.random() * 5) + 1;
+      const hotBadge = s.hot ? `<div class="hot-badge"><i class="fa fa-fire"></i> 热门</div>` : '';
+
+      return `
+        <div class="job-card" data-id="${s.id}">
+          <div class="card-cover" style="${coverStyle}">
+            ${hotBadge}
+            <div class="cover-tags">
+              <span class="cover-tag">${s.version}</span>
+              <span class="cover-tag">${status.label}</span>
+            </div>
+            <div class="card-cover-content">
+              <div class="cover-title">${s.positionName || s.name}</div>
+              <div class="cover-meta">岗位编码：${s.code} · ${displayDate}</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="card-title">${s.name}</div>
+            <div class="card-stats">
+              <div class="card-stat">
+                <div class="card-stat-num">${viewCount}</div>
+                <div class="card-stat-label">浏览次数</div>
+              </div>
+              <div class="card-stat">
+                <div class="card-stat-num">${relatedScenes}</div>
+                <div class="card-stat-label">关联场景</div>
+              </div>
+              <div class="card-stat">
+                <div class="card-stat-num">${s.totalHours || '-'}</div>
+                <div class="card-stat-label">课程任务</div>
+              </div>
+            </div>
+            <div class="card-tags">
+              <span class="card-tag orange">${s.industryName || '未指定'}</span>
+              <span class="card-tag blue">${s.professionName || '未分类'}</span>
+              <span class="card-tag green">${s.creatorName}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    track.querySelectorAll('.job-card').forEach(card => {
+      card.addEventListener('click', () => {
+        window.location.href = 'student.html';
+      });
+    });
+
+    initFavoriteCarousel();
+  }
+
+  let favoriteCurrentIndex = 0;
+
+  function initFavoriteCarousel() {
+    const track = document.getElementById('favoriteTrack');
+    const prevBtn = document.getElementById('favoritePrev');
+    const nextBtn = document.getElementById('favoriteNext');
+    const cards = track.querySelectorAll('.job-card');
+    if (!cards.length) return;
+
+    function getVisibleCount() {
+      if (window.innerWidth <= 768) return 2;
+      if (window.innerWidth <= 1200) return 3;
+      return 4;
+    }
+
+    function updateCarousel() {
+      const cardWidth = cards[0].offsetWidth + 20;
+      const visibleCount = getVisibleCount();
+      const maxIndex = Math.max(0, cards.length - visibleCount);
+      favoriteCurrentIndex = Math.min(favoriteCurrentIndex, maxIndex);
+      track.style.transform = `translateX(-${favoriteCurrentIndex * cardWidth}px)`;
+      prevBtn.disabled = favoriteCurrentIndex === 0;
+      nextBtn.disabled = favoriteCurrentIndex >= maxIndex;
+    }
+
+    prevBtn.onclick = () => {
+      if (favoriteCurrentIndex > 0) {
+        favoriteCurrentIndex--;
+        updateCarousel();
+      }
+    };
+
+    nextBtn.onclick = () => {
+      const maxIndex = Math.max(0, cards.length - getVisibleCount());
+      if (favoriteCurrentIndex < maxIndex) {
+        favoriteCurrentIndex++;
+        updateCarousel();
+      }
+    };
+
+    window.addEventListener('resize', updateCarousel);
+    updateCarousel();
+  }
+
   // =================== 初始化 ===================
   initPositionMap();
   initStats();
+  renderFavoriteJobs();
   initFilters();
   renderCards();
   renderBannerCarousel();
