@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react"
 import {
+  Briefcase,
+  Building2,
   Calendar,
   GraduationCap,
   Heart,
@@ -229,6 +231,42 @@ export default function HeartJobsPage() {
           <h1 className="text-2xl font-bold tracking-tight">我的心仪岗位</h1>
           <p className="text-sm text-muted-foreground mt-1">管理学生端收藏的心仪岗位，支持按行业筛选与搜索</p>
         </div>
+      </div>
+
+      <div className="grid grid-cols-3 gap-4">
+        <Card>
+          <CardContent className="flex items-center gap-4 p-4">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+              <Briefcase className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">全部岗位</p>
+              <p className="text-2xl font-bold">{stats.total}</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="flex items-center gap-4 p-4">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-red-50 text-red-500">
+              <Heart className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">已收藏</p>
+              <p className="text-2xl font-bold">{stats.favoriteCount}</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="flex items-center gap-4 p-4">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-50 text-purple-600">
+              <Building2 className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">覆盖行业</p>
+              <p className="text-2xl font-bold">{stats.industryCount}</p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       <Card>
