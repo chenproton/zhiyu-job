@@ -23,6 +23,8 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Checkbox } from '@/components/ui/checkbox'
+import { MultiSelect } from '@/components/ui/multi-select'
+import { cn } from '@/lib/utils'
 import {
   Sparkles,
   Plus,
@@ -552,71 +554,21 @@ export function StepBasicInfo({ position, onUpdate, aiMode = false, variant = 'd
           <div className="grid grid-cols-2 gap-4">
             <div className="grid gap-2">
               <Label htmlFor="industry">面向行业</Label>
-              <div className="flex min-h-[36px] flex-wrap items-center gap-1 rounded-md border border-input bg-background px-2 py-1 text-sm shadow-sm">
-                {position.industry ? (
-                  <span className="inline-flex items-center gap-1 rounded-sm bg-secondary px-1.5 py-0.5 text-xs">
-                    {position.industry}
-                    <button
-                      type="button"
-                      onClick={() => onUpdate({ industry: '' })}
-                      className="text-muted-foreground hover:text-destructive"
-                    >
-                      <X className="h-3 w-3" />
-                    </button>
-                  </span>
-                ) : null}
-                <Select
-                  value=""
-                  onValueChange={(value) => onUpdate({ industry: value })}
-                >
-                  <SelectTrigger id="industry" className="h-auto w-auto border-0 bg-transparent p-0 shadow-none focus:ring-0">
-                    <SelectValue placeholder="选择行业" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {MOCK_INDUSTRIES.map((industry) => (
-                      <SelectItem key={industry} value={industry}>
-                        {industry}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+              <MultiSelect
+                options={MOCK_INDUSTRIES}
+                value={position.industry ? [position.industry] : []}
+                onChange={(values) => onUpdate({ industry: values[values.length - 1] || '' })}
+                placeholder="选择行业"
+              />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="major">适用专业</Label>
-              <div className="flex min-h-[36px] flex-wrap items-center gap-1 rounded-md border border-input bg-background px-2 py-1 text-sm shadow-sm">
-                {position.majors.map((major) => (
-                  <span key={major} className="inline-flex items-center gap-1 rounded-sm bg-secondary px-1.5 py-0.5 text-xs">
-                    {major}
-                    <button
-                      type="button"
-                      onClick={() => onUpdate({ majors: position.majors.filter((m) => m !== major) })}
-                      className="text-muted-foreground hover:text-destructive"
-                    >
-                      <X className="h-3 w-3" />
-                    </button>
-                  </span>
-                ))}
-                <Select
-                  value=""
-                  onValueChange={(value) => {
-                    if (!position.majors.includes(value)) {
-                      onUpdate({ majors: [...position.majors, value] })
-                    }
-                  }}
-                >
-                  <SelectTrigger id="major" className="h-auto w-auto border-0 bg-transparent p-0 shadow-none focus:ring-0">
-                    <SelectValue placeholder="选择专业" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {MOCK_MAJORS.map((major) => (
-                      <SelectItem key={major} value={major}>
-                        {major}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+              <MultiSelect
+                options={MOCK_MAJORS}
+                value={position.majors}
+                onChange={(values) => onUpdate({ majors: values })}
+                placeholder="选择专业"
+              />
             </div>
           </div>
 
