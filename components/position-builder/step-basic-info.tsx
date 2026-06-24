@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -169,6 +169,7 @@ export function StepBasicInfo({ position, onUpdate, aiMode = false, variant = 'd
   // 证书相关状态
   const [isCertDialogOpen, setIsCertDialogOpen] = useState(false)
   const [isNewCertDialogOpen, setIsNewCertDialogOpen] = useState(false)
+  const [certSearchQuery, setCertSearchQuery] = useState('')
   const [selectedCertIds, setSelectedCertIds] = useState<string[]>(
     position.certificates?.map((c) => c.id) || []
   )
@@ -461,6 +462,14 @@ export function StepBasicInfo({ position, onUpdate, aiMode = false, variant = 'd
       setSelectedCertIds(selectedCertIds.filter((id) => id !== certId))
     }
   }
+
+  const filteredCertificates = useMemo(() => {
+    if (!certSearchQuery.trim()) return MOCK_CERTIFICATES
+    const q = certSearchQuery.trim().toLowerCase()
+    return MOCK_CERTIFICATES.filter(
+      (c) => c.name.toLowerCase().includes(q) || (c.description?.toLowerCase().includes(q) ?? false)
+    )
+  }, [certSearchQuery])
 
   const handleConfirmCertificates = () => {
     const selectedCerts = MOCK_CERTIFICATES.filter((c) => selectedCertIds.includes(c.id))
@@ -882,7 +891,7 @@ export function StepBasicInfo({ position, onUpdate, aiMode = false, variant = 'd
               </Button>
             )}
             <Button variant="outline" size="sm" onClick={() => setIsCertDialogOpen(true)}>
-              从资源库选择
+              从证书库选择
             </Button>
             <Button variant="outline" size="sm" onClick={() => setIsNewCertDialogOpen(true)}>
               <Plus className="mr-2 h-4 w-4" />
@@ -936,30 +945,40 @@ export function StepBasicInfo({ position, onUpdate, aiMode = false, variant = 'd
         </CardContent>
       </Card>
 
-      {/* 从资源库选择证书对话框 */}
+      {/* 从证书库选择证书对话框 */}
       <Dialog open={isCertDialogOpen} onOpenChange={setIsCertDialogOpen}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle>从资源库选择证书</DialogTitle>
+            <DialogTitle>从证书库选择证书</DialogTitle>
             <DialogDescription>选择与该岗位相关的职业资格证书</DialogDescription>
           </DialogHeader>
-          <div className="py-4 max-h-80 overflow-y-auto space-y-2">
-            {MOCK_CERTIFICATES.map((cert) => (
-              <div
-                key={cert.id}
-                className="flex items-start gap-3 p-3 rounded-lg border hover:bg-accent/50 cursor-pointer"
-                onClick={() => handleSelectCertificate(cert.id, !selectedCertIds.includes(cert.id))}
-              >
-                <Checkbox
-                  checked={selectedCertIds.includes(cert.id)}
-                  onCheckedChange={(checked) => handleSelectCertificate(cert.id, !!checked)}
-                />
-                <div className="flex-1">
-                  <div className="font-medium">{cert.name}</div>
-                  <div className="text-sm text-muted-foreground">{cert.description}</div>
+          <div className="py-4 space-y-3">
+            <Input
+              placeholder="搜索证书名称或描述..."
+              value={certSearchQuery}
+              onChange={(e) => setCertSearchQuery(e.target.value)}
+            />
+            <div className="max-h-80 overflow-y-auto space-y-2">
+              {filteredCertificates.map((cert) => (
+                <div
+                  key={cert.id}
+                  className="flex items-start gap-3 p-3 rounded-lg border hover:bg-accent/50 cursor-pointer"
+                  onClick={() => handleSelectCertificate(cert.id, !selectedCertIds.includes(cert.id))}
+                >
+                  <Checkbox
+                    checked={selectedCertIds.includes(cert.id)}
+                    onCheckedChange={(checked) => handleSelectCertificate(cert.id, !!checked)}
+                  />
+                  <div className="flex-1">
+                    <div className="font-medium">{cert.name}</div>
+                    <div className="text-sm text-muted-foreground">{cert.description}</div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+              {filteredCertificates.length === 0 && (
+                <p className="py-8 text-center text-sm text-muted-foreground">未找到匹配证书</p>
+              )}
+            </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsCertDialogOpen(false)}>
@@ -1079,16 +1098,34 @@ export function StepBasicInfo({ position, onUpdate, aiMode = false, variant = 'd
             </div>
             <div className="grid gap-2">
               <Label>证书图片</Label>
-              <div className="flex gap-2">
-                <Input
-                  value={newCert.image}
-                  onChange={(e) => setNewCert({ ...newCert, image: e.target.value })}
-                  placeholder="图片链接（可选）"
-                  className="flex-1"
-                />
-                <Button variant="outline" size="icon">
-                  <ImageIcon className="h-4 w-4" />
-                </Button>
+              <div
+                className="flex h-24 w-full cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-input bg-background text-muted-foreground transition-colors hover:bg-accent"
+                onClick={() => {
+                  const input = document.createElement('input')
+                  input.type = 'file'
+                  input.accept = 'image/*'
+                  input.onchange = (e) => {
+                    const file = (e.target as HTMLInputElement).files?.[0]
+                    if (file) {
+                      const url = URL.createObjectURL(file)
+                      setNewCert({ ...newCert, image: url })
+                    }
+                  }
+                  input.click()
+                }}
+              >
+                {newCert.image ? (
+                  <img
+                    src={newCert.image}
+                    alt="证书预览"
+                    className="h-full w-full rounded-lg object-contain"
+                  />
+                ) : (
+                  <>
+                    <ImageIcon className="mb-2 h-6 w-6" />
+                    <span className="text-xs">点击上传证书图片</span>
+                  </>
+                )}
               </div>
             </div>
           </div>
