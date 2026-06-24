@@ -110,6 +110,37 @@
             font-size: 14px;
         }
 
+        /* 岗位切换标签 */
+        .position-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .position-tab {
+            padding: 8px 24px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background: var(--bg-white);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .position-tab:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .position-tab.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
         /* 时间线 */
         .timeline-wrapper {
             position: relative;
@@ -366,24 +397,29 @@
     </header>
 
     <div class="main-wrapper">
-        <div class="header-info">
-            <h1>前端开发工程师的学习路径</h1>
-            <div class="header-meta">
-                <div class="header-meta-item">
-                    <span class="label">目标岗位：</span>
-                    <span class="value">前端开发</span>
-                </div>
-                <div class="header-meta-item">
-                    <span class="label">心仪岗位：</span>
-                    <span class="value">前端架构工程师</span>
+            <div class="header-info">
+                <h1 id="pageTitle">前端开发工程师的学习路径</h1>
+                <div class="header-meta">
+                    <div class="header-meta-item">
+                        <span class="label">目标岗位：</span>
+                        <span class="value" id="targetPosition">前端开发</span>
+                    </div>
+                    <div class="header-meta-item">
+                        <span class="label">心仪岗位：</span>
+                        <span class="value" id="desiredPosition">前端架构工程师</span>
+                    </div>
                 </div>
             </div>
-        </div>
 
         <div class="main-content">
             <div class="path-title">
-                <h2>前端开发工程师学习路径</h2>
+                <h2 id="pathTitle">前端开发工程师学习路径</h2>
                 <p>点击上方阶段图标，查看该阶段的学习任务</p>
+            </div>
+
+            <div class="position-tabs" id="positionTabs">
+                <button class="position-tab active" data-position="frontend">前端开发</button>
+                <button class="position-tab" data-position="backend">后端开发</button>
             </div>
 
             <div class="timeline-wrapper">
@@ -1000,6 +1036,11 @@
         const timelineContainer = document.getElementById('timelineContainer');
         const timelinePrev = document.getElementById('timelinePrev');
         const timelineNext = document.getElementById('timelineNext');
+        const positionTabs = document.querySelectorAll('.position-tab');
+        const targetPosition = document.getElementById('targetPosition');
+        const desiredPosition = document.getElementById('desiredPosition');
+        const pathTitle = document.getElementById('pathTitle');
+        const pageTitle = document.getElementById('pageTitle');
 
         let currentTranslate = 0;
 
@@ -1041,6 +1082,41 @@
         });
 
         updateArrowState();
+
+        // 岗位切换
+        const positionData = {
+            frontend: {
+                target: '前端开发',
+                desired: '前端架构工程师',
+                title: '前端开发工程师学习路径',
+                pageTitle: '前端开发工程师的学习路径'
+            },
+            backend: {
+                target: '后端开发',
+                desired: '后端架构工程师',
+                title: '后端开发工程师学习路径',
+                pageTitle: '后端开发工程师的学习路径'
+            }
+        };
+
+        positionTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const position = tab.getAttribute('data-position');
+                positionTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                const data = positionData[position];
+                targetPosition.textContent = data.target;
+                desiredPosition.textContent = data.desired;
+                pathTitle.textContent = data.title;
+                pageTitle.textContent = data.pageTitle;
+
+                // 重置阶段选中
+                currentTranslate = 0;
+                timelineTrack.style.transform = 'translateX(0)';
+                updateArrowState();
+            });
+        });
     </script>
 </body>
 </html>
