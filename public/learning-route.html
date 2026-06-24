@@ -402,8 +402,8 @@
                 <div class="header-meta">
                     <div class="header-meta-item">
                         <span class="label">目标岗位：</span>
-                        <span class="value">前端开发</span>
-                        <span class="task-tag">后端开发</span>
+                        <span class="value header-position-tab active" data-position="frontend">前端开发</span>
+                        <span class="value header-position-tab" data-position="backend">后端开发</span>
                     </div>
                     <div class="header-meta-item">
                         <span class="label">心仪岗位：</span>
@@ -412,7 +412,7 @@
                 </div>
             </div>
 
-        <div class="main-content">
+            <div class="main-content">
             <div class="path-title">
                 <h2 id="pathTitle">前端开发工程师学习路径</h2>
                 <p>点击上方阶段图标，查看该阶段的学习任务</p>
@@ -423,50 +423,7 @@
                     <i class="fas fa-chevron-left"></i>
                 </button>
                 <div class="timeline-container" id="timelineContainer">
-                    <div class="timeline-track" id="timelineTrack">
-                    <div class="timeline-node active" data-stage="0">
-                        <div class="node-label-top">START · 第1站</div>
-                        <div class="node-circle"><i class="fas fa-flag"></i></div>
-                        <div class="node-title">基础学习</div>
-                        <div class="node-meta">8 任务 · 16 课时</div>
-                    </div>
-                    <div class="timeline-node" data-stage="1">
-                        <div class="node-label-top">第2站</div>
-                        <div class="node-circle"><i class="fas fa-shopping-cart"></i></div>
-                        <div class="node-title">电商后台管理系统</div>
-                        <div class="node-meta">5 任务 · 12 课时</div>
-                    </div>
-                    <div class="timeline-node" data-stage="2">
-                        <div class="node-label-top">第3站</div>
-                        <div class="node-circle"><i class="fas fa-mobile-alt"></i></div>
-                        <div class="node-title">移动端H5活动页</div>
-                        <div class="node-meta">4 任务 · 8 课时</div>
-                    </div>
-                    <div class="timeline-node" data-stage="3">
-                        <div class="node-label-top">第4站</div>
-                        <div class="node-circle"><i class="fas fa-chart-line"></i></div>
-                        <div class="node-title">数据可视化大屏</div>
-                        <div class="node-meta">4 任务 · 8 课时</div>
-                    </div>
-                    <div class="timeline-node" data-stage="4">
-                        <div class="node-label-top">第5站</div>
-                        <div class="node-circle"><i class="fas fa-code-branch"></i></div>
-                        <div class="node-title">前端工程化实践</div>
-                        <div class="node-meta">4 任务 · 8 课时</div>
-                    </div>
-                    <div class="timeline-node" data-stage="5">
-                        <div class="node-label-top">第6站</div>
-                        <div class="node-circle"><i class="fas fa-users-cog"></i></div>
-                        <div class="node-title">团队协作开发实战</div>
-                        <div class="node-meta">4 任务 · 8 课时</div>
-                    </div>
-                    <div class="timeline-node" data-stage="6">
-                        <div class="node-label-top">GOAL · 终点</div>
-                        <div class="node-circle"><i class="fas fa-trophy"></i></div>
-                        <div class="node-title">全栈实战</div>
-                        <div class="node-meta">4 任务 · 认证</div>
-                    </div>
-                    </div>
+                    <div class="timeline-track" id="timelineTrack"></div>
                 </div>
 
                 <button class="timeline-arrow timeline-arrow-right" id="timelineNext">
@@ -474,539 +431,7 @@
                 </button>
             </div>
 
-            <div class="tasks-section" id="tasksSection">
-                <!-- 基础学习 -->
-                <div class="stage-cards active" data-stage="0">
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">1</div>
-                            <div class="task-name">HTML5 语义化标签</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">HTML5</span>
-                            <span class="task-tag">语义化</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">2</div>
-                            <div class="task-name">CSS3 核心选择器</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">CSS3</span>
-                            <span class="task-tag">选择器</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">3</div>
-                            <div class="task-name">Flex 弹性布局</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">Flex</span>
-                            <span class="task-tag">布局</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">4</div>
-                            <div class="task-name">Grid 网格布局</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">Grid</span>
-                            <span class="task-tag">响应式</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">5</div>
-                            <div class="task-name">JavaScript 基础语法</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">JS</span>
-                            <span class="task-tag">ES6</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">6</div>
-                            <div class="task-name">DOM 操作与事件</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">DOM</span>
-                            <span class="task-tag">事件</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">7</div>
-                            <div class="task-name">CSS 动画与过渡</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">动画</span>
-                            <span class="task-tag">Transition</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">8</div>
-                            <div class="task-name">基础综合实战</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">实战</span>
-                            <span class="task-tag">作品集</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 电商后台管理系统 -->
-                <div class="stage-cards" data-stage="1">
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">1</div>
-                            <div class="task-name">Vue3 项目初始化</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">Vite</span>
-                            <span class="task-tag">Vue3</span>
-                            <span class="task-tag">组合式 API</span>
-                            <span class="task-tag">Pinia</span>
-                            <span class="task-tag">Vue Router</span>
-                            <span class="task-tag">TypeScript</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">2</div>
-                            <div class="task-name">登录鉴权模块</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">Token</span>
-                            <span class="task-tag">路由守卫</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">3</div>
-                            <div class="task-name">商品管理 CRUD</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">Element Plus</span>
-                            <span class="task-tag">API</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">4</div>
-                            <div class="task-name">订单与权限管理</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">权限</span>
-                            <span class="task-tag">表格</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">5</div>
-                            <div class="task-name">后台界面优化</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">UI</span>
-                            <span class="task-tag">交互</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">6</div>
-                            <div class="task-name">数据报表与导出</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">ECharts</span>
-                            <span class="task-tag">Excel</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">7</div>
-                            <div class="task-name">表单校验与提交</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">Form</span>
-                            <span class="task-tag">Rules</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 移动端H5活动页 -->
-                <div class="stage-cards" data-stage="2">
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">1</div>
-                            <div class="task-name">移动端适配方案</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">rem/vw</span>
-                            <span class="task-tag">viewport</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">2</div>
-                            <div class="task-name">活动页面布局</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">全屏滚动</span>
-                            <span class="task-tag">触摸</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">3</div>
-                            <div class="task-name">H5 动画特效</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">动画</span>
-                            <span class="task-tag">Canvas</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">4</div>
-                            <div class="task-name">微信分享与埋点</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">微信</span>
-                            <span class="task-tag">埋点</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">5</div>
-                            <div class="task-name">微信授权登录</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">OAuth</span>
-                            <span class="task-tag">JS-SDK</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">6</div>
-                            <div class="task-name">活动抽奖动画</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">Canvas</span>
-                            <span class="task-tag">动画</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">7</div>
-                            <div class="task-name">H5 性能优化</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">懒加载</span>
-                            <span class="task-tag">压缩</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 数据可视化大屏 -->
-                <div class="stage-cards" data-stage="3">
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">1</div>
-                            <div class="task-name">大屏布局自适应</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">Scale</span>
-                            <span class="task-tag">Grid</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">2</div>
-                            <div class="task-name">ECharts 图表配置</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">ECharts</span>
-                            <span class="task-tag">图表</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">3</div>
-                            <div class="task-name">数据实时刷新</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">WebSocket</span>
-                            <span class="task-tag">Mock</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">4</div>
-                            <div class="task-name">大屏主题与动效</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">主题</span>
-                            <span class="task-tag">动效</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">5</div>
-                            <div class="task-name">地图可视化</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">Map</span>
-                            <span class="task-tag">GeoJSON</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">6</div>
-                            <div class="task-name">实时数据推送</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">SSE</span>
-                            <span class="task-tag">WebSocket</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">7</div>
-                            <div class="task-name">大屏适配与投屏</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">4K</span>
-                            <span class="task-tag">自适应</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 前端工程化实践 -->
-                <div class="stage-cards" data-stage="4">
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">1</div>
-                            <div class="task-name">Git 工作流实践</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">Git Flow</span>
-                            <span class="task-tag">分支</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">2</div>
-                            <div class="task-name">自动化部署</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">CI/CD</span>
-                            <span class="task-tag">Actions</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">3</div>
-                            <div class="task-name">代码规范与 ESLint</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">ESLint</span>
-                            <span class="task-tag">Prettier</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">4</div>
-                            <div class="task-name">构建性能优化</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">Webpack</span>
-                            <span class="task-tag">Vite</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">5</div>
-                            <div class="task-name">单元测试与覆盖率</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">Jest</span>
-                            <span class="task-tag">Vitest</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">6</div>
-                            <div class="task-name">组件库封装</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">Storybook</span>
-                            <span class="task-tag">Monorepo</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">7</div>
-                            <div class="task-name">性能监控与埋点</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">Sentry</span>
-                            <span class="task-tag">埋点</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 团队协作开发实战 -->
-                <div class="stage-cards" data-stage="5">
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">1</div>
-                            <div class="task-name">需求分析与拆分</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">敏捷</span>
-                            <span class="task-tag">PRD</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">2</div>
-                            <div class="task-name">代码评审与重构</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">Review</span>
-                            <span class="task-tag">重构</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">3</div>
-                            <div class="task-name">接口联调与文档</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">Swagger</span>
-                            <span class="task-tag">Mock</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">4</div>
-                            <div class="task-name">项目上线与复盘</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">上线</span>
-                            <span class="task-tag">复盘</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">5</div>
-                            <div class="task-name">跨部门沟通协作</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">敏捷</span>
-                            <span class="task-tag">会议</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">6</div>
-                            <div class="task-name">技术方案评审</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">方案</span>
-                            <span class="task-tag">文档</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">7</div>
-                            <div class="task-name">线上问题应急响应</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">OnCall</span>
-                            <span class="task-tag">复盘</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 全栈实战 -->
-                <div class="stage-cards" data-stage="6">
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">1</div>
-                            <div class="task-name">Node.js 接口开发</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">Node.js</span>
-                            <span class="task-tag">Koa</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">2</div>
-                            <div class="task-name">数据库设计与操作</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">MySQL</span>
-                            <span class="task-tag">ORM</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">3</div>
-                            <div class="task-name">前后端联调部署</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">联调</span>
-                            <span class="task-tag">部署</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">4</div>
-                            <div class="task-name">全栈项目答辩</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">答辩</span>
-                            <span class="task-tag">认证</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">5</div>
-                            <div class="task-name">用户认证与权限</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">JWT</span>
-                            <span class="task-tag">RBAC</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">6</div>
-                            <div class="task-name">服务端接口测试</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">Postman</span>
-                            <span class="task-tag">接口文档</span>
-                        </div>
-                    </div>
-                    <div class="task-card">
-                        <div class="task-row">
-                            <div class="task-num">7</div>
-                            <div class="task-name">项目部署与运维</div>
-                        </div>
-                        <div class="task-tags">
-                            <span class="task-tag">Nginx</span>
-                            <span class="task-tag">Docker</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div class="tasks-section" id="tasksSection"></div>
         </div>
     </div>
 
@@ -1025,17 +450,838 @@
         updateTime();
         setInterval(updateTime, 1000);
 
-        // 阶段切换交互
-        const nodes = document.querySelectorAll('.timeline-node');
-        const stageCards = document.querySelectorAll('.stage-cards');
+        const learningPaths = {
+    "frontend": {
+        "title": "前端开发工程师学习路径",
+        "stages": [
+            {
+                "title": "基础学习",
+                "meta": "8 任务 · 16 课时",
+                "icon": "fa-flag",
+                "tasks": [
+                    {
+                        "name": "HTML5 语义化标签",
+                        "tags": [
+                            "HTML5",
+                            "语义化"
+                        ]
+                    },
+                    {
+                        "name": "CSS3 核心选择器",
+                        "tags": [
+                            "CSS3",
+                            "选择器"
+                        ]
+                    },
+                    {
+                        "name": "Flex 弹性布局",
+                        "tags": [
+                            "Flex",
+                            "布局"
+                        ]
+                    },
+                    {
+                        "name": "Grid 网格布局",
+                        "tags": [
+                            "Grid",
+                            "响应式"
+                        ]
+                    },
+                    {
+                        "name": "JavaScript 基础语法",
+                        "tags": [
+                            "JS",
+                            "ES6"
+                        ]
+                    },
+                    {
+                        "name": "DOM 操作与事件",
+                        "tags": [
+                            "DOM",
+                            "事件"
+                        ]
+                    },
+                    {
+                        "name": "CSS 动画与过渡",
+                        "tags": [
+                            "动画",
+                            "Transition"
+                        ]
+                    },
+                    {
+                        "name": "基础综合实战",
+                        "tags": [
+                            "实战",
+                            "作品集"
+                        ]
+                    }
+                ]
+            },
+            {
+                "title": "电商后台管理系统",
+                "meta": "5 任务 · 12 课时",
+                "icon": "fa-shopping-cart",
+                "tasks": [
+                    {
+                        "name": "Vue3 项目初始化",
+                        "tags": [
+                            "Vite",
+                            "Vue3",
+                            "组合式 API",
+                            "Pinia",
+                            "Vue Router",
+                            "TypeScript"
+                        ]
+                    },
+                    {
+                        "name": "登录鉴权模块",
+                        "tags": [
+                            "Token",
+                            "路由守卫"
+                        ]
+                    },
+                    {
+                        "name": "商品管理 CRUD",
+                        "tags": [
+                            "Element Plus",
+                            "API"
+                        ]
+                    },
+                    {
+                        "name": "订单与权限管理",
+                        "tags": [
+                            "权限",
+                            "表格"
+                        ]
+                    },
+                    {
+                        "name": "后台界面优化",
+                        "tags": [
+                            "UI",
+                            "交互"
+                        ]
+                    },
+                    {
+                        "name": "数据报表与导出",
+                        "tags": [
+                            "ECharts",
+                            "Excel"
+                        ]
+                    },
+                    {
+                        "name": "表单校验与提交",
+                        "tags": [
+                            "Form",
+                            "Rules"
+                        ]
+                    }
+                ]
+            },
+            {
+                "title": "移动端H5活动页",
+                "meta": "4 任务 · 8 课时",
+                "icon": "fa-mobile-alt",
+                "tasks": [
+                    {
+                        "name": "移动端适配方案",
+                        "tags": [
+                            "rem/vw",
+                            "viewport"
+                        ]
+                    },
+                    {
+                        "name": "活动页面布局",
+                        "tags": [
+                            "全屏滚动",
+                            "触摸"
+                        ]
+                    },
+                    {
+                        "name": "H5 动画特效",
+                        "tags": [
+                            "动画",
+                            "Canvas"
+                        ]
+                    },
+                    {
+                        "name": "微信分享与埋点",
+                        "tags": [
+                            "微信",
+                            "埋点"
+                        ]
+                    },
+                    {
+                        "name": "微信授权登录",
+                        "tags": [
+                            "OAuth",
+                            "JS-SDK"
+                        ]
+                    },
+                    {
+                        "name": "活动抽奖动画",
+                        "tags": [
+                            "Canvas",
+                            "动画"
+                        ]
+                    },
+                    {
+                        "name": "H5 性能优化",
+                        "tags": [
+                            "懒加载",
+                            "压缩"
+                        ]
+                    }
+                ]
+            },
+            {
+                "title": "数据可视化大屏",
+                "meta": "4 任务 · 8 课时",
+                "icon": "fa-chart-line",
+                "tasks": [
+                    {
+                        "name": "大屏布局自适应",
+                        "tags": [
+                            "Scale",
+                            "Grid"
+                        ]
+                    },
+                    {
+                        "name": "ECharts 图表配置",
+                        "tags": [
+                            "ECharts",
+                            "图表"
+                        ]
+                    },
+                    {
+                        "name": "数据实时刷新",
+                        "tags": [
+                            "WebSocket",
+                            "Mock"
+                        ]
+                    },
+                    {
+                        "name": "大屏主题与动效",
+                        "tags": [
+                            "主题",
+                            "动效"
+                        ]
+                    },
+                    {
+                        "name": "地图可视化",
+                        "tags": [
+                            "Map",
+                            "GeoJSON"
+                        ]
+                    },
+                    {
+                        "name": "实时数据推送",
+                        "tags": [
+                            "SSE",
+                            "WebSocket"
+                        ]
+                    },
+                    {
+                        "name": "大屏适配与投屏",
+                        "tags": [
+                            "4K",
+                            "自适应"
+                        ]
+                    }
+                ]
+            },
+            {
+                "title": "前端工程化实践",
+                "meta": "4 任务 · 8 课时",
+                "icon": "fa-code-branch",
+                "tasks": [
+                    {
+                        "name": "Git 工作流实践",
+                        "tags": [
+                            "Git Flow",
+                            "分支"
+                        ]
+                    },
+                    {
+                        "name": "自动化部署",
+                        "tags": [
+                            "CI/CD",
+                            "Actions"
+                        ]
+                    },
+                    {
+                        "name": "代码规范与 ESLint",
+                        "tags": [
+                            "ESLint",
+                            "Prettier"
+                        ]
+                    },
+                    {
+                        "name": "构建性能优化",
+                        "tags": [
+                            "Webpack",
+                            "Vite"
+                        ]
+                    },
+                    {
+                        "name": "单元测试与覆盖率",
+                        "tags": [
+                            "Jest",
+                            "Vitest"
+                        ]
+                    },
+                    {
+                        "name": "组件库封装",
+                        "tags": [
+                            "Storybook",
+                            "Monorepo"
+                        ]
+                    },
+                    {
+                        "name": "性能监控与埋点",
+                        "tags": [
+                            "Sentry",
+                            "埋点"
+                        ]
+                    }
+                ]
+            },
+            {
+                "title": "团队协作开发实战",
+                "meta": "4 任务 · 8 课时",
+                "icon": "fa-users-cog",
+                "tasks": [
+                    {
+                        "name": "需求分析与拆分",
+                        "tags": [
+                            "敏捷",
+                            "PRD"
+                        ]
+                    },
+                    {
+                        "name": "代码评审与重构",
+                        "tags": [
+                            "Review",
+                            "重构"
+                        ]
+                    },
+                    {
+                        "name": "接口联调与文档",
+                        "tags": [
+                            "Swagger",
+                            "Mock"
+                        ]
+                    },
+                    {
+                        "name": "项目上线与复盘",
+                        "tags": [
+                            "上线",
+                            "复盘"
+                        ]
+                    },
+                    {
+                        "name": "跨部门沟通协作",
+                        "tags": [
+                            "敏捷",
+                            "会议"
+                        ]
+                    },
+                    {
+                        "name": "技术方案评审",
+                        "tags": [
+                            "方案",
+                            "文档"
+                        ]
+                    },
+                    {
+                        "name": "线上问题应急响应",
+                        "tags": [
+                            "OnCall",
+                            "复盘"
+                        ]
+                    }
+                ]
+            },
+            {
+                "title": "全栈实战",
+                "meta": "4 任务 · 认证",
+                "icon": "fa-trophy",
+                "tasks": [
+                    {
+                        "name": "Node.js 接口开发",
+                        "tags": [
+                            "Node.js",
+                            "Koa"
+                        ]
+                    },
+                    {
+                        "name": "数据库设计与操作",
+                        "tags": [
+                            "MySQL",
+                            "ORM"
+                        ]
+                    },
+                    {
+                        "name": "前后端联调部署",
+                        "tags": [
+                            "联调",
+                            "部署"
+                        ]
+                    },
+                    {
+                        "name": "全栈项目答辩",
+                        "tags": [
+                            "答辩",
+                            "认证"
+                        ]
+                    },
+                    {
+                        "name": "用户认证与权限",
+                        "tags": [
+                            "JWT",
+                            "RBAC"
+                        ]
+                    },
+                    {
+                        "name": "服务端接口测试",
+                        "tags": [
+                            "Postman",
+                            "接口文档"
+                        ]
+                    },
+                    {
+                        "name": "项目部署与运维",
+                        "tags": [
+                            "Nginx",
+                            "Docker"
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "backend": {
+        "title": "后端开发工程师学习路径",
+        "stages": [
+            {
+                "title": "基础学习",
+                "meta": "8 任务 · 16 课时",
+                "icon": "fa-server",
+                "tasks": [
+                    {
+                        "name": "Linux 基础命令",
+                        "tags": [
+                            "Linux",
+                            "命令"
+                        ]
+                    },
+                    {
+                        "name": "Git 版本控制",
+                        "tags": [
+                            "Git",
+                            "版本控制"
+                        ]
+                    },
+                    {
+                        "name": "数据结构与算法",
+                        "tags": [
+                            "数据结构",
+                            "算法"
+                        ]
+                    },
+                    {
+                        "name": "数据库基础",
+                        "tags": [
+                            "数据库",
+                            "SQL"
+                        ]
+                    },
+                    {
+                        "name": "HTTP 协议与 RESTful",
+                        "tags": [
+                            "HTTP",
+                            "RESTful"
+                        ]
+                    },
+                    {
+                        "name": "编程语言基础",
+                        "tags": [
+                            "语言基础"
+                        ]
+                    },
+                    {
+                        "name": "网络编程基础",
+                        "tags": [
+                            "网络编程"
+                        ]
+                    },
+                    {
+                        "name": "基础综合实战",
+                        "tags": [
+                            "实战"
+                        ]
+                    }
+                ]
+            },
+            {
+                "title": "企业级后台系统",
+                "meta": "7 任务 · 12 课时",
+                "icon": "fa-building",
+                "tasks": [
+                    {
+                        "name": "后端项目初始化",
+                        "tags": [
+                            "项目",
+                            "初始化"
+                        ]
+                    },
+                    {
+                        "name": "用户认证与授权",
+                        "tags": [
+                            "认证",
+                            "授权"
+                        ]
+                    },
+                    {
+                        "name": "商品管理 CRUD",
+                        "tags": [
+                            "CRUD"
+                        ]
+                    },
+                    {
+                        "name": "订单与权限管理",
+                        "tags": [
+                            "订单",
+                            "权限"
+                        ]
+                    },
+                    {
+                        "name": "接口文档与 Swagger",
+                        "tags": [
+                            "Swagger",
+                            "文档"
+                        ]
+                    },
+                    {
+                        "name": "数据报表接口",
+                        "tags": [
+                            "报表",
+                            "接口"
+                        ]
+                    },
+                    {
+                        "name": "日志与异常处理",
+                        "tags": [
+                            "日志",
+                            "异常"
+                        ]
+                    }
+                ]
+            },
+            {
+                "title": "高并发活动服务",
+                "meta": "7 任务 · 12 课时",
+                "icon": "fa-bolt",
+                "tasks": [
+                    {
+                        "name": "缓存设计与 Redis",
+                        "tags": [
+                            "Redis",
+                            "缓存"
+                        ]
+                    },
+                    {
+                        "name": "消息队列应用",
+                        "tags": [
+                            "消息队列",
+                            "MQ"
+                        ]
+                    },
+                    {
+                        "name": "接口限流与熔断",
+                        "tags": [
+                            "限流",
+                            "熔断"
+                        ]
+                    },
+                    {
+                        "name": "数据库优化与索引",
+                        "tags": [
+                            "索引",
+                            "优化"
+                        ]
+                    },
+                    {
+                        "name": "分布式锁实现",
+                        "tags": [
+                            "分布式锁"
+                        ]
+                    },
+                    {
+                        "name": "秒杀活动系统设计",
+                        "tags": [
+                            "秒杀",
+                            "设计"
+                        ]
+                    },
+                    {
+                        "name": "性能压测",
+                        "tags": [
+                            "压测",
+                            "性能"
+                        ]
+                    }
+                ]
+            },
+            {
+                "title": "大数据可视化后端",
+                "meta": "7 任务 · 12 课时",
+                "icon": "fa-database",
+                "tasks": [
+                    {
+                        "name": "数据采集与 ETL",
+                        "tags": [
+                            "ETL",
+                            "采集"
+                        ]
+                    },
+                    {
+                        "name": "实时数据流处理",
+                        "tags": [
+                            "流处理",
+                            "实时"
+                        ]
+                    },
+                    {
+                        "name": "数据聚合与报表接口",
+                        "tags": [
+                            "聚合",
+                            "报表"
+                        ]
+                    },
+                    {
+                        "name": "大屏数据 API 设计",
+                        "tags": [
+                            "API",
+                            "大屏"
+                        ]
+                    },
+                    {
+                        "name": "地图数据服务",
+                        "tags": [
+                            "地图",
+                            "服务"
+                        ]
+                    },
+                    {
+                        "name": "实时数据推送",
+                        "tags": [
+                            "推送",
+                            "实时"
+                        ]
+                    },
+                    {
+                        "name": "数据仓库基础",
+                        "tags": [
+                            "数仓",
+                            "基础"
+                        ]
+                    }
+                ]
+            },
+            {
+                "title": "后端工程化实践",
+                "meta": "7 任务 · 12 课时",
+                "icon": "fa-cogs",
+                "tasks": [
+                    {
+                        "name": "Git 工作流实践",
+                        "tags": [
+                            "Git",
+                            "工作流"
+                        ]
+                    },
+                    {
+                        "name": "CI/CD 自动化部署",
+                        "tags": [
+                            "CI/CD",
+                            "部署"
+                        ]
+                    },
+                    {
+                        "name": "代码规范",
+                        "tags": [
+                            "规范",
+                            "Lint"
+                        ]
+                    },
+                    {
+                        "name": "Docker 容器化",
+                        "tags": [
+                            "Docker",
+                            "容器"
+                        ]
+                    },
+                    {
+                        "name": "单元测试与覆盖率",
+                        "tags": [
+                            "测试",
+                            "覆盖率"
+                        ]
+                    },
+                    {
+                        "name": "服务监控与告警",
+                        "tags": [
+                            "监控",
+                            "告警"
+                        ]
+                    },
+                    {
+                        "name": "性能调优",
+                        "tags": [
+                            "调优",
+                            "性能"
+                        ]
+                    }
+                ]
+            },
+            {
+                "title": "团队协作开发实战",
+                "meta": "7 任务 · 12 课时",
+                "icon": "fa-users",
+                "tasks": [
+                    {
+                        "name": "需求分析与拆分",
+                        "tags": [
+                            "需求",
+                            "拆分"
+                        ]
+                    },
+                    {
+                        "name": "接口联调与文档",
+                        "tags": [
+                            "联调",
+                            "文档"
+                        ]
+                    },
+                    {
+                        "name": "代码评审与重构",
+                        "tags": [
+                            "评审",
+                            "重构"
+                        ]
+                    },
+                    {
+                        "name": "项目上线与复盘",
+                        "tags": [
+                            "上线",
+                            "复盘"
+                        ]
+                    },
+                    {
+                        "name": "跨部门沟通协作",
+                        "tags": [
+                            "沟通",
+                            "协作"
+                        ]
+                    },
+                    {
+                        "name": "技术方案评审",
+                        "tags": [
+                            "方案",
+                            "评审"
+                        ]
+                    },
+                    {
+                        "name": "线上问题应急响应",
+                        "tags": [
+                            "应急",
+                            "响应"
+                        ]
+                    }
+                ]
+            },
+            {
+                "title": "全栈实战",
+                "meta": "7 任务 · 认证",
+                "icon": "fa-trophy",
+                "tasks": [
+                    {
+                        "name": "前端接口对接",
+                        "tags": [
+                            "接口",
+                            "前端"
+                        ]
+                    },
+                    {
+                        "name": "数据库设计与操作",
+                        "tags": [
+                            "数据库",
+                            "设计"
+                        ]
+                    },
+                    {
+                        "name": "前后端联调部署",
+                        "tags": [
+                            "联调",
+                            "部署"
+                        ]
+                    },
+                    {
+                        "name": "全栈项目答辩",
+                        "tags": [
+                            "答辩",
+                            "认证"
+                        ]
+                    },
+                    {
+                        "name": "用户认证与权限",
+                        "tags": [
+                            "认证",
+                            "权限"
+                        ]
+                    },
+                    {
+                        "name": "服务端接口测试",
+                        "tags": [
+                            "测试",
+                            "接口"
+                        ]
+                    },
+                    {
+                        "name": "项目部署与运维",
+                        "tags": [
+                            "部署",
+                            "运维"
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+};
+
         const timelineTrack = document.getElementById('timelineTrack');
         const timelineContainer = document.getElementById('timelineContainer');
         const timelinePrev = document.getElementById('timelinePrev');
         const timelineNext = document.getElementById('timelineNext');
-        const positionTabs = document.querySelectorAll('.position-tab');
+        const tasksSection = document.getElementById('tasksSection');
         const pathTitle = document.getElementById('pathTitle');
+        const headerTabs = document.querySelectorAll('.header-position-tab');
 
         let currentTranslate = 0;
+
+        function createTaskCard(task, index) {
+            const tagsHtml = task.tags.map(tag => `<span class="task-tag">${tag}</span>`).join('');
+            return `
+                <div class="task-card">
+                    <div class="task-row">
+                        <div class="task-num">${index + 1}</div>
+                        <div class="task-name">${task.name}</div>
+                    </div>
+                    <div class="task-tags">${tagsHtml}</div>
+                </div>
+            `;
+        }
 
         function updateArrowState() {
             if (!timelineTrack || !timelineContainer) return;
@@ -1053,45 +1299,65 @@
             updateArrowState();
         }
 
+        function renderPath(position) {
+            const path = learningPaths[position];
+            if (!path) return;
+
+            pathTitle.textContent = path.title;
+
+            timelineTrack.innerHTML = path.stages.map((stage, i) => {
+                const label = i === 0 ? 'START · 第1站' : (i === path.stages.length - 1 ? 'GOAL · 终点' : `第${i + 1}站`);
+                return `
+                    <div class="timeline-node ${i === 0 ? 'active' : ''}" data-stage="${i}">
+                        <div class="node-label-top">${label}</div>
+                        <div class="node-circle"><i class="fas ${stage.icon}"></i></div>
+                        <div class="node-title">${stage.title}</div>
+                        <div class="node-meta">${stage.meta}</div>
+                    </div>
+                `;
+            }).join('');
+
+            tasksSection.innerHTML = path.stages.map((stage, i) => {
+                const cardsHtml = stage.tasks.map((task, idx) => createTaskCard(task, idx)).join('');
+                return `<div class="stage-cards ${i === 0 ? 'active' : ''}" data-stage="${i}">${cardsHtml}</div>`;
+            }).join('');
+
+            currentTranslate = 0;
+            timelineTrack.style.transform = 'translateX(0)';
+            updateArrowState();
+        }
+
+        timelineTrack.addEventListener('click', e => {
+            const node = e.target.closest('.timeline-node');
+            if (!node) return;
+            const stage = node.getAttribute('data-stage');
+
+            document.querySelectorAll('.timeline-node').forEach(n => n.classList.remove('active'));
+            node.classList.add('active');
+
+            document.querySelectorAll('.stage-cards').forEach(cards => {
+                if (cards.getAttribute('data-stage') === stage) {
+                    cards.classList.add('active');
+                } else {
+                    cards.classList.remove('active');
+                }
+            });
+        });
+
         timelinePrev.addEventListener('click', () => scrollTimeline(-1));
         timelineNext.addEventListener('click', () => scrollTimeline(1));
         window.addEventListener('resize', updateArrowState);
 
-        nodes.forEach(node => {
-            node.addEventListener('click', () => {
-                const stage = node.getAttribute('data-stage');
-
-                nodes.forEach(n => n.classList.remove('active'));
-                node.classList.add('active');
-
-                stageCards.forEach(cards => {
-                    if (cards.getAttribute('data-stage') === stage) {
-                        cards.classList.add('active');
-                    } else {
-                        cards.classList.remove('active');
-                    }
-                });
-            });
-        });
-
-        updateArrowState();
-
-        // 岗位切换
-        positionTabs.forEach(tab => {
+        headerTabs.forEach(tab => {
             tab.addEventListener('click', () => {
-                const position = tab.getAttribute('data-position');
-                positionTabs.forEach(t => t.classList.remove('active'));
+                headerTabs.forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
-
-                pathTitle.textContent = position === 'backend'
-                    ? '后端开发工程师学习路径'
-                    : '前端开发工程师学习路径';
-
-                currentTranslate = 0;
-                timelineTrack.style.transform = 'translateX(0)';
-                updateArrowState();
+                renderPath(tab.getAttribute('data-position'));
             });
         });
+
+        renderPath('frontend');
     </script>
+
 </body>
 </html>
