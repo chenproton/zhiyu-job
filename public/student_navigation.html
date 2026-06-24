@@ -88,63 +88,128 @@
   /* Main */
   .main { padding: 88px 32px 48px; max-width: 1600px; margin: 0 auto; }
 
-  /* Hero: stats + search/banner */
+  /* Hero: left position map + right search/banner */
   .hero-split {
     display: grid;
-    grid-template-columns: 380px 1fr;
+    grid-template-columns: 320px 1fr;
     gap: 20px;
     margin-bottom: 28px;
     min-height: 420px;
   }
 
-  .hero-stats {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    gap: 16px;
-  }
-
-  .stat-card {
-    background: linear-gradient(135deg, #5b8cff 0%, #3b6de8 100%);
+  /* Position Map (left) */
+  .position-map {
+    background: #fff;
     border-radius: 16px;
-    padding: 20px;
-    color: #fff;
+    border: 1px solid #e7e5e4;
+    box-shadow: 0 4px 20px rgba(69,26,3,0.06);
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     position: relative;
-    overflow: hidden;
-    box-shadow: 0 8px 24px rgba(59, 109, 232, 0.22);
-    transition: transform 0.2s, box-shadow 0.2s;
+    z-index: 20;
   }
-  .stat-card:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(59, 109, 232, 0.32); }
-  .stat-card .stat-content { position: relative; z-index: 2; }
-  .stat-card .stat-label { font-size: 13px; opacity: 0.92; margin-bottom: 10px; }
-  .stat-card .stat-value { font-size: 28px; font-weight: 800; }
-  .stat-card .stat-decoration {
-    position: absolute;
-    right: -20px;
-    bottom: -30px;
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.12);
-    z-index: 1;
+  .position-map-header {
+    padding: 16px 18px;
+    border-bottom: 1px solid #f5f5f4;
+    font-size: 16px;
+    font-weight: 700;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
-  .stat-card .stat-decoration::before {
+  .position-map-header i { color: #3b82f6; }
+  .position-map-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 0;
+  }
+  .map-category {
+    position: relative;
+    padding: 12px 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-bottom: 1px solid #fafaf9;
+  }
+  .map-category:hover, .map-category.active {
+    background: #eff6ff;
+  }
+  .map-category.active::before {
     content: "";
+    position: absolute; left: 0; top: 8px; bottom: 8px;
+    width: 3px; background: #3b82f6; border-radius: 0 3px 3px 0;
+  }
+  .map-cat-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+  }
+  .map-cat-name { font-weight: 600; color: #334155; }
+  .map-cat-arrow { color: #a8a29e; font-size: 12px; }
+  .map-cat-preview {
+    font-size: 12px;
+    color: #a8a29e;
+    margin-top: 4px;
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Right-side expanded panel */
+  .map-detail-panel {
     position: absolute;
-    right: -30px;
-    top: -50px;
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.08);
+    left: calc(100% + 12px);
+    top: 0;
+    bottom: 0;
+    width: 520px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+    border: 1px solid #bfdbfe;
+    z-index: 100;
+    padding: 20px;
+    display: none;
+    overflow-y: auto;
+    animation: panelFadeIn 0.2s ease;
   }
-  .stat-card-large {
-    grid-row: 1 / 3;
+  .map-detail-panel.active { display: block; }
+  @keyframes panelFadeIn {
+    from { opacity: 0; transform: translateX(-8px); }
+    to { opacity: 1; transform: translateX(0); }
   }
-  .stat-card-large .stat-value { font-size: 40px; }
+  .panel-header {
+    font-size: 16px; font-weight: 700; color: #0f172a;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f5f5f4;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .panel-header i { color: #3b82f6; }
+  .panel-group { margin-bottom: 18px; }
+  .panel-group:last-child { margin-bottom: 0; }
+  .panel-group-name {
+    font-size: 13px; font-weight: 600; color: #78350f;
+    margin-bottom: 10px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .panel-tags { display: flex; flex-wrap: wrap; gap: 10px; }
+  .panel-tag {
+    font-size: 13px; color: #475569;
+    background: #fafaf9; border: 1px solid #e7e5e4;
+    padding: 6px 14px; border-radius: 16px;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .panel-tag:hover {
+    background: #eff6ff; color: #2563eb; border-color: #bfdbfe;
+  }
+  .panel-empty {
+    color: #a8a29e; font-size: 13px;
+    padding: 20px 0;
+  }
 
   /* Right area */
   .hero-right {
@@ -243,6 +308,27 @@
   .hero-banner-nav:hover { background: rgba(255,255,255,0.3); }
   .hero-banner-nav.prev { left: 12px; }
   .hero-banner-nav.next { right: 12px; }
+
+  /* Stats */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 28px; }
+  .stat-card {
+    background: #fff; border-radius: 16px;
+    padding: 24px; display: flex; align-items: center; justify-content: space-between;
+    border: 1px solid #e7e5e4;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .stat-card:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(69,26,3,0.08); }
+  .stat-label { font-size: 14px; color: #64748b; margin-bottom: 8px; }
+  .stat-value { font-size: 30px; font-weight: 800; color: #0f172a; }
+  .stat-icon {
+    width: 56px; height: 56px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
+  }
+  .stat-icon.orange { background: linear-gradient(135deg, #ffedd5, #fed7aa); }
+  .stat-icon.blue { background: linear-gradient(135deg, #dbeafe, #bfdbfe); }
+  .stat-icon.green { background: linear-gradient(135deg, #dcfce7, #bbf7d0); }
+  .stat-icon.red { background: linear-gradient(135deg, #fee2e2, #fecaca); }
 
   /* Filter */
   .filter-box {
@@ -370,19 +456,18 @@
   .empty-state div { font-size: 15px; }
 
   @media (max-width: 1200px) {
-    .hero-split { grid-template-columns: 1fr; }
-    .hero-stats { grid-template-columns: repeat(4, 1fr); }
-    .stat-card-large { grid-row: auto; }
-    .stat-card-large .stat-value { font-size: 28px; }
+    .hero-split { grid-template-columns: 260px 1fr; }
+    .map-detail-panel { width: 360px; }
     .card-grid { grid-template-columns: repeat(3, 1fr); }
   }
   @media (max-width: 768px) {
     .header { padding: 0 16px; }
     .header-nav { display: none; }
     .main { padding: 80px 16px 32px; }
-    .hero-split { min-height: auto; }
-    .hero-stats { grid-template-columns: repeat(2, 1fr); }
-    .stat-card-large { grid-row: auto; }
+    .hero-split { grid-template-columns: 1fr; min-height: auto; }
+    .position-map { max-height: 320px; }
+    .map-detail-panel { position: static; width: 100%; margin-top: 12px; box-shadow: none; border: 1px solid #e7e5e4; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
     .card-grid { grid-template-columns: 1fr; }
     .toolbar { flex-direction: column; gap: 12px; align-items: flex-start; }
     .footer { padding: 0 16px; }
@@ -442,37 +527,19 @@
 
 <div class="main">
 
-  <!-- 顶部统计/搜索/Banner -->
+  <!-- 顶部左右分栏：岗位图谱 + 搜索/Banner -->
   <div class="hero-split">
-    <!-- 左侧统计卡片 -->
-    <div class="hero-stats" id="statsRow">
-      <div class="stat-card stat-card-large">
-        <div class="stat-content">
-          <div class="stat-label">收录岗位数</div>
-          <div class="stat-value" id="statTotal">0</div>
-        </div>
-        <div class="stat-decoration"></div>
+    <!-- 左侧岗位图谱 -->
+    <div class="position-map">
+      <div class="position-map-header">
+        <i class="fa fa-sitemap"></i> 岗位分类图谱
       </div>
-      <div class="stat-card">
-        <div class="stat-content">
-          <div class="stat-label">覆盖专业数</div>
-          <div class="stat-value" id="statPublished">0</div>
-        </div>
-        <div class="stat-decoration"></div>
+      <div class="position-map-list" id="positionMap">
+        <!-- 动态生成 -->
       </div>
-      <div class="stat-card">
-        <div class="stat-content">
-          <div class="stat-label">涉及行业数</div>
-          <div class="stat-value" id="statTasks">0</div>
-        </div>
-        <div class="stat-decoration"></div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-content">
-          <div class="stat-label">浏览人次</div>
-          <div class="stat-value" id="statPositions">0</div>
-        </div>
-        <div class="stat-decoration"></div>
+      <!-- 右侧展开的岗位详情面板 -->
+      <div class="map-detail-panel" id="mapDetailPanel">
+        <!-- 动态生成 -->
       </div>
     </div>
 
@@ -498,6 +565,38 @@
       <div class="hero-banner" id="heroBanner">
         <!-- 动态生成轮播图 -->
       </div>
+    </div>
+  </div>
+
+  <!-- 统计卡片 -->
+  <div class="stats" id="statsRow">
+    <div class="stat-card">
+      <div>
+        <div class="stat-label">收录岗位数</div>
+        <div class="stat-value" id="statTotal">0</div>
+      </div>
+      <div class="stat-icon orange">📚</div>
+    </div>
+    <div class="stat-card">
+      <div>
+        <div class="stat-label">覆盖专业数</div>
+        <div class="stat-value" id="statPublished">0</div>
+      </div>
+      <div class="stat-icon blue">🎓</div>
+    </div>
+    <div class="stat-card">
+      <div>
+        <div class="stat-label">涉及行业数</div>
+        <div class="stat-value" id="statTasks">0</div>
+      </div>
+      <div class="stat-icon green">🏭</div>
+    </div>
+    <div class="stat-card">
+      <div>
+        <div class="stat-label">浏览人数</div>
+        <div class="stat-value" id="statPositions">0</div>
+      </div>
+      <div class="stat-icon red">👁</div>
     </div>
   </div>
 
@@ -548,11 +647,69 @@
 
   <div class="empty-state" id="emptyState" style="display:none;">
     <i class="fa fa-search"></i>
-    <div>暂无匹配的岗位，试试调整筛选条件</div>
+    <div>暂无匹配的岗位，试试调整筛选条件或从左侧岗位图谱选择</div>
   </div>
 </div>
 
 <script>
+  // =================== 岗位分类图谱数据 ===================
+  const POSITION_MAP = [
+    {
+      category: "互联网/IT",
+      icon: "fa-laptop",
+      groups: [
+        { name: "后端开发", positions: ["Java开发", "Python开发", "Go开发", "C++开发", "PHP开发"] },
+        { name: "前端/移动", positions: ["前端开发工程师", "Android开发", "iOS开发", "鸿蒙开发", "小程序开发"] },
+        { name: "测试", positions: ["测试工程师", "自动化测试", "性能测试", "测试开发"] },
+        { name: "数据/AI", positions: ["数据分析师", "数据开发", "算法工程师", "大模型工程师"] },
+        { name: "运维/网络安全", positions: ["运维工程师", "网络工程师", "网络安全工程师", "DevOps工程师"] }
+      ]
+    },
+    {
+      category: "电子商务",
+      icon: "fa-shopping-cart",
+      groups: [
+        { name: "电商运营", positions: ["电商运营专员", "淘宝/天猫运营", "京东运营", "跨境电商运营"] },
+        { name: "新媒体", positions: ["新媒体运营", "内容运营", "直播运营", "短视频运营"] },
+        { name: "产品", positions: ["电商产品经理", "商品运营", "品类运营"] }
+      ]
+    },
+    {
+      category: "金融",
+      icon: "fa-line-chart",
+      groups: [
+        { name: "财务", positions: ["会计师", "出纳", "财务分析师", "成本会计"] },
+        { name: "金融", positions: ["理财顾问", "投资经理", "证券分析师", "风控专员"] },
+        { name: "审计/税务", positions: ["审计师", "税务专员", "税务顾问"] }
+      ]
+    },
+    {
+      category: "服务业",
+      icon: "fa-handshake-o",
+      groups: [
+        { name: "市场", positions: ["品牌经理", "市场营销", "活动策划", "市场推广"] },
+        { name: "销售", positions: ["销售专员", "客户经理", "商务拓展", "渠道销售"] },
+        { name: "人力/行政", positions: ["人力资源专员", "招聘专员", "行政专员", "HRBP"] }
+      ]
+    },
+    {
+      category: "教育",
+      icon: "fa-graduation-cap",
+      groups: [
+        { name: "教学", positions: ["小学教师", "中学教师", "幼儿教师", "培训讲师"] },
+        { name: "教研", positions: ["课程设计师", "教研员", "教学管理"] }
+      ]
+    },
+    {
+      category: "制造/工程",
+      icon: "fa-cogs",
+      groups: [
+        { name: "机械/电气", positions: ["机械工程师", "电气工程师", "自动化工程师", "嵌入式工程师"] },
+        { name: "质量/生产", positions: ["质量工程师", "生产计划", "工艺工程师", "PMC"] }
+      ]
+    }
+  ];
+
   // =================== 岗位数据 ===================
   const JOBS = [
     { id: "job-1", name: "企业级前端项目开发实战", code: "JOB-2026-0001", version: "v2.1", industryName: "互联网/IT", professionName: "信息技术", positionName: "前端开发工程师", batchName: "2026春季前端开发岗位建设", creatorName: "张老师", difficulty: 5, status: "published", publishTime: "2024-03-15 10:30:00", updatedAt: "2024-01-15", tasksCount: 4, totalHours: 44, hot: true, coverImage: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=600&h=400&fit=crop" },
@@ -587,6 +744,75 @@
     "linear-gradient(135deg,#be123c,#f43f5e)",
     "linear-gradient(135deg,#0f766e,#14b8a6)"
   ];
+
+  // =================== 初始化岗位图谱 ===================
+  function initPositionMap() {
+    const container = document.getElementById('positionMap');
+    const panel = document.getElementById('mapDetailPanel');
+
+    container.innerHTML = POSITION_MAP.map((cat, idx) => {
+      const preview = cat.groups.slice(0, 2).map(g => g.positions.slice(0, 2).join('、')).join('、');
+      return `
+        <div class="map-category ${idx === 0 ? 'active' : ''}" data-category="${cat.category}" data-index="${idx}">
+          <div class="map-cat-main">
+            <span class="map-cat-name"><i class="fa ${cat.icon}"></i> ${cat.category}</span>
+            <span class="map-cat-arrow"><i class="fa fa-chevron-right"></i></span>
+          </div>
+          <div class="map-cat-preview">${preview}...</div>
+        </div>
+      `;
+    }).join('');
+
+    function showPanel(idx) {
+      const cat = POSITION_MAP[idx];
+      if(!cat) return;
+      panel.innerHTML = `
+        <div class="panel-header"><i class="fa ${cat.icon}"></i> ${cat.category}岗位</div>
+        ${cat.groups.map(g => `
+          <div class="panel-group">
+            <div class="panel-group-name"><i class="fa fa-circle" style="font-size:6px;color:#3b82f6;"></i> ${g.name}</div>
+            <div class="panel-tags">
+              ${g.positions.map(p => `<span class="panel-tag">${p}</span>`).join('')}
+            </div>
+          </div>
+        `).join('')}
+      `;
+      panel.classList.add('active');
+      panel.querySelectorAll('.panel-tag').forEach(tag => {
+        tag.addEventListener('click', () => {
+          window.location.href = "student.html";
+        });
+      });
+    }
+
+    // 默认显示第一个
+    showPanel(0);
+
+  // 点击一级分类：切换右侧面板
+    container.querySelectorAll('.map-category').forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const idx = parseInt(item.dataset.index);
+        const isActive = item.classList.contains('active') && panel.classList.contains('active');
+        container.querySelectorAll('.map-category').forEach(c => c.classList.remove('active'));
+        if (isActive) {
+          panel.classList.remove('active');
+        } else {
+          item.classList.add('active');
+          showPanel(idx);
+          panel.classList.add('active');
+        }
+      });
+    });
+
+    // 点击页面其他区域：收起面板
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.position-map')) {
+        panel.classList.remove('active');
+        container.querySelectorAll('.map-category').forEach(c => c.classList.remove('active'));
+      }
+    });
+  }
 
   // =================== 初始化统计 ===================
   function initStats() {
@@ -923,6 +1149,7 @@
   }
 
   // =================== 初始化 ===================
+  initPositionMap();
   initStats();
   initFilters();
   renderCards();
