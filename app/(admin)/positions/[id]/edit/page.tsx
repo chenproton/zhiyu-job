@@ -136,7 +136,7 @@ export default function PositionEditPage({ params }: PageProps) {
               <Save className="mr-2 h-4 w-4" />
               {isSaving ? '保存中...' : '保存草稿'}
             </Button>
-            <Button variant="outline" size="sm" onClick={() => setIsPreviewOpen(true)}>
+            <Button variant="outline" size="sm" onClick={() => window.open('/student.html', '_blank')}>
               <Eye className="mr-2 h-4 w-4" />
               预览
             </Button>
