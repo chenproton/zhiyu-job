@@ -143,8 +143,6 @@ export function StepBasicInfo({ position, onUpdate, aiMode = false, variant = 'd
   const isCreate = variant === 'create'
   const [isGenerating, setIsGenerating] = useState<string | null>(null)
   const [aiSuggestions, setAiSuggestions] = useState<Partial<Record<AiSuggestionField, AiSuggestion>>>({})
-  const [newHorizontal, setNewHorizontal] = useState('')
-  const [newVertical, setNewVertical] = useState('')
 
   // 默认至少保留一个输入框
   useEffect(() => {
@@ -153,6 +151,12 @@ export function StepBasicInfo({ position, onUpdate, aiMode = false, variant = 'd
     }
     if (position.requirements.length === 0) {
       onUpdate({ requirements: [''] })
+    }
+    if (position.careerPath.horizontal.length === 0) {
+      onUpdate({ careerPath: { ...position.careerPath, horizontal: [''] } })
+    }
+    if (position.careerPath.vertical.length === 0) {
+      onUpdate({ careerPath: { ...position.careerPath, vertical: [''] } })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -415,14 +419,12 @@ export function StepBasicInfo({ position, onUpdate, aiMode = false, variant = 'd
   }
 
   const addHorizontalPath = () => {
-    if (!newHorizontal.trim()) return
     onUpdate({
       careerPath: {
         ...position.careerPath,
-        horizontal: [...position.careerPath.horizontal, newHorizontal.trim()],
+        horizontal: [...position.careerPath.horizontal, ''],
       },
     })
-    setNewHorizontal('')
   }
 
   const removeHorizontalPath = (index: number) => {
@@ -435,14 +437,12 @@ export function StepBasicInfo({ position, onUpdate, aiMode = false, variant = 'd
   }
 
   const addVerticalPath = () => {
-    if (!newVertical.trim()) return
     onUpdate({
       careerPath: {
         ...position.careerPath,
-        vertical: [...position.careerPath.vertical, newVertical.trim()],
+        vertical: [...position.careerPath.vertical, ''],
       },
     })
-    setNewVertical('')
   }
 
   const removeVerticalPath = (index: number) => {
@@ -543,39 +543,71 @@ export function StepBasicInfo({ position, onUpdate, aiMode = false, variant = 'd
           <div className="grid grid-cols-2 gap-4">
             <div className="grid gap-2">
               <Label htmlFor="industry">面向行业</Label>
-              <Select
-                value={position.industry}
-                onValueChange={(value) => onUpdate({ industry: value })}
-              >
-                <SelectTrigger id="industry">
-                  <SelectValue placeholder="选择行业" />
-                </SelectTrigger>
-                <SelectContent>
-                  {MOCK_INDUSTRIES.map((industry) => (
-                    <SelectItem key={industry} value={industry}>
-                      {industry}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="flex min-h-[36px] flex-wrap items-center gap-1 rounded-md border border-input bg-background px-2 py-1 text-sm shadow-sm">
+                {position.industry ? (
+                  <span className="inline-flex items-center gap-1 rounded-sm bg-secondary px-1.5 py-0.5 text-xs">
+                    {position.industry}
+                    <button
+                      type="button"
+                      onClick={() => onUpdate({ industry: '' })}
+                      className="text-muted-foreground hover:text-destructive"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </span>
+                ) : null}
+                <Select
+                  value=""
+                  onValueChange={(value) => onUpdate({ industry: value })}
+                >
+                  <SelectTrigger id="industry" className="h-auto w-auto border-0 bg-transparent p-0 shadow-none focus:ring-0">
+                    <SelectValue placeholder="选择行业" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {MOCK_INDUSTRIES.map((industry) => (
+                      <SelectItem key={industry} value={industry}>
+                        {industry}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
             <div className="grid gap-2">
               <Label htmlFor="major">适用专业</Label>
-              <Select
-                value={position.majors[0] || ''}
-                onValueChange={(value) => onUpdate({ majors: [value] })}
-              >
-                <SelectTrigger id="major">
-                  <SelectValue placeholder="选择专业" />
-                </SelectTrigger>
-                <SelectContent>
-                  {MOCK_MAJORS.map((major) => (
-                    <SelectItem key={major} value={major}>
-                      {major}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="flex min-h-[36px] flex-wrap items-center gap-1 rounded-md border border-input bg-background px-2 py-1 text-sm shadow-sm">
+                {position.majors.map((major) => (
+                  <span key={major} className="inline-flex items-center gap-1 rounded-sm bg-secondary px-1.5 py-0.5 text-xs">
+                    {major}
+                    <button
+                      type="button"
+                      onClick={() => onUpdate({ majors: position.majors.filter((m) => m !== major) })}
+                      className="text-muted-foreground hover:text-destructive"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </span>
+                ))}
+                <Select
+                  value=""
+                  onValueChange={(value) => {
+                    if (!position.majors.includes(value)) {
+                      onUpdate({ majors: [...position.majors, value] })
+                    }
+                  }}
+                >
+                  <SelectTrigger id="major" className="h-auto w-auto border-0 bg-transparent p-0 shadow-none focus:ring-0">
+                    <SelectValue placeholder="选择专业" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {MOCK_MAJORS.map((major) => (
+                      <SelectItem key={major} value={major}>
+                        {major}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
 
@@ -775,18 +807,14 @@ export function StepBasicInfo({ position, onUpdate, aiMode = false, variant = 'd
                     </Button>
                   </div>
                 ))}
-                <div className="flex gap-2">
-                  <Input
-                    placeholder="添加横向发展方向..."
-                    value={newHorizontal}
-                    onChange={(e) => setNewHorizontal(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && addHorizontalPath()}
-                    className="flex-1"
-                  />
-                  <Button variant="outline" size="icon" onClick={addHorizontalPath}>
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </div>
+                <Button
+                  variant="outline"
+                  className="w-full h-8 border-dashed"
+                  onClick={addHorizontalPath}
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  添加横向发展方向
+                </Button>
               </div>
             </div>
             <div>
@@ -817,18 +845,14 @@ export function StepBasicInfo({ position, onUpdate, aiMode = false, variant = 'd
                     </Button>
                   </div>
                 ))}
-                <div className="flex gap-2">
-                  <Input
-                    placeholder="添加纵向发展方向..."
-                    value={newVertical}
-                    onChange={(e) => setNewVertical(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && addVerticalPath()}
-                    className="flex-1"
-                  />
-                  <Button variant="outline" size="icon" onClick={addVerticalPath}>
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </div>
+                <Button
+                  variant="outline"
+                  className="w-full h-8 border-dashed"
+                  onClick={addVerticalPath}
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  添加纵向发展方向
+                </Button>
               </div>
             </div>
           </div>
