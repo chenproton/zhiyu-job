@@ -25,9 +25,15 @@ export const careerNavigationConfig: PlatformNavigationConfig = {
         { id: "batches", label: "批次分组管理", href: "/batches", matchers: ["/batches"] },
         { id: "workflows", label: "审批流程管理", href: "/workflows", matchers: ["/workflows"] },
         { id: "approvals", label: "资源审批管理", href: "/approvals", matchers: ["/approvals"] },
-        { id: "heart-jobs", label: "我的心仪岗位", href: "/heart-jobs", matchers: ["/heart-jobs"] },
         { id: "banner-management", label: "轮播图管理", href: "/banner-management", matchers: ["/banner-management"] },
       ],
+    },
+    {
+      id: "heart-jobs",
+      label: "我的心仪岗位",
+      icon: "heart",
+      href: "/heart-jobs",
+      matchers: ["/heart-jobs"],
     },
     {
       id: "student-learning",
