@@ -617,10 +617,7 @@ export function StepBasicInfo({ position, onUpdate, aiMode = false, variant = 'd
 
           {/* Description */}
           <div className="grid gap-2">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="description">岗位背景介绍</Label>
-              {renderAIButton('description', aiMode ? 'AI 生成文案' : 'AI 起草')}
-            </div>
+            <Label htmlFor="description">岗位背景介绍</Label>
             <Textarea
               id="description"
               value={position.description}
@@ -637,7 +634,6 @@ export function StepBasicInfo({ position, onUpdate, aiMode = false, variant = 'd
       <Card>
         <CardHeader className="flex flex-row items-center justify-between pb-3">
           <CardTitle className="text-base">工作职责</CardTitle>
-          {renderAIButton('responsibilities', 'AI 生成')}
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
@@ -693,7 +689,6 @@ export function StepBasicInfo({ position, onUpdate, aiMode = false, variant = 'd
       <Card>
         <CardHeader className="flex flex-row items-center justify-between pb-3">
           <CardTitle className="text-base">任职要求</CardTitle>
-          {renderAIButton('requirements', 'AI 生成')}
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
@@ -749,7 +744,6 @@ export function StepBasicInfo({ position, onUpdate, aiMode = false, variant = 'd
       <Card>
         <CardHeader className="flex flex-row items-center justify-between pb-3">
           <CardTitle className="text-base">发展路径</CardTitle>
-          {renderAIButton('careerPath', 'AI 生成')}
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-6">
