@@ -14,10 +14,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { X, Save, Eye, ArrowRight, ArrowLeft, Check, ImagePlus, UserPlus } from 'lucide-react'
+import { X, Save, Eye, ArrowRight, ArrowLeft, Check, ImagePlus } from 'lucide-react'
 import { StepBasicInfo } from '@/components/position-builder/step-basic-info'
 import { StepAbilityModeling } from '@/components/position-builder/step-ability-modeling'
 import { Step3ResultTable } from '@/components/position-builder/ai-assisted-2/step3-result-table'
+import { CoBuilderSelector } from '@/components/position-builder/co-builder-selector'
 import type { Position } from '@/lib/types'
 import {
   Dialog,
@@ -267,20 +268,10 @@ export default function PositionEditPage({ params }: PageProps) {
                   {/* Collaborators */}
                   <div>
                     <Label className="text-gray-500 text-xs">共建人</Label>
-                    <div className="mt-1 border rounded-lg p-3 cursor-pointer hover:bg-gray-50 transition-colors">
-                      {position.collaborators.length === 0 ? (
-                        <div className="flex items-center gap-2 text-gray-400">
-                          <UserPlus className="h-4 w-4" />
-                          <span className="text-sm">点击选择共建人</span>
-                        </div>
-                      ) : (
-                        <div className="flex flex-wrap gap-2">
-                          <div className="flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-primary/10 text-primary">
-                            <span>{CURRENT_USER.name}</span>
-                          </div>
-                        </div>
-                      )}
-                    </div>
+                    <CoBuilderSelector
+                      selectedIds={position.collaborators}
+                      onChange={(ids) => updatePositionData({ collaborators: ids })}
+                    />
                   </div>
 
                   {/* Version */}
