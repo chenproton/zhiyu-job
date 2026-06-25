@@ -37,7 +37,6 @@ import {
   ArrowDown,
   Plus,
   Trash2,
-  Search,
   Sparkles,
   GraduationCap,
   Briefcase,
@@ -52,7 +51,6 @@ export default function PostRecommendPage() {
   const { user } = useAuth()
 
   const [selectedMajor, setSelectedMajor] = useState<string>('')
-  const [searchQuery, setSearchQuery] = useState('')
   const [isAddOpen, setIsAddOpen] = useState(false)
   const [selectedPositionId, setSelectedPositionId] = useState<string>('')
   const [selectedType, setSelectedType] = useState<PositionType>('enterprise')
@@ -81,19 +79,13 @@ export default function PostRecommendPage() {
   )
 
   const availablePositions = useMemo(() => {
-    return positions
-      .filter(
-        (p) =>
-          p.majors.includes(currentMajor) &&
-          p.status === 'published' &&
-          !recommendedPositionIds.has(p.id)
-      )
-      .filter(
-        (p) =>
-          p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          p.shortName.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-  }, [positions, currentMajor, recommendedPositionIds, searchQuery])
+    return positions.filter(
+      (p) =>
+        p.majors.includes(currentMajor) &&
+        p.status === 'published' &&
+        !recommendedPositionIds.has(p.id)
+    )
+  }, [positions, currentMajor, recommendedPositionIds])
 
   const handleMove = (index: number, direction: -1 | 1) => {
     const newIndex = index + direction
@@ -175,9 +167,9 @@ export default function PostRecommendPage() {
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6">
         {/* 已配置推荐 */}
-        <Card className="lg:col-span-2">
+        <Card>
           <CardHeader className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <CardTitle>推荐岗位列表</CardTitle>
@@ -362,80 +354,8 @@ export default function PostRecommendPage() {
           </CardContent>
         </Card>
 
-        {/* 可选岗位池 */}
-        <Card className="lg:col-span-1">
-          <CardHeader>
-            <CardTitle className="text-base">可选岗位池</CardTitle>
-            <CardDescription>
-              「{currentMajor}」专业下已发布且未推荐的岗位
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                placeholder="搜索岗位..."
-                className="pl-9"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-            <div className="space-y-2 max-h-[400px] overflow-y-auto pr-1">
-              {availablePositions.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
-                  <Briefcase className="h-10 w-10 mb-2" />
-                  <p className="text-sm">暂无可选岗位</p>
-                  <p className="text-xs mt-1">该专业下已发布岗位可能已全部推荐</p>
-                </div>
-              ) : (
-                availablePositions.map((position) => (
-                  <div
-                    key={position.id}
-                    className="flex items-center justify-between rounded-lg border p-3 hover:bg-muted/50 transition-colors"
-                  >
-                    <div className="min-w-0">
-                      <div className="font-medium text-sm truncate">{position.name}</div>
-                      <div className="text-xs text-muted-foreground">
-                        {position.industry} · {position.positionType === 'teaching' ? '教学岗位' : '企业岗位'}
-                      </div>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="shrink-0"
-                      onClick={() => {
-                        setSelectedPositionId(position.id)
-                        setSelectedType(position.positionType)
-                        setIsAddOpen(true)
-                      }}
-                    >
-                      <Plus className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))
-              )}
-            </div>
-          </CardContent>
-        </Card>
       </div>
 
-      {/* 说明 */}
-      <Card className="bg-muted/30 border-dashed">
-        <CardContent className="p-4">
-          <div className="flex items-start gap-3 text-sm text-muted-foreground">
-            <Sparkles className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-            <div>
-              <p className="font-medium text-foreground">闭环逻辑说明</p>
-              <p className="mt-1">
-                1. 老师在当前页面为每个专业挑选推荐岗位（含教学岗位）并调整顺序；
-                2. 配置自动保存到浏览器本地；
-                3. 学生端「探索岗位」页面的「为你推荐」将按此顺序展示对应专业的岗位；
-                4. 未配置推荐的专业将按默认规则展示前 4 个已发布岗位。
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   )
 }
