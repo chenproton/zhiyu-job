@@ -626,6 +626,32 @@
   .empty-state i { font-size: 56px; margin-bottom: 18px; color: #cbd5e1; }
   .empty-state div { font-size: 15px; }
 
+  /* Pagination */
+  .pagination {
+    display: flex; align-items: center; justify-content: center;
+    gap: 8px; margin-top: 28px;
+  }
+  .pagination-arrow {
+    width: 32px; height: 32px;
+    border: 1px solid #e7e5e4; border-radius: 8px;
+    background: #fff; color: #475569;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .pagination-arrow:hover:not(:disabled) { border-color: #3b82f6; color: #3b82f6; }
+  .pagination-arrow:disabled { opacity: 0.4; cursor: not-allowed; }
+  .pagination-pages { display: flex; align-items: center; gap: 6px; }
+  .pagination-page {
+    min-width: 32px; height: 32px;
+    border: 1px solid #e7e5e4; border-radius: 8px;
+    background: #fff; color: #475569;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.2s; font-size: 13px;
+    padding: 0 8px;
+  }
+  .pagination-page:hover:not(.active) { border-color: #3b82f6; color: #3b82f6; }
+  .pagination-page.active { background: #3b82f6; color: #fff; border-color: #3b82f6; font-weight: 500; }
+
   @media (max-width: 1200px) {
     .dashboard { grid-template-columns: 1fr; }
     .hero-banner-inner { flex-direction: column; align-items: flex-start; justify-content: flex-end; padding-bottom: 36px; }
@@ -876,6 +902,13 @@
     <!-- 动态生成 -->
   </div>
 
+  <!-- 分页 -->
+  <div class="pagination" id="pagination">
+    <button class="pagination-arrow" id="pagePrev"><i class="fa fa-chevron-left"></i></button>
+    <div class="pagination-pages" id="paginationPages"></div>
+    <button class="pagination-arrow" id="pageNext"><i class="fa fa-chevron-right"></i></button>
+  </div>
+
   <div class="empty-state" id="emptyState" style="display:none;">
     <i class="fa fa-search"></i>
     <div>暂无匹配的岗位，试试调整筛选条件或搜索关键词</div>
@@ -1099,6 +1132,7 @@
         if (e.target.classList.contains("tag")) {
           container.querySelectorAll(".tag").forEach(t => t.classList.remove("active"));
           e.target.classList.add("active");
+          currentPage = 1;
           renderCards();
           updateFilterSummary();
         }
@@ -1108,11 +1142,14 @@
 
   // =================== 排序 ===================
   let currentSort = "default";
+  let currentPage = 1;
+  const CARDS_PER_PAGE = 8;
   document.querySelectorAll(".sort-btn").forEach(btn => {
     btn.addEventListener("click", () => {
       document.querySelectorAll(".sort-btn").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
       currentSort = btn.dataset.sort;
+      currentPage = 1;
       renderCards();
     });
   });
@@ -1121,6 +1158,7 @@
   const searchInput = document.getElementById("searchInput");
 
   searchInput.addEventListener("input", () => {
+    currentPage = 1;
     renderCards();
     updateFilterSummary();
   });
@@ -1160,7 +1198,7 @@
         const type = icon.closest('.chip').dataset.type;
         if(type === 'industry') document.querySelector('#industryTags .tag[data-value="全部"]')?.click();
         if(type === 'profession') document.querySelector('#professionTags .tag[data-value="全部"]')?.click();
-        if(type === 'keyword') { searchInput.value = ''; renderCards(); updateFilterSummary(); }
+        if(type === 'keyword') { searchInput.value = ''; currentPage = 1; renderCards(); updateFilterSummary(); }
       });
     });
   }
@@ -1169,6 +1207,7 @@
     document.querySelector('#industryTags .tag[data-value="全部"]')?.click();
     document.querySelector('#professionTags .tag[data-value="全部"]')?.click();
     searchInput.value = '';
+    currentPage = 1;
     renderCards();
     updateFilterSummary();
   });
@@ -1203,19 +1242,28 @@
 
     const grid = document.getElementById("cardGrid");
     const empty = document.getElementById("emptyState");
+    const pagination = document.getElementById("pagination");
 
     if (filtered.length === 0) {
       grid.innerHTML = "";
       empty.style.display = "block";
+      pagination.style.display = "none";
       return;
     }
     empty.style.display = "none";
+    pagination.style.display = "flex";
 
-    grid.innerHTML = filtered.map((s, idx) => {
+    const totalPages = Math.ceil(filtered.length / CARDS_PER_PAGE);
+    currentPage = Math.max(1, Math.min(currentPage, totalPages));
+    const startIdx = (currentPage - 1) * CARDS_PER_PAGE;
+    const pageItems = filtered.slice(startIdx, startIdx + CARDS_PER_PAGE);
+
+    grid.innerHTML = pageItems.map((s, idx) => {
       const status = STATUS_MAP[s.status] || STATUS_MAP.draft;
       const dateStr = s.publishTime ? s.publishTime.split(" ")[0] : s.updatedAt;
       const displayDate = dateStr || "2024-01-01";
-      const coverStyle = s.coverImage ? `background-image:url('${s.coverImage}')` : `background:${COVER_BACKUPS[idx % COVER_BACKUPS.length]}`;
+      const originalIndex = filtered.indexOf(s);
+      const coverStyle = s.coverImage ? `background-image:url('${s.coverImage}')` : `background:${COVER_BACKUPS[originalIndex % COVER_BACKUPS.length]}`;
       const viewCount = 120 + Math.floor(Math.random() * 880);
       const relatedScenes = Math.floor(Math.random() * 5) + 1;
       const hotBadge = s.hot ? `<div class="hot-badge"><i class="fa fa-fire"></i> 热门</div>` : '';
@@ -1225,7 +1273,10 @@
           <div class="card-cover" style="${coverStyle}">
             ${hotBadge}
             <div class="cover-tags">
-              <span class="cover-tag">${s.version}</span>
+              <div style="display:flex;gap:6px;">
+                <span class="cover-tag">${s.version}</span>
+                <span class="cover-tag">2024-01-19 收录</span>
+              </div>
               <span class="cover-tag">${status.label}</span>
             </div>
             <div class="card-cover-content">
@@ -1234,7 +1285,6 @@
             </div>
           </div>
           <div class="card-body">
-            <div class="card-title">${s.name}</div>
             <div class="card-stats">
               <div class="card-stat">
                 <div class="card-stat-num">${viewCount}</div>
@@ -1264,7 +1314,59 @@
         window.location.href = "student.html";
       });
     });
+
+    renderPagination(totalPages);
   }
+
+  function renderPagination(totalPages) {
+    const prevBtn = document.getElementById("pagePrev");
+    const nextBtn = document.getElementById("pageNext");
+    const pagesContainer = document.getElementById("paginationPages");
+
+    prevBtn.disabled = currentPage <= 1;
+    nextBtn.disabled = currentPage >= totalPages;
+
+    let pagesHtml = "";
+    for (let i = 1; i <= totalPages; i++) {
+      pagesHtml += `<span class="pagination-page ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</span>`;
+    }
+    pagesContainer.innerHTML = pagesHtml;
+
+    pagesContainer.querySelectorAll(".pagination-page").forEach(pageEl => {
+      pageEl.addEventListener("click", () => {
+        currentPage = parseInt(pageEl.dataset.page, 10);
+        renderCards();
+        document.getElementById("cardGrid").scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
+  }
+
+  document.getElementById("pagePrev").addEventListener("click", () => {
+    if (currentPage > 1) {
+      currentPage--;
+      renderCards();
+      document.getElementById("cardGrid").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  });
+
+  document.getElementById("pageNext").addEventListener("click", () => {
+    const { industry, profession, keyword } = getFilterValues();
+    let filtered = JOBS.filter(s => {
+      const matchIndustry = industry === "全部" || s.industryName === industry;
+      const matchProfession = profession === "全部" || s.professionName === profession;
+      const matchKeyword = !keyword ||
+        s.name.toLowerCase().includes(keyword) ||
+        s.code.toLowerCase().includes(keyword) ||
+        s.positionName.toLowerCase().includes(keyword);
+      return matchIndustry && matchProfession && matchKeyword;
+    });
+    const totalPages = Math.ceil(filtered.length / CARDS_PER_PAGE);
+    if (currentPage < totalPages) {
+      currentPage++;
+      renderCards();
+      document.getElementById("cardGrid").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  });
 
   // =================== Banner 轮播 ===================
   (function initHeroCarousel() {
