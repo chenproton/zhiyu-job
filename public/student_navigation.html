@@ -166,8 +166,8 @@
     border: 1px solid rgba(255,255,255,0.2);
   }
   .focus-tag i { color: #fbbf24; font-size: 14px; }
-  .hero-title { font-size: 38px; font-weight: 800; color: #fff; line-height: 1.25; margin-bottom: 12px; }
-  .hero-subtitle { font-size: 15px; color: rgba(255,255,255,0.85); margin-bottom: 26px; }
+  .hero-title { font-size: 57px; font-weight: 800; color: #fff; line-height: 1.2; margin-bottom: 16px; }
+  .hero-subtitle { font-size: 17px; color: rgba(255,255,255,0.85); margin-bottom: 26px; }
   .hero-cta {
     display: inline-flex;
     align-items: center;
@@ -322,6 +322,13 @@
   .panel-title i { color: #3b82f6; }
   .panel-more { font-size: 13px; color: #94a3b8; cursor: pointer; }
   .job-list { display: flex; flex-direction: column; gap: 12px; }
+  #targetJobList {
+    max-height: 282px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+  #targetJobList::-webkit-scrollbar { width: 4px; }
+  #targetJobList::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 2px; }
   .job-list-item {
     border: 1px solid #e7e5e4;
     border-radius: 12px;
@@ -696,8 +703,7 @@
   <div class="hero-banner-inner">
     <div class="hero-left">
       <div class="hero-title">对接产业前沿<br>开启岗位能力学习新征程</div>
-      <div class="hero-subtitle">汇聚千余真实职业岗位，构建从认知到精通的成长路径</div>
-      <button class="hero-cta">立即探索 <i class="fa fa-arrow-right"></i></button>
+      <div class="hero-subtitle">链接真实岗位场景，构建从认知到胜任的能力进阶闭环</div>
       <div class="hero-dots">
         <span class="hero-dot active"></span>
         <span class="hero-dot"></span>
@@ -925,13 +931,13 @@
   ];
 
   const TARGET_JOBS = [
-    { title: "Web前端开发工程师", badge: "老师推荐", badgeClass: "orange", tags: ["信息技术", "计算机应用", "IT-0102"], progress: 65 },
+    { title: "Web前端开发工程师", badge: "老师推荐", badgeClass: "orange", tags: ["信息技术", "计算机应用"], progress: 65 },
     { title: "UI/UX 设计师", badge: "老师推荐", badgeClass: "orange", tags: ["文化创意", "视觉传达", "DS-0205"], progress: 30 },
     { title: "人工智能训练师", badge: "推荐", badgeClass: "red", tags: ["信息技术", "人工智能", "AI-0301"], progress: 0 }
   ];
 
   const MY_FAVORITE_JOBS = [
-    { title: "大数据分析工程师", tags: ["信息技术", "大数据技术", "DA-0506"], date: "06-06", views: "10,455" },
+    { title: "大数据分析工程师", tags: ["信息技术", "大数据技术"], date: "06-06", views: "10,455" },
     { title: "跨境电商运营专员", tags: ["财经商贸", "电子商务", "EC-0410"], date: "06-07", views: "7,891" },
     { title: "软件测试工程师", tags: ["信息技术", "软件技术", "SW-0815"], date: "06-03", views: "5,940" }
   ];
@@ -993,12 +999,6 @@
         <div class="job-list-tags">
           ${job.tags.map(t => `<span class="job-list-tag">${t}</span>`).join('')}
         </div>
-        <div class="job-list-progress">
-          <div class="progress-bar-bg">
-            <div class="progress-bar-fill ${job.progress === 0 ? 'zero' : ''}" style="width: ${job.progress}%"></div>
-          </div>
-          <span class="progress-text">${job.progress === 0 ? '未开始' : job.progress + '%'}</span>
-        </div>
       </div>
     `).join('');
     container.querySelectorAll('.job-list-item').forEach(item => {
@@ -1019,7 +1019,6 @@
           ${job.tags.map(t => `<span class="job-list-tag">${t}</span>`).join('')}
         </div>
         <div class="job-list-meta">
-          <span>更新于 ${job.date}</span>
           <span><i class="fa fa-eye"></i> ${job.views}</span>
         </div>
       </div>
