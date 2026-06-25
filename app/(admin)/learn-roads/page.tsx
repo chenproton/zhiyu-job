@@ -1,11 +1,25 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import { Checkbox } from '@/components/ui/checkbox'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
 import {
   ArrowUp,
   ArrowDown,
@@ -14,11 +28,13 @@ import {
   Search,
   ArrowLeft,
   Pencil,
+  FolderOpen,
   GraduationCap,
 } from 'lucide-react'
+import { StatusBadge } from '@/components/shared/status-badge'
 import { cn } from '@/lib/utils'
 import { useData } from '@/lib/stores/data-context'
-import type { Position } from '@/lib/types'
+import type { Position, PositionStatus } from '@/lib/types'
 
 interface Task {
   id: string
@@ -128,15 +144,6 @@ const defaultScenes: Scene[] = [
   },
 ]
 
-const statusConfig: Record<string, { label: string; className: string }> = {
-  draft: { label: '草稿', className: 'bg-gray-100 text-gray-500' },
-  pending: { label: '审批中', className: 'bg-yellow-50 text-yellow-600' },
-  approved: { label: '已通过', className: 'bg-blue-50 text-blue-600' },
-  rejected: { label: '已驳回', className: 'bg-red-50 text-red-500' },
-  published: { label: '已发布', className: 'bg-green-50 text-green-600' },
-  archived: { label: '已归档', className: 'bg-gray-100 text-gray-400' },
-}
-
 function getStorageKey(positionId: string) {
   return `${STORAGE_KEY_PREFIX}-${positionId}`
 }
@@ -172,7 +179,7 @@ export default function LearnRoadsPage() {
   const [saved, setSaved] = useState(false)
 
   const [searchQuery, setSearchQuery] = useState('')
-  const [selectedIds, setSelectedIds] = useState<string[]>([])
+  const [filterStatus, setFilterStatus] = useState<'all' | PositionStatus>('all')
 
   useEffect(() => {
     if (view === 'edit' && editingPosition) {
@@ -193,30 +200,11 @@ export default function LearnRoadsPage() {
           p.shortName.toLowerCase().includes(q)
       )
     }
+    if (filterStatus !== 'all') {
+      result = result.filter((p) => p.status === filterStatus)
+    }
     return result
-  }, [positions, searchQuery])
-
-  const stats = useMemo(() => {
-    const total = positions.length
-    const published = positions.filter((p) => p.status === 'published').length
-    return { total, published }
-  }, [positions])
-
-  const allSelected =
-    filteredPositions.length > 0 &&
-    filteredPositions.every((p) => selectedIds.includes(p.id))
-  const someSelected =
-    filteredPositions.some((p) => selectedIds.includes(p.id)) && !allSelected
-
-  const handleSelectId = (id: string, checked: boolean) => {
-    setSelectedIds((prev) =>
-      checked ? [...prev, id] : prev.filter((sid) => sid !== id)
-    )
-  }
-
-  const handleSelectAll = (checked: boolean) => {
-    setSelectedIds(checked ? filteredPositions.map((p) => p.id) : [])
-  }
+  }, [positions, searchQuery, filterStatus])
 
   const handleEdit = (position: Position) => {
     setEditingPosition(position)
@@ -273,218 +261,159 @@ export default function LearnRoadsPage() {
 
   const ListView = () => (
     <div className="space-y-6">
-      {/* Top title card */}
-      <Card className="border-slate-200 shadow-sm">
-        <CardContent className="p-4">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-            <div>
-              <h1 className="text-xl font-semibold text-slate-900">学习路径管理</h1>
-              <p className="text-xs text-slate-500 mt-0.5">
-                按岗位管理学习路径中场景与任务的展示顺序
-              </p>
-            </div>
-            <div className="flex flex-wrap items-center gap-2">
-              <Button variant="outline" size="sm" onClick={() => setSelectedIds([])}>
-                <GraduationCap className="mr-2 h-4 w-4" />
-                岗位学习路径
-              </Button>
-            </div>
-          </div>
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">学习路径管理</h1>
+          <p className="text-muted-foreground mt-1">按岗位管理学习路径中场景与任务的展示顺序</p>
+        </div>
+        <Button variant="outline" disabled>
+          <GraduationCap className="mr-2 h-4 w-4" />
+          岗位学习路径
+        </Button>
+      </div>
 
-          <div className="grid grid-cols-2 gap-3 mt-3 max-w-md">
-            <Card className="border-slate-200 shadow-sm w-full">
-              <CardContent className="px-3 py-[3px] flex items-center justify-between">
-                <div className="leading-none">
-                  <p className="text-xs text-slate-500 leading-none">岗位总数</p>
-                  <p className="text-xl font-bold text-slate-900 leading-none mt-[3px]">{stats.total}</p>
-                </div>
-                <div className="h-6 w-6 rounded-full bg-blue-50 flex items-center justify-center">
-                  <GraduationCap className="h-3 w-3 text-blue-500" />
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="border-slate-200 shadow-sm w-full">
-              <CardContent className="px-3 py-[3px] flex items-center justify-between">
-                <div className="leading-none">
-                  <p className="text-xs text-slate-500 leading-none">已发布</p>
-                  <p className="text-xl font-bold text-slate-900 leading-none mt-[3px]">{stats.published}</p>
-                </div>
-                <div className="h-6 w-6 rounded-full bg-green-50 flex items-center justify-center">
-                  <Save className="h-3 w-3 text-green-500" />
-                </div>
-              </CardContent>
-            </Card>
+      {/* Filters */}
+      <Card>
+        <CardContent className="p-4">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                placeholder="搜索岗位名称、简称..."
+                className="pl-9"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            <Select
+              value={filterStatus}
+              onValueChange={(v) => setFilterStatus(v as typeof filterStatus)}
+            >
+              <SelectTrigger className="w-40">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">全部状态</SelectItem>
+                <SelectItem value="draft">草稿</SelectItem>
+                <SelectItem value="pending">审批中</SelectItem>
+                <SelectItem value="approved">已通过</SelectItem>
+                <SelectItem value="rejected">已驳回</SelectItem>
+                <SelectItem value="published">已发布</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </CardContent>
       </Card>
 
-      {/* Search + list */}
-      <Card className="border-slate-200 shadow-sm">
-        <CardContent className="flex flex-col gap-4 p-5">
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="flex-1 min-w-[200px]">
-              <div className="flex items-center gap-2 w-full">
-                <Search className="h-4 w-4 text-slate-400" />
-                <Input
-                  placeholder="搜索岗位名称 / 简称"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="h-9 text-sm flex-1"
-                />
-              </div>
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-9"
-              onClick={() => {
-                setSearchQuery('')
-                setSelectedIds([])
-              }}
-            >
-              <RotateCcw className="mr-1 h-3.5 w-3.5" />
-              重置
-            </Button>
-          </div>
-        </CardContent>
-
-        {filteredPositions.length > 0 && (
-          <CardContent className="pt-0">
-            <div className="rounded-lg border border-slate-200 bg-white overflow-hidden">
-              {/* Header */}
-              <div className="grid grid-cols-12 gap-4 px-4 py-3 bg-slate-50 text-xs font-medium text-slate-500 border-b border-slate-100 items-center">
-                <div className="col-span-1 flex justify-center">
-                  <Checkbox
-                    checked={someSelected ? 'indeterminate' : allSelected}
-                    onCheckedChange={(checked) => handleSelectAll(checked === true)}
-                    aria-label="全选"
-                  />
-                </div>
-                <div className="col-span-3">岗位名称</div>
-                <div className="col-span-3">所属批次</div>
-                <div className="col-span-1 text-center">状态</div>
-                <div className="col-span-1 text-center">场景数</div>
-                <div className="col-span-1 text-center">任务数</div>
-                <div className="col-span-2 text-right">操作</div>
-              </div>
-
-              {/* Body */}
-              <div className="divide-y divide-slate-100">
-                {filteredPositions.map((position) => {
-                  const status = statusConfig[position.status] || statusConfig.draft
-                  const isSelected = selectedIds.includes(position.id)
+      {/* Table */}
+      <Card>
+        <CardHeader>
+          <CardTitle>岗位列表</CardTitle>
+          <CardDescription>共 {filteredPositions.length} 个岗位</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>岗位名称</TableHead>
+                <TableHead>所属批次</TableHead>
+                <TableHead>状态</TableHead>
+                <TableHead>场景数</TableHead>
+                <TableHead>任务数</TableHead>
+                <TableHead className="text-right">操作</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredPositions.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="h-32 text-center">
+                    <div className="flex flex-col items-center justify-center text-muted-foreground">
+                      <FolderOpen className="h-10 w-10 mb-2" />
+                      <p>暂无岗位数据</p>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ) : (
+                filteredPositions.map((position) => {
                   const batch = batches.find((b) => b.id === position.batchId)
                   const { sceneCount, taskCount } = countScenesAndTasks(position.id)
 
                   return (
-                    <div
-                      key={position.id}
-                      className={cn(
-                        'grid grid-cols-12 gap-4 px-4 py-3 items-center hover:bg-slate-50 transition-colors group relative',
-                        isSelected && 'bg-primary/5'
-                      )}
-                    >
-                      <div className="col-span-1 flex justify-center">
-                        <Checkbox
-                          checked={isSelected}
-                          onCheckedChange={(checked) => handleSelectId(position.id, checked === true)}
-                          aria-label={`选择 ${position.name}`}
-                        />
-                      </div>
-                      <div className="col-span-3">
-                        <p className="text-sm font-medium text-slate-900 line-clamp-1">{position.name}</p>
-                        <p className="text-xs text-slate-400 mt-0.5">{position.shortName}</p>
-                      </div>
-                      <div className="col-span-3 text-sm text-slate-600 truncate">
-                        {batch ? batch.name : '-'}
-                      </div>
-                      <div className="col-span-1 text-center">
-                        <Badge variant="secondary" className={cn('text-xs', status.className)}>
-                          {status.label}
-                        </Badge>
-                      </div>
-                      <div className="col-span-1 text-center">
-                        <span className="inline-flex items-center justify-center px-2 py-0.5 rounded text-xs font-medium bg-blue-50 text-blue-600">
+                    <TableRow key={position.id} className="group">
+                      <TableCell>
+                        <span className="font-medium text-foreground">{position.name}</span>
+                        <p className="text-xs text-muted-foreground mt-0.5">{position.shortName}</p>
+                      </TableCell>
+                      <TableCell>{batch ? batch.name : '-'}</TableCell>
+                      <TableCell>
+                        <StatusBadge status={position.status} type="position" />
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="secondary" className="bg-blue-50 text-blue-600 hover:bg-blue-50">
                           {sceneCount}
-                        </span>
-                      </div>
-                      <div className="col-span-1 text-center">
-                        <span className="inline-flex items-center justify-center px-2 py-0.5 rounded text-xs font-medium bg-purple-50 text-purple-600">
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="secondary" className="bg-purple-50 text-purple-600 hover:bg-purple-50">
                           {taskCount}
-                        </span>
-                      </div>
-                      <div className="col-span-2 text-right">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-7 px-2 text-xs opacity-0 group-hover:opacity-100 transition-opacity"
-                          onClick={() => handleEdit(position)}
-                        >
-                          <Pencil className="mr-1 h-3 w-3" />
-                          编辑学习路径
-                        </Button>
-                      </div>
-                    </div>
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right relative">
+                        <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity absolute right-2 top-1/2 -translate-y-1/2 bg-white/95 backdrop-blur-sm z-10 px-2 py-1 rounded-lg shadow-sm border">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-7 px-2 text-xs"
+                            onClick={() => handleEdit(position)}
+                          >
+                            <Pencil className="mr-1 h-3 w-3" />
+                            编辑学习路径
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
                   )
-                })}
-              </div>
-            </div>
-          </CardContent>
-        )}
+                })
+              )}
+            </TableBody>
+          </Table>
+        </CardContent>
       </Card>
-
-      {filteredPositions.length === 0 && (
-        <div className="flex flex-col items-center justify-center rounded-xl border border-slate-200 bg-white py-20 shadow-sm">
-          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-slate-100">
-            <Search className="h-8 w-8 text-slate-400" />
-          </div>
-          <h3 className="mb-2 text-lg font-medium text-slate-700">暂无岗位</h3>
-          <p className="text-sm text-slate-500">当前筛选条件下没有岗位数据</p>
-        </div>
-      )}
     </div>
   )
 
   const EditView = () => {
     if (!editingPosition) return null
     const batch = batches.find((b) => b.id === editingPosition.batchId)
-    const status = statusConfig[editingPosition.status] || statusConfig.draft
 
     return (
       <div className="space-y-6">
-        <Card className="border-slate-200 shadow-sm">
-          <CardContent className="p-4">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <Button variant="outline" size="sm" onClick={handleBack}>
-                  <ArrowLeft className="mr-1 h-4 w-4" />
-                  返回岗位列表
-                </Button>
-                <div>
-                  <h1 className="text-xl font-semibold text-slate-900">
-                    {editingPosition.name}
-                  </h1>
-                  <p className="text-xs text-slate-500 mt-0.5">
-                    {batch ? batch.name : '未关联批次'} · {editingPosition.shortName}
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <Badge variant="secondary" className={cn('text-xs', status.className)}>
-                  {status.label}
-                </Badge>
-                <Button variant="outline" onClick={handleReset}>
-                  <RotateCcw className="mr-2 h-4 w-4" />
-                  重置
-                </Button>
-                <Button onClick={handleSave}>
-                  <Save className="mr-2 h-4 w-4" />
-                  {saved ? '已保存' : '保存顺序'}
-                </Button>
-              </div>
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <Button variant="outline" size="sm" onClick={handleBack}>
+              <ArrowLeft className="mr-1 h-4 w-4" />
+              返回岗位列表
+            </Button>
+            <div>
+              <h1 className="text-2xl font-bold text-foreground">{editingPosition.name}</h1>
+              <p className="text-muted-foreground mt-1">
+                {batch ? batch.name : '未关联批次'} · {editingPosition.shortName}
+              </p>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" onClick={handleReset}>
+              <RotateCcw className="mr-2 h-4 w-4" />
+              重置
+            </Button>
+            <Button onClick={handleSave}>
+              <Save className="mr-2 h-4 w-4" />
+              {saved ? '已保存' : '保存顺序'}
+            </Button>
+          </div>
+        </div>
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           {/* 场景顺序 */}
@@ -497,11 +426,12 @@ export default function LearnRoadsPage() {
                 <div
                   key={scene.id}
                   onClick={() => setSelectedSceneId(scene.id)}
-                  className={`flex cursor-pointer items-center justify-between rounded-lg border p-4 transition-colors ${
+                  className={cn(
+                    'flex cursor-pointer items-center justify-between rounded-lg border p-4 transition-colors',
                     selectedSceneId === scene.id
                       ? 'border-blue-500 bg-blue-50'
                       : 'border-slate-200 bg-white hover:bg-slate-50'
-                  }`}
+                  )}
                 >
                   <div className="flex items-center gap-3">
                     <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-sm font-medium text-slate-600">
@@ -586,7 +516,7 @@ export default function LearnRoadsPage() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6">
+    <div className="mx-auto max-w-7xl">
       {view === 'list' ? <ListView /> : <EditView />}
     </div>
   )
