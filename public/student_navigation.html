@@ -86,28 +86,20 @@
   }
 
   /* Main */
-  .main { padding: 24px 32px 48px; max-width: 1600px; margin: 0 auto; }
+  .main { padding: 88px 32px 48px; max-width: 1600px; margin: 0 auto; }
 
   /* Hero */
   .hero-banner {
     position: relative;
-    width: 100%;
+    border-radius: 20px;
+    overflow: hidden;
     background: linear-gradient(135deg, #0f766e 0%, #0ea5e9 50%, #3b82f6 100%);
-    min-height: 320px;
+    min-height: 280px;
     margin-bottom: 24px;
-    display: flex;
-    justify-content: center;
-    padding: 64px 32px 48px;
-    margin-top: 64px;
-  }
-  .hero-inner {
-    position: relative;
-    width: 100%;
-    max-width: 1600px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 40px;
+    padding: 40px 48px;
   }
   .hero-banner::before {
     content: "";
@@ -753,9 +745,8 @@
   @media (max-width: 768px) {
     .header { padding: 0 16px; }
     .header-nav { display: none; }
-    .main { padding: 16px 16px 32px; }
-    .hero-banner { padding: 80px 16px 32px; }
-    .hero-inner { flex-direction: column; }
+    .main { padding: 80px 16px 32px; }
+    .hero-banner { flex-direction: column; padding: 28px 24px; }
     .hero-info-panel { width: 100%; margin-top: 24px; }
     .hero-title { font-size: 26px; }
     .dashboard { grid-template-columns: 1fr; }
@@ -793,9 +784,10 @@
   </div>
 </div>
 
-<!-- 顶部 Hero Banner -->
-<div class="hero-banner">
-  <div class="hero-inner">
+<div class="main">
+
+  <!-- 顶部 Hero Banner -->
+  <div class="hero-banner">
     <div class="hero-left">
       <div class="hero-tag"><i class="fa fa-rocket"></i> 能力提升</div>
       <div class="hero-title">精准测评定位<br>科学规划你的职业蓝图</div>
@@ -834,9 +826,6 @@
       </div>
     </div>
   </div>
-</div>
-
-<div class="main">
 
   <!-- dashboard -->
   <div class="dashboard">
