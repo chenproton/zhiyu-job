@@ -275,35 +275,47 @@
   }
   .assess-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(0,0,0,0.12); }
 
-  /* Stat cards compact */
-  .stat-grid-2x2 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-    margin-top: 16px;
+  /* Stats bar overlapping banner */
+  .stats-bar {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 32px;
+    position: relative;
+    z-index: 10;
+    margin-top: -64px;
   }
-  .stat-card-sm {
+  .stats-bar-inner {
     background: #fff;
-    border-radius: 14px;
-    padding: 16px;
-    border: 1px solid #e7e5e4;
+    border-radius: 20px 20px 0 0;
+    padding: 32px 48px;
+    box-shadow: 0 -8px 30px rgba(0,0,0,0.08);
     display: flex;
+    justify-content: space-around;
     align-items: center;
-    gap: 12px;
-    transition: transform 0.2s, box-shadow 0.2s;
   }
-  .stat-card-sm:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(0,0,0,0.05); }
-  .stat-icon-sm {
-    width: 42px; height: 42px; border-radius: 12px;
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+  }
+  .stat-icon {
+    width: 52px; height: 52px; border-radius: 14px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 20px;
+    font-size: 24px;
+    color: #fff;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
   }
-  .stat-icon-sm.orange { background: linear-gradient(135deg, #ffedd5, #fed7aa); }
-  .stat-icon-sm.blue { background: linear-gradient(135deg, #dbeafe, #bfdbfe); }
-  .stat-icon-sm.green { background: linear-gradient(135deg, #dcfce7, #bbf7d0); }
-  .stat-icon-sm.red { background: linear-gradient(135deg, #fee2e2, #fecaca); }
-  .stat-value-sm { font-size: 19px; font-weight: 800; color: #0f172a; }
-  .stat-label-sm { font-size: 12px; color: #64748b; }
+  .stat-icon.blue { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+  .stat-icon.purple { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+  .stat-icon.green { background: linear-gradient(135deg, #22c55e, #16a34a); }
+  .stat-icon.orange { background: linear-gradient(135deg, #f97316, #ea580c); }
+  .stat-value {
+    font-size: 28px; font-weight: 800; color: #0f172a; line-height: 1;
+  }
+  .stat-value::after { content: '+'; margin-left: 2px; }
+  .stat-label { font-size: 14px; color: #64748b; }
 
   /* Recommendation / Favorite list panels */
   .panel-card {
@@ -741,6 +753,32 @@
   </div>
 </div>
 
+<!-- 平台数据 -->
+<div class="stats-bar">
+  <div class="stats-bar-inner">
+    <div class="stat-item">
+      <div class="stat-icon blue"><i class="fa fa-briefcase"></i></div>
+      <div class="stat-value" id="statTotal">0</div>
+      <div class="stat-label">收录岗位数</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-icon purple"><i class="fa fa-graduation-cap"></i></div>
+      <div class="stat-value" id="statPublished">0</div>
+      <div class="stat-label">覆盖专业数</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-icon green"><i class="fa fa-industry"></i></div>
+      <div class="stat-value" id="statTasks">0</div>
+      <div class="stat-label">涉及行业</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-icon orange"><i class="fa fa-eye"></i></div>
+      <div class="stat-value" id="statPositions">0</div>
+      <div class="stat-label">浏览人次</div>
+    </div>
+  </div>
+</div>
+
 <div class="main">
 
   <!-- 能力测评 / 推荐 / 收藏 -->
@@ -778,36 +816,6 @@
           <div class="assess-desc">学习前先测一测，精准定位你的能力起点，量身规划学习路径</div>
         </div>
         <a href="https://v0-online-learning-platform-seven-lyart.vercel.app/" target="_blank" class="assess-btn">开始测评 <i class="fa fa-arrow-right"></i></a>
-      </div>
-      <div class="stat-grid-2x2">
-        <div class="stat-card-sm">
-          <div class="stat-icon-sm orange">📁</div>
-          <div>
-            <div class="stat-value-sm" id="statTotal">0</div>
-            <div class="stat-label-sm">收录岗位数</div>
-          </div>
-        </div>
-        <div class="stat-card-sm">
-          <div class="stat-icon-sm blue">🎓</div>
-          <div>
-            <div class="stat-value-sm" id="statPublished">0</div>
-            <div class="stat-label-sm">覆盖专业数</div>
-          </div>
-        </div>
-        <div class="stat-card-sm">
-          <div class="stat-icon-sm green">🏭</div>
-          <div>
-            <div class="stat-value-sm" id="statTasks">0</div>
-            <div class="stat-label-sm">涉及行业</div>
-          </div>
-        </div>
-        <div class="stat-card-sm">
-          <div class="stat-icon-sm red">👁</div>
-          <div>
-            <div class="stat-value-sm" id="statPositions">0</div>
-            <div class="stat-label-sm">浏览人次</div>
-          </div>
-        </div>
       </div>
     </div>
   </div>
