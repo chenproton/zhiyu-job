@@ -31,6 +31,8 @@ import {
   FolderOpen,
   GraduationCap,
   Eye,
+  ChevronRight,
+  ListTodo,
 } from 'lucide-react'
 import Link from 'next/link'
 import { StatusBadge } from '@/components/shared/status-badge'
@@ -452,69 +454,102 @@ export default function LearnRoadsPage() {
           <Card>
             <CardHeader>
               <CardTitle className="text-base">场景顺序</CardTitle>
+              <CardDescription>点击场景查看并编辑其任务</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
-              {scenes.map((scene, index) => (
-                <div
-                  key={scene.id}
-                  onClick={() => setSelectedSceneId(scene.id)}
-                  className={cn(
-                    'flex cursor-pointer items-center justify-between rounded-lg border p-4 transition-colors',
-                    selectedSceneId === scene.id
-                      ? 'border-blue-500 bg-blue-50'
-                      : 'border-slate-200 bg-white hover:bg-slate-50'
-                  )}
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-sm font-medium text-slate-600">
-                      {index + 1}
-                    </span>
-                    <span className="font-medium text-slate-900">{scene.name}</span>
+              {scenes.map((scene, index) => {
+                const isSelected = selectedSceneId === scene.id
+                return (
+                  <div
+                    key={scene.id}
+                    onClick={() => setSelectedSceneId(scene.id)}
+                    className={cn(
+                      'group flex cursor-pointer items-center justify-between rounded-lg border p-4 transition-all',
+                      isSelected
+                        ? 'border-blue-500 bg-blue-50 shadow-sm'
+                        : 'border-slate-200 bg-white hover:bg-slate-50'
+                    )}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span
+                        className={cn(
+                          'flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium transition-colors',
+                          isSelected
+                            ? 'bg-blue-500 text-white'
+                            : 'bg-slate-100 text-slate-600 group-hover:bg-slate-200'
+                        )}
+                      >
+                        {index + 1}
+                      </span>
+                      <span
+                        className={cn(
+                          'font-medium transition-colors',
+                          isSelected ? 'text-blue-700' : 'text-slate-900'
+                        )}
+                      >
+                        {scene.name}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      {isSelected && (
+                        <ChevronRight className="h-5 w-5 text-blue-500 animate-in fade-in duration-200" />
+                      )}
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        disabled={index === 0}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          moveScene(index, -1)
+                        }}
+                      >
+                        <ArrowUp className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        disabled={index === scenes.length - 1}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          moveScene(index, 1)
+                        }}
+                      >
+                        <ArrowDown className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
-                  <div className="flex gap-1">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      disabled={index === 0}
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        moveScene(index, -1)
-                      }}
-                    >
-                      <ArrowUp className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      disabled={index === scenes.length - 1}
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        moveScene(index, 1)
-                      }}
-                    >
-                      <ArrowDown className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              ))}
+                )
+              })}
             </CardContent>
           </Card>
 
           {/* 任务顺序 */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">任务顺序 · {selectedScene?.name}</CardTitle>
+              <CardTitle className="text-base flex items-center gap-2">
+                <ListTodo className="h-4 w-4 text-blue-500" />
+                任务顺序
+                <Badge variant="secondary" className="bg-blue-50 text-blue-600 hover:bg-blue-50">
+                  {selectedScene?.name}
+                </Badge>
+              </CardTitle>
+              <CardDescription>
+                以下任务属于当前选中的场景「{selectedScene?.name}」
+              </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-3">
+            <CardContent
+              key={selectedScene?.id}
+              className="space-y-3 animate-in fade-in slide-in-from-right-2 duration-300"
+            >
               {selectedScene?.tasks.map((task, taskIndex) => {
                 const sceneIndex = scenes.findIndex((s) => s.id === selectedScene.id)
                 return (
                   <div
                     key={task.id}
-                    className="flex items-center justify-between rounded-lg border border-slate-200 bg-white p-4"
+                    className="flex items-center justify-between rounded-lg border border-blue-100 bg-white p-4 shadow-sm"
                   >
                     <div className="flex items-center gap-3">
-                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-sm font-medium text-slate-600">
+                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-sm font-medium text-blue-700">
                         {taskIndex + 1}
                       </span>
                       <span className="font-medium text-slate-900">{task.name}</span>
