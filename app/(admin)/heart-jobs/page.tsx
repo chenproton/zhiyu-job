@@ -236,192 +236,194 @@ export default function HeartJobsPage() {
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-      <div className="lg:col-span-3 space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">我的心仪岗位</h1>
-            <p className="text-sm text-muted-foreground mt-1">管理学生端收藏的心仪岗位，支持按行业筛选与搜索</p>
-          </div>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">我的心仪岗位</h1>
+          <p className="text-sm text-muted-foreground mt-1">管理学生端收藏的心仪岗位，支持按行业筛选与搜索</p>
         </div>
-
-        <Card>
-          <CardContent className="p-4 space-y-4">
-            <div className="relative max-w-md">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-              <Input
-                placeholder="搜索岗位名称、编码、行业或专业..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9"
-              />
-            </div>
-
-            <div className="flex flex-wrap gap-2">
-              {industries.map((industry) => (
-                <button
-                  key={industry}
-                  onClick={() => setActiveIndustry(industry)}
-                  className={cn(
-                    "px-3 py-1.5 rounded-lg text-sm font-medium transition-colors",
-                    activeIndustry === industry
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                  )}
-                >
-                  {industry}
-                </button>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">
-            共 <span className="font-semibold text-foreground">{filteredJobs.length}</span> 个岗位
-          </p>
-        </div>
-
-        {filteredJobs.length === 0 ? (
-          <Card>
-            <CardContent className="flex flex-col items-center justify-center py-20 text-slate-400">
-              <Heart className="h-16 w-16 mb-4 text-red-100" />
-              <p className="text-base font-medium">暂无心仪岗位</p>
-              <p className="text-sm mt-1">在岗位详情页点击“设为心仪岗位”即可添加</p>
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {filteredJobs.map((job, idx) => (
-              <Card
-                key={job.id}
-                className="group overflow-hidden cursor-pointer transition-all hover:shadow-lg hover:-translate-y-1"
-                onClick={handleCardClick}
-              >
-                <div
-                  className="h-36 relative p-4 flex flex-col justify-end text-white"
-                  style={{
-                    background: job.coverImage || COVER_BACKUPS[idx % COVER_BACKUPS.length],
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                  }}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-                  <div className="relative z-10">
-                    <div className="flex items-start justify-between">
-                      <h3 className="font-bold text-lg leading-tight">{job.name}</h3>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handleToggleFavorite(job)
-                        }}
-                        className={cn(
-                          "p-1.5 rounded-full transition-colors",
-                          job.isFavorite
-                            ? "text-red-400 hover:text-red-300"
-                            : "text-white/60 hover:text-white"
-                        )}
-                        title={job.isFavorite ? "取消收藏" : "收藏"}
-                      >
-                        <Heart
-                          className="h-5 w-5"
-                          fill={job.isFavorite ? "currentColor" : "none"}
-                        />
-                      </button>
-                    </div>
-                    <p className="text-xs text-white/80 mt-1">{job.code}</p>
-                  </div>
-                </div>
-
-                <CardContent className="p-4 space-y-3">
-                  <div className="flex flex-wrap gap-2">
-                    <Badge variant="secondary" className="bg-orange-50 text-orange-600 text-sm px-2.5 py-0.5">
-                      <Building2 className="mr-1.5 h-4 w-4" />
-                      {job.industry}
-                    </Badge>
-                    <Badge variant="secondary" className="bg-blue-50 text-blue-600 text-sm px-2.5 py-0.5">
-                      <GraduationCap className="mr-1.5 h-4 w-4" />
-                      {job.major}
-                    </Badge>
-                  </div>
-
-                  <p className="text-base text-slate-600 line-clamp-2 leading-relaxed">{job.description}</p>
-
-                  <div className="flex items-center gap-3 text-sm text-slate-500">
-                    <span className="flex items-center gap-1.5">
-                      <MapPin className="h-4 w-4" />
-                      {job.location || '-'}
-                    </span>
-                    <span className="flex items-center gap-1.5">
-                      <Calendar className="h-4 w-4" />
-                      {formatDate(job.addedAt)}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between pt-2 border-t border-slate-100">
-                    <div className="flex items-center gap-1.5 text-red-600 font-bold text-base">
-                      <TrendingUp className="h-5 w-5" />
-                      {job.salary}
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-8 px-2 text-sm text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        handleRemove(job.id)
-                      }}
-                    >
-                      <Trash2 className="mr-1.5 h-4 w-4" />
-                      移除
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        )}
       </div>
 
-      <div className="lg:col-span-1">
-        <Card className="sticky top-6">
-          <CardHeader>
-            <CardTitle className="text-base flex items-center gap-2">
-              <Trophy className="h-5 w-5 text-amber-500" />
-              心仪岗位排行
-            </CardTitle>
-            <CardDescription>按薪资上限排序 TOP5</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {rankJobs.length === 0 ? (
-              <p className="text-sm text-muted-foreground text-center py-4">暂无数据</p>
-            ) : (
-              rankJobs.map((job, idx) => (
-                <div key={job.id} className="flex items-center gap-3">
+      <Card>
+        <CardContent className="p-4 space-y-4">
+          <div className="relative max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <Input
+              placeholder="搜索岗位名称、编码、行业或专业..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-9"
+            />
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            {industries.map((industry) => (
+              <button
+                key={industry}
+                onClick={() => setActiveIndustry(industry)}
+                className={cn(
+                  "px-3 py-1.5 rounded-lg text-sm font-medium transition-colors",
+                  activeIndustry === industry
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                )}
+              >
+                {industry}
+              </button>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      <div className="flex flex-col lg:flex-row gap-6">
+        <div className="flex-1 min-w-0 space-y-6">
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-muted-foreground">
+              共 <span className="font-semibold text-foreground">{filteredJobs.length}</span> 个岗位
+            </p>
+          </div>
+
+          {filteredJobs.length === 0 ? (
+            <Card>
+              <CardContent className="flex flex-col items-center justify-center py-20 text-slate-400">
+                <Heart className="h-16 w-16 mb-4 text-red-100" />
+                <p className="text-base font-medium">暂无心仪岗位</p>
+                <p className="text-sm mt-1">在岗位详情页点击“设为心仪岗位”即可添加</p>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+              {filteredJobs.map((job, idx) => (
+                <Card
+                  key={job.id}
+                  className="group overflow-hidden cursor-pointer transition-all hover:shadow-lg hover:-translate-y-1"
+                  onClick={handleCardClick}
+                >
                   <div
-                    className={cn(
-                      "flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-sm font-bold",
-                      idx === 0
-                        ? "bg-amber-100 text-amber-600"
-                        : idx === 1
-                        ? "bg-slate-200 text-slate-700"
-                        : idx === 2
-                        ? "bg-orange-100 text-orange-700"
-                        : "bg-slate-100 text-slate-600"
-                    )}
+                    className="h-36 relative p-4 flex flex-col justify-end text-white"
+                    style={{
+                      background: job.coverImage || COVER_BACKUPS[idx % COVER_BACKUPS.length],
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                    }}
                   >
-                    {idx < 3 ? <Medal className="h-4 w-4" /> : idx + 1}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                    <div className="relative z-10">
+                      <div className="flex items-start justify-between">
+                        <h3 className="font-bold text-lg leading-tight">{job.name}</h3>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleToggleFavorite(job)
+                          }}
+                          className={cn(
+                            "p-1.5 rounded-full transition-colors",
+                            job.isFavorite
+                              ? "text-red-400 hover:text-red-300"
+                              : "text-white/60 hover:text-white"
+                          )}
+                          title={job.isFavorite ? "取消收藏" : "收藏"}
+                        >
+                          <Heart
+                            className="h-5 w-5"
+                            fill={job.isFavorite ? "currentColor" : "none"}
+                          />
+                        </button>
+                      </div>
+                      <p className="text-xs text-white/80 mt-1">{job.code}</p>
+                    </div>
                   </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium text-slate-900 truncate">{job.name}</p>
-                    <p className="text-xs text-slate-500">{job.industry}</p>
+
+                  <CardContent className="p-4 space-y-3">
+                    <div className="flex flex-wrap gap-2">
+                      <Badge variant="secondary" className="bg-orange-50 text-orange-600 text-sm px-2.5 py-0.5">
+                        <Building2 className="mr-1.5 h-4 w-4" />
+                        {job.industry}
+                      </Badge>
+                      <Badge variant="secondary" className="bg-blue-50 text-blue-600 text-sm px-2.5 py-0.5">
+                        <GraduationCap className="mr-1.5 h-4 w-4" />
+                        {job.major}
+                      </Badge>
+                    </div>
+
+                    <p className="text-base text-slate-600 line-clamp-2 leading-relaxed">{job.description}</p>
+
+                    <div className="flex items-center gap-3 text-sm text-slate-500">
+                      <span className="flex items-center gap-1.5">
+                        <MapPin className="h-4 w-4" />
+                        {job.location || '-'}
+                      </span>
+                      <span className="flex items-center gap-1.5">
+                        <Calendar className="h-4 w-4" />
+                        {formatDate(job.addedAt)}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+                      <div className="flex items-center gap-1.5 text-red-600 font-bold text-base">
+                        <TrendingUp className="h-5 w-5" />
+                        {job.salary}
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 px-2 text-sm text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleRemove(job.id)
+                        }}
+                      >
+                        <Trash2 className="mr-1.5 h-4 w-4" />
+                        移除
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="w-full lg:w-56 shrink-0">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base flex items-center gap-2">
+                <Trophy className="h-5 w-5 text-amber-500" />
+                心仪岗位排行
+              </CardTitle>
+              <CardDescription>按薪资上限排序 TOP5</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {rankJobs.length === 0 ? (
+                <p className="text-sm text-muted-foreground text-center py-4">暂无数据</p>
+              ) : (
+                rankJobs.map((job, idx) => (
+                  <div key={job.id} className="flex items-center gap-3">
+                    <div
+                      className={cn(
+                        "flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-sm font-bold",
+                        idx === 0
+                          ? "bg-amber-100 text-amber-600"
+                          : idx === 1
+                          ? "bg-slate-200 text-slate-700"
+                          : idx === 2
+                          ? "bg-orange-100 text-orange-700"
+                          : "bg-slate-100 text-slate-600"
+                      )}
+                    >
+                      {idx < 3 ? <Medal className="h-4 w-4" /> : idx + 1}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-medium text-slate-900 truncate">{job.name}</p>
+                      <p className="text-xs text-slate-500">{job.industry}</p>
+                    </div>
+                    <div className="text-sm font-semibold text-red-600 whitespace-nowrap">{job.salary}</div>
                   </div>
-                  <div className="text-sm font-semibold text-red-600 whitespace-nowrap">{job.salary}</div>
-                </div>
-              ))
-            )}
-          </CardContent>
-        </Card>
+                ))
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   )
