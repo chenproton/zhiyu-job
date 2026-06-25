@@ -243,18 +243,20 @@ export default function PostRecommendPage() {
                           variant="outline"
                           role="combobox"
                           aria-expanded={positionSearchOpen}
-                          className="w-full justify-between font-normal"
+                          className="w-full justify-between font-normal h-10 px-3 bg-background hover:bg-background border-input"
                           disabled={availablePositions.length === 0}
                         >
-                          {selectedPosition
-                            ? `${selectedPosition.name}（${selectedPosition.shortName}）`
-                            : availablePositions.length === 0
-                            ? '暂无可添加的岗位'
-                            : '请选择岗位'}
+                          <span className={cn("truncate", !selectedPosition && "text-muted-foreground")}>
+                            {selectedPosition
+                              ? `${selectedPosition.name}（${selectedPosition.shortName}）`
+                              : availablePositions.length === 0
+                              ? '暂无可添加的岗位'
+                              : '请选择岗位'}
+                          </span>
                           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
                       </PopoverTrigger>
-                      <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                      <PopoverContent className="p-0 w-[var(--radix-popover-trigger-width)]">
                         <Command>
                           <CommandInput placeholder="搜索岗位名称、行业..." />
                           <CommandList>
