@@ -91,11 +91,34 @@
 
         /* Stats box below job canvas */
         .job-stats-box {
-            display: flex; flex-wrap: wrap; gap: 12px;
-            margin-top: 20px; padding: 16px 20px;
+            display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px;
+            margin-top: 20px;
+        }
+        .job-stat-card {
             background: #ffffff; border-radius: var(--radius-md);
-            border: 1px solid #dbeafe;
-            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.06);
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            padding: 20px 12px;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .job-stat-card:hover {
+            border-color: #bfdbfe;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
+        }
+        .job-stat-line {
+            width: 24px; height: 3px;
+            background: #3b82f6;
+            border-radius: 2px;
+            margin: 0 auto 12px;
+        }
+        .job-stat-value {
+            font-size: 24px; font-weight: 700;
+            color: #1e293b; line-height: 1.2;
+            margin-bottom: 4px;
+        }
+        .job-stat-label {
+            font-size: 13px; color: #64748b;
         }
 
         /* Page Header Card */
@@ -598,11 +621,31 @@
                 </div>
             </div>
             <div class="job-stats-box">
-                <span class="job-stat-mini"><i class="fas fa-cubes"></i><b>6</b>关联场景</span>
-                <span class="job-stat-mini"><i class="fas fa-tasks"></i><b>24</b>涉及任务</span>
-                <span class="job-stat-mini"><i class="fas fa-bolt"></i><b>32</b>能力点</span>
-                <span class="job-stat-mini"><i class="fas fa-eye"></i><b>1,286</b>浏览量</span>
-                <span class="job-stat-mini"><i class="fas fa-star"></i><b>156</b>收藏量</span>
+                <div class="job-stat-card">
+                    <div class="job-stat-line"></div>
+                    <div class="job-stat-value">6</div>
+                    <div class="job-stat-label">关联场景数</div>
+                </div>
+                <div class="job-stat-card">
+                    <div class="job-stat-line"></div>
+                    <div class="job-stat-value">24</div>
+                    <div class="job-stat-label">涉及任务数</div>
+                </div>
+                <div class="job-stat-card">
+                    <div class="job-stat-line"></div>
+                    <div class="job-stat-value">32</div>
+                    <div class="job-stat-label">能力点数</div>
+                </div>
+                <div class="job-stat-card">
+                    <div class="job-stat-line"></div>
+                    <div class="job-stat-value">1,286</div>
+                    <div class="job-stat-label">岗位浏览量</div>
+                </div>
+                <div class="job-stat-card">
+                    <div class="job-stat-line"></div>
+                    <div class="job-stat-value">156</div>
+                    <div class="job-stat-label">岗位收藏量</div>
+                </div>
             </div>
         </div>
 
