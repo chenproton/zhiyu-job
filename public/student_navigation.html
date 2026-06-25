@@ -434,7 +434,7 @@
   /* Filter / Search */
   .filter-box {
     background: #fff; border-radius: 16px;
-    padding: 24px; margin-bottom: 16px;
+    padding: 20px 24px; margin-bottom: 16px;
     border: 1px solid #e7e5e4;
   }
   .filter-title {
@@ -492,19 +492,19 @@
     transition: color 0.2s;
   }
   .hot-keyword:hover { color: #2563eb; text-decoration: underline; }
-  .filter-row { display: flex; align-items: flex-start; gap: 14px; padding: 14px 0; border-top: 1px dashed #e7e5e4; }
-  .filter-row:first-of-type { border-top: none; }
-  .filter-label { font-size: 13px; color: #64748b; font-weight: 500; min-width: 52px; padding-top: 7px; }
+  .filter-row { display: flex; align-items: flex-start; gap: 14px; padding: 14px 0; border-bottom: 1px dashed #e7e5e4; }
+  .filter-row:last-of-type { border-bottom: none; }
+  .filter-label { font-size: 14px; color: #374151; font-weight: 500; min-width: 40px; padding-top: 6px; }
   .filter-tags-wrap { flex: 1; }
   .filter-tags { display: flex; gap: 10px; flex-wrap: wrap; }
   .tag {
-    padding: 6px 14px; border-radius: 20px;
+    padding: 5px 14px; border-radius: 20px;
     font-size: 13px; color: #475569; cursor: pointer;
-    background: #fafaf9; border: 1px solid #e7e5e4;
+    background: #fff; border: 1px solid #e5e7eb;
     transition: all 0.2s; white-space: nowrap;
   }
-  .tag:hover { background: #eff6ff; color: #2563eb; border-color: #bfdbfe; }
-  .tag.active { background: linear-gradient(135deg, #3b82f6, #60a5fa); color: #fff; border-color: transparent; }
+  .tag:hover { color: #2563eb; border-color: #bfdbfe; }
+  .tag.active { background: #3b82f6; color: #fff; border-color: #3b82f6; }
   .filter-summary {
     display: flex; align-items: center; gap: 12px;
     padding-top: 14px; margin-top: 10px;
@@ -1081,17 +1081,17 @@
 
   // =================== 初始化筛选标签 ===================
   function initFilters() {
-    const industries = [...new Set(JOBS.map(s => s.industryName).filter(Boolean))];
-    const professions = [...new Set(JOBS.map(s => s.professionName).filter(Boolean))];
+    const industries = ["全部", ...new Set(JOBS.map(s => s.industryName).filter(Boolean))];
+    const professions = ["全部", ...new Set(JOBS.map(s => s.professionName).filter(Boolean))];
 
     const industryContainer = document.getElementById("industryTags");
     industryContainer.innerHTML = industries.map((item, idx) =>
-      `<span class="tag ${idx === 0 ? 'active' : ''}" data-value="${item}">${item}</span>`
+      `<span class="tag ${idx === 0 ? 'active' : ''}" data-value="${item}">${idx === 0 ? '全部' : item}</span>`
     ).join("");
 
     const professionContainer = document.getElementById("professionTags");
     professionContainer.innerHTML = professions.map((item, idx) =>
-      `<span class="tag ${idx === 0 ? 'active' : ''}" data-value="${item}">${item}</span>`
+      `<span class="tag ${idx === 0 ? 'active' : ''}" data-value="${item}">${idx === 0 ? '全部' : item}</span>`
     ).join("");
 
     [industryContainer, professionContainer].forEach(container => {
@@ -1158,16 +1158,16 @@
       icon.addEventListener('click', e => {
         e.stopPropagation();
         const type = icon.closest('.chip').dataset.type;
-        if(type === 'industry') document.querySelector('#industryTags .tag')?.click();
-        if(type === 'profession') document.querySelector('#professionTags .tag')?.click();
+        if(type === 'industry') document.querySelector('#industryTags .tag[data-value="全部"]')?.click();
+        if(type === 'profession') document.querySelector('#professionTags .tag[data-value="全部"]')?.click();
         if(type === 'keyword') { searchInput.value = ''; renderCards(); updateFilterSummary(); }
       });
     });
   }
 
   document.getElementById('clearFilters').addEventListener('click', () => {
-    document.querySelector('#industryTags .tag')?.click();
-    document.querySelector('#professionTags .tag')?.click();
+    document.querySelector('#industryTags .tag[data-value="全部"]')?.click();
+    document.querySelector('#professionTags .tag[data-value="全部"]')?.click();
     searchInput.value = '';
     renderCards();
     updateFilterSummary();
