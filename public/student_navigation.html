@@ -416,9 +416,16 @@
   .filter-hint {
     font-size: 12px; color: #94a3b8;
     margin-bottom: 16px;
-    display: flex; align-items: center; gap: 6px;
+    display: flex; align-items: center; gap: 8px;
+    flex-wrap: wrap;
   }
   .filter-hint span { color: #3b82f6; }
+  .hot-keyword {
+    font-size: 12px; color: #3b82f6;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  .hot-keyword:hover { color: #2563eb; text-decoration: underline; }
   .filter-row { display: flex; align-items: flex-start; gap: 14px; padding: 14px 0; border-top: 1px dashed #e7e5e4; }
   .filter-row:first-of-type { border-top: none; }
   .filter-label { font-size: 13px; color: #64748b; font-weight: 500; min-width: 52px; padding-top: 7px; }
@@ -753,14 +760,19 @@
     <div class="filter-search-row">
       <div class="filter-search-box">
         <i class="fa fa-search"></i>
-        <input type="text" id="searchInput" placeholder="输入关键词搜索岗位...">
+        <input type="text" id="searchInput" placeholder="搜索岗位名称、岗位编码或关键词">
       </div>
       <button class="filter-search-btn" id="searchBtn">搜索</button>
       <button class="filter-reset-btn" id="resetBtn">重置</button>
     </div>
     <div class="filter-hint">
-      <i class="fa fa-lightbulb-o" style="color: #f59e0b;"></i>
-      支持模糊搜索：可输入 <span>岗位名称</span> / <span>岗位编码</span> / <span>行业</span> / <span>专业</span> 任意关键词
+      <span>热门搜索：</span>
+      <span class="hot-keyword">前端开发</span>
+      <span class="hot-keyword">数据分析师</span>
+      <span class="hot-keyword">电商运营</span>
+      <span class="hot-keyword">品牌经理</span>
+      <span class="hot-keyword">会计师</span>
+      <span class="hot-keyword">新媒体运营</span>
     </div>
     <div class="filter-row">
       <span class="filter-label">按行业</span>
@@ -1056,6 +1068,15 @@
     document.querySelector('#professionTags .tag[data-value="全部"]')?.click();
     renderCards();
     updateFilterSummary();
+  });
+
+  // 热门关键词
+  document.querySelectorAll('.hot-keyword').forEach(kw => {
+    kw.addEventListener('click', () => {
+      searchInput.value = kw.textContent;
+      renderCards();
+      updateFilterSummary();
+    });
   });
 
   // =================== 获取当前筛选条件 ===================
