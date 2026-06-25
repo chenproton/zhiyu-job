@@ -610,11 +610,7 @@
   }
   .card-stat-num { font-size: 18px; font-weight: 800; color: #0f172a; }
   .card-stat-label { font-size: 12px; color: #94a3b8; margin-top: 2px; }
-  .card-tags {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px 12px;
-  }
+  .card-tags { display: flex; flex-wrap: wrap; gap: 8px; }
   .card-tag {
     font-size: 12px; padding: 4px 10px; border-radius: 6px;
     background: #f5f5f4; color: #475569;
@@ -1313,8 +1309,8 @@
             </div>
             <div class="card-tags">
               <span class="card-tag orange">面向行业：${s.industryName || "未指定"}</span>
-              <span class="card-meta-text">创建人：${s.creatorName}</span>
               <span class="card-tag blue">适用专业：${s.professionName || "未分类"}</span>
+              <span class="card-meta-text">创建人：${s.creatorName}</span>
               <span class="card-meta-text">共建人：${s.coBuilders || "知与未来"}</span>
             </div>
           </div>
