@@ -73,6 +73,7 @@ const DataContext = createContext<DataContextType | undefined>(undefined)
 
 const FAVORITES_KEY = 'career-platform-favorites'
 const RECOMMENDATIONS_KEY = 'career-platform-recommendations'
+const RECOMMENDATIONS_SEED_KEY = 'career-platform-recommendations-seed-v1'
 
 function generateId(prefix: string): string {
   return `${prefix}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
@@ -109,12 +110,20 @@ export function DataProvider({ children }: { children: ReactNode }) {
         // 忽略解析错误
       }
     }
-    const storedRecommendations = localStorage.getItem(RECOMMENDATIONS_KEY)
-    if (storedRecommendations) {
-      try {
-        setRecommendations(JSON.parse(storedRecommendations))
-      } catch {
-        // 忽略解析错误
+    // 推荐配置：首次 seed 时使用 mock 数据，后续从 localStorage 恢复用户改动
+    const seeded = localStorage.getItem(RECOMMENDATIONS_SEED_KEY)
+    if (!seeded) {
+      setRecommendations(mockRecommendations)
+      localStorage.setItem(RECOMMENDATIONS_KEY, JSON.stringify(mockRecommendations))
+      localStorage.setItem(RECOMMENDATIONS_SEED_KEY, '1')
+    } else {
+      const storedRecommendations = localStorage.getItem(RECOMMENDATIONS_KEY)
+      if (storedRecommendations) {
+        try {
+          setRecommendations(JSON.parse(storedRecommendations))
+        } catch {
+          // 忽略解析错误
+        }
       }
     }
     setIsLoaded(true)
