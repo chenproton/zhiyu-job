@@ -550,8 +550,8 @@ export function StepBasicInfo({ position, onUpdate, aiMode = false, variant = 'd
             </div>
           </div>
 
-          {/* Row 2: Industry + Major */}
-          <div className="grid grid-cols-2 gap-4">
+          {/* Row 2: Industry + Major + Position Type */}
+          <div className="grid grid-cols-3 gap-4">
             <div className="grid gap-2">
               <Label htmlFor="industry">面向行业</Label>
               <MultiSelect
@@ -569,6 +569,21 @@ export function StepBasicInfo({ position, onUpdate, aiMode = false, variant = 'd
                 onChange={(values) => onUpdate({ majors: values })}
                 placeholder="选择专业"
               />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="positionType">岗位类型</Label>
+              <Select
+                value={position.positionType}
+                onValueChange={(v) => onUpdate({ positionType: v as Position['positionType'] })}
+              >
+                <SelectTrigger id="positionType">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="enterprise">企业岗位</SelectItem>
+                  <SelectItem value="teaching">教学岗位</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
 

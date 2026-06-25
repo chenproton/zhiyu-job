@@ -92,6 +92,7 @@ const DEFAULT_POSITION: Position = {
   shortName: '',
   industry: '',
   majors: [],
+  positionType: 'enterprise',
   salaryRange: [0, 0],
   certificates: [],
   description: '',

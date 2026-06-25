@@ -8,6 +8,7 @@ import type {
   Ability,
   ApprovalRecord,
   DashboardStats,
+  PositionRecommendation,
 } from '@/lib/types'
 import {
   mockBatches,
@@ -15,6 +16,7 @@ import {
   mockWorkflows,
   mockAbilities,
   mockApprovalRecords,
+  mockRecommendations,
 } from '@/lib/mock-data'
 
 interface DataContextType {
@@ -25,6 +27,7 @@ interface DataContextType {
   abilities: Ability[]
   approvals: ApprovalRecord[]
   favorites: string[] // position ids
+  recommendations: PositionRecommendation[]
   
   // 统计
   stats: DashboardStats
@@ -57,11 +60,19 @@ interface DataContextType {
   // 收藏操作
   toggleFavorite: (positionId: string) => void
   isFavorite: (positionId: string) => boolean
+  
+  // 目标岗位推荐操作
+  getRecommendationsByMajor: (major: string) => PositionRecommendation[]
+  addRecommendation: (data: Omit<PositionRecommendation, 'id' | 'createdAt' | 'updatedAt' | 'order'>) => void
+  updateRecommendation: (id: string, data: Partial<PositionRecommendation>) => void
+  deleteRecommendation: (id: string) => void
+  reorderRecommendations: (major: string, orderedIds: string[]) => void
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined)
 
 const FAVORITES_KEY = 'career-platform-favorites'
+const RECOMMENDATIONS_KEY = 'career-platform-recommendations'
 
 function generateId(prefix: string): string {
   return `${prefix}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
@@ -85,14 +96,23 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const [abilities, setAbilities] = useState<Ability[]>(mockAbilities)
   const [approvals, setApprovals] = useState<ApprovalRecord[]>(mockApprovalRecords)
   const [favorites, setFavorites] = useState<string[]>([])
+  const [recommendations, setRecommendations] = useState<PositionRecommendation[]>(mockRecommendations)
   const [isLoaded, setIsLoaded] = useState(false)
 
-  // 从 localStorage 恢复收藏
+  // 从 localStorage 恢复收藏和推荐配置
   useEffect(() => {
-    const stored = localStorage.getItem(FAVORITES_KEY)
-    if (stored) {
+    const storedFavorites = localStorage.getItem(FAVORITES_KEY)
+    if (storedFavorites) {
       try {
-        setFavorites(JSON.parse(stored))
+        setFavorites(JSON.parse(storedFavorites))
+      } catch {
+        // 忽略解析错误
+      }
+    }
+    const storedRecommendations = localStorage.getItem(RECOMMENDATIONS_KEY)
+    if (storedRecommendations) {
+      try {
+        setRecommendations(JSON.parse(storedRecommendations))
       } catch {
         // 忽略解析错误
       }
@@ -106,6 +126,13 @@ export function DataProvider({ children }: { children: ReactNode }) {
       localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites))
     }
   }, [favorites, isLoaded])
+
+  // 保存推荐配置到 localStorage
+  useEffect(() => {
+    if (isLoaded) {
+      localStorage.setItem(RECOMMENDATIONS_KEY, JSON.stringify(recommendations))
+    }
+  }, [recommendations, isLoaded])
 
   const stats = calculateStats(batches, positions, approvals, abilities)
 
@@ -356,6 +383,61 @@ export function DataProvider({ children }: { children: ReactNode }) {
     return favorites.includes(positionId)
   }
 
+  // 目标岗位推荐操作
+  const getRecommendationsByMajor = (major: string) => {
+    return recommendations
+      .filter((rec) => rec.major === major)
+      .sort((a, b) => a.order - b.order)
+  }
+
+  const addRecommendation = (data: Omit<PositionRecommendation, 'id' | 'createdAt' | 'updatedAt' | 'order'>) => {
+    const now = new Date().toISOString()
+    const majorRecs = getRecommendationsByMajor(data.major)
+    const newRecommendation: PositionRecommendation = {
+      ...data,
+      id: generateId('rec'),
+      order: majorRecs.length + 1,
+      createdAt: now,
+      updatedAt: now,
+    }
+    setRecommendations((prev) => [...prev, newRecommendation])
+  }
+
+  const updateRecommendation = (id: string, data: Partial<PositionRecommendation>) => {
+    setRecommendations((prev) =>
+      prev.map((rec) =>
+        rec.id === id ? { ...rec, ...data, updatedAt: new Date().toISOString() } : rec
+      )
+    )
+  }
+
+  const deleteRecommendation = (id: string) => {
+    const rec = recommendations.find((r) => r.id === id)
+    if (!rec) return
+    setRecommendations((prev) => {
+      const filtered = prev.filter((r) => r.id !== id)
+      const targetMajor = rec.major
+      const majorFiltered = filtered.filter((r) => r.major === targetMajor)
+      return filtered.map((r) =>
+        r.major === targetMajor
+          ? { ...r, order: majorFiltered.findIndex((x) => x.id === r.id) + 1 }
+          : r
+      )
+    })
+  }
+
+  const reorderRecommendations = (major: string, orderedIds: string[]) => {
+    setRecommendations((prev) => {
+      const majorRecs = prev.filter((r) => r.major === major)
+      const otherRecs = prev.filter((r) => r.major !== major)
+      const reordered = orderedIds
+        .map((id) => majorRecs.find((r) => r.id === id))
+        .filter((r): r is PositionRecommendation => !!r)
+        .map((r, index) => ({ ...r, order: index + 1, updatedAt: new Date().toISOString() }))
+      return [...otherRecs, ...reordered]
+    })
+  }
+
   if (!isLoaded) {
     return null
   }
@@ -369,6 +451,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
         abilities,
         approvals,
         favorites,
+        recommendations,
         stats,
         addBatch,
         updateBatch,
@@ -387,6 +470,11 @@ export function DataProvider({ children }: { children: ReactNode }) {
         rejectApproval,
         toggleFavorite,
         isFavorite,
+        getRecommendationsByMajor,
+        addRecommendation,
+        updateRecommendation,
+        deleteRecommendation,
+        reorderRecommendations,
       }}
     >
       {children}

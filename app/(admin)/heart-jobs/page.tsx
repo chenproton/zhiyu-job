@@ -8,7 +8,7 @@ import {
   TrendingUp,
   Trophy,
   Medal,
-  Fire,
+  Flame,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
@@ -354,7 +354,7 @@ export default function HeartJobsPage() {
                           )}
                           title={job.isFavorite ? "取消收藏" : "收藏"}
                         >
-                          <Fire className="h-3 w-3" />
+                          <Flame className="h-3 w-3" />
                           {job.isFavorite ? "热门" : "收藏"}
                         </button>
                       </div>

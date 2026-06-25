@@ -26,6 +26,7 @@ export const careerNavigationConfig: PlatformNavigationConfig = {
         { id: "workflows", label: "审批流程管理", href: "/workflows", matchers: ["/workflows"] },
         { id: "approvals", label: "资源审批管理", href: "/approvals", matchers: ["/approvals"] },
         { id: "learn-roads", label: "学习管理路径", href: "/learn-roads", matchers: ["/learn-roads"] },
+        { id: "post-recommend", label: "目标岗位推荐", href: "/post-recommend", matchers: ["/post-recommend"] },
         { id: "banner-management", label: "轮播图管理", href: "/banner-management", matchers: ["/banner-management"] },
       ],
     },

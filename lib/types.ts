@@ -46,6 +46,9 @@ export interface Workflow {
   createdAt: string
 }
 
+// 岗位类型：企业岗位 / 教学岗位
+export type PositionType = 'enterprise' | 'teaching'
+
 // 岗位状态
 export type PositionStatus = 'draft' | 'pending' | 'approved' | 'rejected' | 'published' | 'archived'
 
@@ -169,6 +172,7 @@ export interface Position {
   shortName: string
   industry: string
   majors: string[]
+  positionType: PositionType
   salaryRange: [number, number]
   coverImage?: string
   certificates: PositionCertificate[]
@@ -290,4 +294,23 @@ export const ROLE_LABELS: Record<UserRole, string> = {
   builder: '建设者',
   reviewer: '审批者',
   student: '学生',
+}
+
+// 岗位推荐配置（按专业配置前台推荐岗位及顺序）
+export interface PositionRecommendation {
+  id: string
+  major: string           // 专业名称
+  positionId: string      // 岗位ID
+  positionType: PositionType
+  reason?: string         // 推荐原因
+  order: number           // 展示顺序，越小越靠前
+  createdBy: string       // 配置人（老师）ID
+  createdAt: string
+  updatedAt: string
+}
+
+// 岗位类型标签映射
+export const POSITION_TYPE_LABELS: Record<PositionType, string> = {
+  enterprise: '企业岗位',
+  teaching: '教学岗位',
 }

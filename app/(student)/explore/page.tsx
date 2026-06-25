@@ -1,8 +1,9 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import Link from "next/link"
 import { useData } from "@/lib/stores/data-context"
+import type { Position } from "@/lib/types"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -49,14 +50,50 @@ const SORT_OPTIONS = [
 ]
 
 export default function ExplorePage() {
-  const { positions, favorites, toggleFavorite } = useData()
+  const { positions, favorites, toggleFavorite, recommendations, batches } = useData()
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedIndustry, setSelectedIndustry] = useState("all")
   const [sortBy, setSortBy] = useState("recommended")
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
+  const [selectedMajor, setSelectedMajor] = useState<string>("")
+
+  // 专业选项
+  const majorOptions = useMemo(() => {
+    const set = new Set<string>()
+    batches.forEach((b) => set.add(b.major))
+    positions.forEach((p) => p.majors.forEach((m) => set.add(m)))
+    return Array.from(set).sort()
+  }, [batches, positions])
+
+  const currentMajor = selectedMajor || majorOptions[0] || ""
 
   // 只显示已发布的岗位
   const publishedPositions = positions.filter((p) => p.status === "published")
+
+  // 当前专业推荐配置
+  const majorRecommendations = useMemo(() => {
+    return recommendations
+      .filter((rec) => rec.major === currentMajor)
+      .sort((a, b) => a.order - b.order)
+  }, [recommendations, currentMajor])
+
+  // 热门推荐：优先使用老师配置的推荐顺序，不足时按默认补全
+  const featuredPositions = useMemo(() => {
+    const recommended = majorRecommendations
+      .map((rec) => positions.find((p) => p.id === rec.positionId))
+      .filter((p): p is Position => !!p && p.status === "published")
+    const remaining = publishedPositions.filter((p) => !recommended.some((r) => r.id === p.id))
+    return [...recommended, ...remaining].slice(0, 4)
+  }, [majorRecommendations, positions, publishedPositions])
+
+  // 推荐排序权重映射
+  const recommendationOrderMap = useMemo(() => {
+    const map = new Map<string, number>()
+    majorRecommendations.forEach((rec, index) => {
+      map.set(rec.positionId, index)
+    })
+    return map
+  }, [majorRecommendations])
 
   // 过滤和排序
   const filteredPositions = publishedPositions
@@ -76,12 +113,17 @@ export default function ExplorePage() {
       if (sortBy === "abilities") {
         return (b.abilityModel?.nodes.length || 0) - (a.abilityModel?.nodes.length || 0)
       }
-      // 默认推荐排序
-      return 0
+      if (sortBy === "popular") {
+        return (b.favoriteCount || 0) - (a.favoriteCount || 0)
+      }
+      // 默认推荐排序：优先按老师配置顺序，其次按收藏数
+      const orderA = recommendationOrderMap.get(a.id) ?? Infinity
+      const orderB = recommendationOrderMap.get(b.id) ?? Infinity
+      if (orderA !== orderB) {
+        return orderA - orderB
+      }
+      return (b.favoriteCount || 0) - (a.favoriteCount || 0)
     })
-
-  // 热门推荐（取前4个）
-  const featuredPositions = publishedPositions.slice(0, 4)
 
   const isFavorite = (positionId: string) => favorites.includes(positionId)
 
@@ -136,10 +178,23 @@ export default function ExplorePage() {
       {/* 推荐岗位 */}
       <section className="py-8">
         <div className="mx-auto max-w-7xl px-4">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-2">
               <Sparkles className="h-5 w-5 text-primary" />
               <h2 className="text-xl font-bold">为你推荐</h2>
+              <Select value={currentMajor} onValueChange={setSelectedMajor}>
+                <SelectTrigger className="w-44 h-8 text-xs border-dashed">
+                  <GraduationCap className="h-3.5 w-3.5 mr-1 text-muted-foreground" />
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {majorOptions.map((major) => (
+                    <SelectItem key={major} value={major}>
+                      {major}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <Button variant="ghost" className="gap-1">
               查看更多 <ChevronRight className="h-4 w-4" />

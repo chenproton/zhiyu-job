@@ -325,6 +325,7 @@ export default function AiFirstBatchGeneratePage() {
       shortName: BATCH_NAMES[idx],
       industry: industry || '互联网/IT',
       majors: major ? [major] : ['人工智能'],
+      positionType: 'enterprise',
       salaryRange: [8000 + idx * 2000, 15000 + idx * 4000],
       description: `${BATCH_DESC[idx]}。本岗位面向${industry || '互联网/IT'}行业，要求具备扎实的${major || '人工智能'}专业背景。`,
       responsibilities,
