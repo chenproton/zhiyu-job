@@ -54,6 +54,7 @@ Object.entries(majorPositions).forEach(([major, positionIds]) => {
       positionType: positionTypes[positionId] || 'enterprise',
       reason: positionReasons[positionId] || '推荐岗位，发展前景良好',
       order: index + 1,
+      isVisible: true,
       createdBy: 'user-1',
       createdAt: '2024-03-15T00:00:00Z',
       updatedAt: '2024-03-15T00:00:00Z',

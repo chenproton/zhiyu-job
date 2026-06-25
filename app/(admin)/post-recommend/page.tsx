@@ -8,6 +8,20 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
+import { Switch } from '@/components/ui/switch'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command'
 import {
   Select,
   SelectContent,
@@ -41,13 +55,30 @@ import {
   GraduationCap,
   Briefcase,
   Eye,
+  Check,
+  ChevronsUpDown,
+  ExternalLink,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { PositionType } from '@/lib/types'
 import { POSITION_TYPE_LABELS } from '@/lib/types'
 
+function formatDate(dateStr?: string) {
+  if (!dateStr) return '-'
+  const d = new Date(dateStr)
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
 export default function PostRecommendPage() {
-  const { positions, batches, recommendations, addRecommendation, deleteRecommendation, reorderRecommendations } = useData()
+  const {
+    positions,
+    batches,
+    recommendations,
+    addRecommendation,
+    updateRecommendation,
+    deleteRecommendation,
+    reorderRecommendations,
+  } = useData()
   const { user } = useAuth()
 
   const [selectedMajor, setSelectedMajor] = useState<string>('')
@@ -55,6 +86,8 @@ export default function PostRecommendPage() {
   const [selectedPositionId, setSelectedPositionId] = useState<string>('')
   const [selectedType, setSelectedType] = useState<PositionType>('enterprise')
   const [reason, setReason] = useState('')
+  const [isVisibleNew, setIsVisibleNew] = useState(true)
+  const [positionSearchOpen, setPositionSearchOpen] = useState(false)
 
   // 专业列表从批次和专业字符串去重得到
   const majorOptions = useMemo(() => {
@@ -100,6 +133,10 @@ export default function PostRecommendPage() {
     deleteRecommendation(id)
   }
 
+  const handleToggleVisible = (id: string, isVisible: boolean) => {
+    updateRecommendation(id, { isVisible })
+  }
+
   const handleAdd = () => {
     if (!selectedPositionId || !currentMajor || !user) return
     const position = positions.find((p) => p.id === selectedPositionId)
@@ -109,11 +146,13 @@ export default function PostRecommendPage() {
       positionId: position.id,
       positionType: selectedType,
       reason: reason.trim() || undefined,
+      isVisible: isVisibleNew,
       createdBy: user.id,
     })
     setSelectedPositionId('')
     setSelectedType('enterprise')
     setReason('')
+    setIsVisibleNew(true)
     setIsAddOpen(false)
   }
 
@@ -198,34 +237,76 @@ export default function PostRecommendPage() {
                 <div className="space-y-4 py-4">
                   <div className="space-y-2">
                     <label className="text-sm font-medium">推荐岗位</label>
-                    <Select value={selectedPositionId} onValueChange={setSelectedPositionId}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="请选择岗位" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {availablePositions.length === 0 ? (
-                          <SelectItem value="" disabled>
-                            暂无可添加的岗位
-                          </SelectItem>
-                        ) : (
-                          availablePositions.map((position) => (
-                            <SelectItem key={position.id} value={position.id}>
-                              {position.name}（{position.shortName}）
-                            </SelectItem>
-                          ))
-                        )}
-                      </SelectContent>
-                    </Select>
+                    <Popover open={positionSearchOpen} onOpenChange={setPositionSearchOpen}>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          aria-expanded={positionSearchOpen}
+                          className="w-full justify-between font-normal"
+                          disabled={availablePositions.length === 0}
+                        >
+                          {selectedPosition
+                            ? `${selectedPosition.name}（${selectedPosition.shortName}）`
+                            : availablePositions.length === 0
+                            ? '暂无可添加的岗位'
+                            : '请选择岗位'}
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                        <Command>
+                          <CommandInput placeholder="搜索岗位名称、行业..." />
+                          <CommandList>
+                            <CommandEmpty>未找到匹配岗位</CommandEmpty>
+                            <CommandGroup>
+                              {availablePositions.map((position) => (
+                                <CommandItem
+                                  key={position.id}
+                                  value={`${position.name} ${position.shortName} ${position.industry}`}
+                                  onSelect={() => {
+                                    setSelectedPositionId(position.id)
+                                    setSelectedType(position.positionType)
+                                    setPositionSearchOpen(false)
+                                  }}
+                                >
+                                  <Check
+                                    className={cn(
+                                      "mr-2 h-4 w-4",
+                                      selectedPositionId === position.id ? "opacity-100" : "opacity-0"
+                                    )}
+                                  />
+                                  <div className="flex flex-col">
+                                    <span className="text-sm">{position.name}</span>
+                                    <span className="text-xs text-muted-foreground">
+                                      {position.shortName} · {position.industry}
+                                    </span>
+                                  </div>
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
                   </div>
 
                   {selectedPosition && (
-                    <div className="rounded-lg border bg-muted/50 p-3 text-sm space-y-1">
-                      <div className="flex items-center gap-2">
-                        <Briefcase className="h-4 w-4 text-muted-foreground" />
-                        <span className="font-medium">{selectedPosition.name}</span>
+                    <div className="rounded-lg border bg-muted/50 p-3 text-sm space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Briefcase className="h-4 w-4 text-muted-foreground" />
+                          <span className="font-medium">{selectedPosition.name}</span>
+                        </div>
+                        <Link href={`/explore/${selectedPosition.id}`} target="_blank">
+                          <Button variant="ghost" size="sm" className="h-7 gap-1 text-primary">
+                            <ExternalLink className="h-3.5 w-3.5" />
+                            查看岗位
+                          </Button>
+                        </Link>
                       </div>
                       <div className="text-muted-foreground">
-                        行业：{selectedPosition.industry} · 能力点：{selectedPosition.abilityModel?.nodes.length || 0} 个
+                        行业：{selectedPosition.industry} · 能力点：{selectedPosition.abilityModel?.nodes.length || 0} 个 · 上架时间：{formatDate(selectedPosition.createdAt)}
                       </div>
                     </div>
                   )}
@@ -254,6 +335,17 @@ export default function PostRecommendPage() {
                       onChange={(e) => setReason(e.target.value)}
                     />
                   </div>
+
+                  <div className="flex items-center justify-between rounded-lg border p-3">
+                    <div className="space-y-0.5">
+                      <label className="text-sm font-medium">是否展示</label>
+                      <p className="text-xs text-muted-foreground">关闭后该推荐将不在前台显示</p>
+                    </div>
+                    <Switch
+                      checked={isVisibleNew}
+                      onCheckedChange={setIsVisibleNew}
+                    />
+                  </div>
                 </div>
                 <DialogFooter>
                   <Button variant="outline" onClick={() => setIsAddOpen(false)}>
@@ -274,13 +366,15 @@ export default function PostRecommendPage() {
                   <TableHead>岗位名称</TableHead>
                   <TableHead>类型</TableHead>
                   <TableHead>推荐原因</TableHead>
+                  <TableHead>上架时间</TableHead>
+                  <TableHead className="text-center">是否展示</TableHead>
                   <TableHead className="text-right">操作</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {majorRecommendations.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={5} className="h-32 text-center">
+                    <TableCell colSpan={7} className="h-32 text-center">
                       <div className="flex flex-col items-center justify-center text-muted-foreground">
                         <Sparkles className="h-10 w-10 mb-2" />
                         <p>暂无为「{currentMajor}」配置的推荐岗位</p>
@@ -292,7 +386,7 @@ export default function PostRecommendPage() {
                   majorRecommendations.map((rec, index) => {
                     const position = positions.find((p) => p.id === rec.positionId)
                     return (
-                      <TableRow key={rec.id} className="group">
+                      <TableRow key={rec.id} className={cn("group", !rec.isVisible && "opacity-60")}>
                         <TableCell>
                           <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-sm font-medium text-primary">
                             {rec.order}
@@ -320,6 +414,18 @@ export default function PostRecommendPage() {
                           <span className="text-sm text-muted-foreground line-clamp-2">
                             {rec.reason || '-'}
                           </span>
+                        </TableCell>
+                        <TableCell>
+                          <span className="text-sm text-muted-foreground">
+                            {formatDate(position?.createdAt)}
+                          </span>
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <Switch
+                            checked={rec.isVisible}
+                            onCheckedChange={(checked) => handleToggleVisible(rec.id, checked)}
+                            aria-label={rec.isVisible ? '已展示' : '已隐藏'}
+                          />
                         </TableCell>
                         <TableCell className="text-right">
                           <div className="flex items-center justify-end gap-1">
@@ -357,9 +463,7 @@ export default function PostRecommendPage() {
             </Table>
           </CardContent>
         </Card>
-
       </div>
-
     </div>
   )
 }
