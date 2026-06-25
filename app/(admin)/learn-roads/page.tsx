@@ -532,7 +532,7 @@ export default function LearnRoadsPage() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl">
+    <div className="space-y-6">
       {view === 'list' ? <ListView /> : <EditView />}
     </div>
   )
