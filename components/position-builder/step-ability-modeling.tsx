@@ -158,6 +158,7 @@ export function StepAbilityModeling({ position, onUpdate, aiMode = false }: Step
       attributes: [],
     }
     onUpdate({ abilityBindings: [...position.abilityBindings, newBinding] })
+    setExpandedBindingId(newBinding.id)
     setNewAbilityName('')
     setShowCreateDialog(false)
   }
