@@ -434,6 +434,12 @@ export default function LearnRoadsPage() {
               <RotateCcw className="mr-2 h-4 w-4" />
               重置
             </Button>
+            <Link href="/learning-route">
+              <Button variant="outline">
+                <Eye className="mr-2 h-4 w-4" />
+                预览
+              </Button>
+            </Link>
             <Button onClick={handleSave}>
               <Save className="mr-2 h-4 w-4" />
               {saved ? '已保存' : '保存顺序'}
