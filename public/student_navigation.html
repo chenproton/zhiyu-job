@@ -610,7 +610,7 @@
   }
   .card-stat-num { font-size: 18px; font-weight: 800; color: #0f172a; }
   .card-stat-label { font-size: 12px; color: #94a3b8; margin-top: 2px; }
-  .card-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .card-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
   .card-tag {
     font-size: 12px; padding: 4px 10px; border-radius: 6px;
     background: #f5f5f4; color: #475569;
@@ -618,6 +618,11 @@
   .card-tag.orange { background: #ffedd5; color: #c2410c; }
   .card-tag.blue { background: #dbeafe; color: #1d4ed8; }
   .card-tag.green { background: #dcfce7; color: #15803d; }
+  .card-meta-grid {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px 4em;
+  }
   .card-meta-text {
     font-size: 12px;
     color: #64748b;
@@ -1310,8 +1315,12 @@
             <div class="card-tags">
               <span class="card-tag orange">面向行业：${s.industryName || "未指定"}</span>
               <span class="card-tag blue">适用专业：${s.professionName || "未分类"}</span>
+            </div>
+            <div class="card-meta-grid">
               <span class="card-meta-text">创建人：${s.creatorName}</span>
               <span class="card-meta-text">共建人：${s.coBuilders || "知与未来"}</span>
+              <span class="card-meta-text">浏览量：${viewCount}</span>
+              <span class="card-meta-text">更新时间：${s.updatedAt || "2024-01-01"}</span>
             </div>
           </div>
         </div>
