@@ -30,7 +30,9 @@ import {
   Pencil,
   FolderOpen,
   GraduationCap,
+  Eye,
 } from 'lucide-react'
+import Link from 'next/link'
 import { StatusBadge } from '@/components/shared/status-badge'
 import { cn } from '@/lib/utils'
 import { useData } from '@/lib/stores/data-context'
@@ -268,10 +270,18 @@ export default function LearnRoadsPage() {
           <h1 className="text-2xl font-bold text-foreground">学习路径管理</h1>
           <p className="text-muted-foreground mt-1">按岗位管理学习路径中场景与任务的展示顺序</p>
         </div>
-        <Button variant="outline" disabled>
-          <GraduationCap className="mr-2 h-4 w-4" />
-          岗位学习路径
-        </Button>
+        <div className="flex items-center gap-2">
+          <Link href="/learning-route">
+            <Button variant="outline">
+              <Eye className="mr-2 h-4 w-4" />
+              预览
+            </Button>
+          </Link>
+          <Button variant="outline" disabled>
+            <GraduationCap className="mr-2 h-4 w-4" />
+            岗位学习路径
+          </Button>
+        </div>
       </div>
 
       {/* Filters */}
