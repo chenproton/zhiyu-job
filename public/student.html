@@ -89,15 +89,10 @@
         .job-stat-mini b { color: #2563eb; font-weight: 700; margin-right: 2px; }
         .job-stat-mini i { color: #3b82f6; font-size: 12px; }
 
-        /* Stats card below job canvas */
-        .stats-card {
-            background: var(--bg-white); border-radius: var(--radius-lg);
-            padding: 24px; border: 1px solid var(--border-color);
-            box-shadow: 0 4px 20px rgba(69,26,3,0.06);
-            margin-bottom: 24px;
-        }
+        /* Stats box below job canvas */
         .job-stats-box {
             display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px;
+            margin: 20px 0 24px;
         }
         .job-stat-card {
             background: #ffffff; border-radius: var(--radius-md);
@@ -129,6 +124,11 @@
         .job-info { flex: 1; position: relative; }
         .job-title-row { display: flex; align-items: center; gap: 16px; margin-bottom: 10px; }
         .job-title { font-size: 24px; font-weight: 700; color: #0f172a; }
+        .job-salary {
+            position: absolute; top: 0; right: 0;
+            font-size: 20px; font-weight: 700;
+            color: var(--error-color);
+        }
         .job-version { padding: 2px 8px; background: var(--primary-bg); color: var(--primary-color); border-radius: var(--radius-sm); font-size: 12px; }
         .job-alias { color: var(--text-secondary); margin-bottom: 12px; }
         .job-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
@@ -593,20 +593,15 @@
                         <span class="job-version">V1.2</span>
                     </div>
                     <p class="job-alias">别名：Web前端工程师、H5开发工程师</p>
+                    <div class="job-salary">8K-15K</div>
+
                     <div class="job-tags">
                         <span class="tag industry"><i class="fas fa-industry"></i> 信息技术</span>
                         <span class="tag major"><i class="fas fa-graduation-cap"></i> 软件技术</span>
                         <span class="tag major"><i class="fas fa-graduation-cap"></i> 计算机应用</span>
-                        <span class="tag dept"><i class="fas fa-building"></i> 信息工程学院</span>
-                    </div>
-                    
-                    <div class="job-co-builders">
-                        <span class="co-builder-tag"><i class="fas fa-user" style="color:#3b82f6;"></i> 创建人：杭州知与未来科技有限公司</span>
-                        <span class="co-builder-tag"><i class="fas fa-users" style="color:#52c41a;"></i> 共建人：知与未来</span>
                     </div>
 
                     <div class="job-meta">
-                        <div class="meta-item"><i class="fas fa-money-bill-wave"></i><span class="salary">8K-15K</span></div>
                         <div class="meta-item"><i class="fas fa-calendar"></i><span>创建时间：2024-12-20</span></div>
                         <div class="meta-item"><i class="fas fa-edit"></i><span>更新时间：2025-01-10</span></div>
                     </div>
@@ -621,28 +616,26 @@
             </div>
         </div>
 
-        <div class="stats-card fade-in">
-            <div class="job-stats-box">
-                <div class="job-stat-card">
-                    <div class="job-stat-value">6</div>
-                    <div class="job-stat-label">关联场景数</div>
-                </div>
-                <div class="job-stat-card">
-                    <div class="job-stat-value">24</div>
-                    <div class="job-stat-label">涉及任务数</div>
-                </div>
-                <div class="job-stat-card">
-                    <div class="job-stat-value">32</div>
-                    <div class="job-stat-label">能力点数</div>
-                </div>
-                <div class="job-stat-card">
-                    <div class="job-stat-value">1,286</div>
-                    <div class="job-stat-label">岗位浏览量</div>
-                </div>
-                <div class="job-stat-card">
-                    <div class="job-stat-value">156</div>
-                    <div class="job-stat-label">岗位收藏量</div>
-                </div>
+        <div class="job-stats-box fade-in">
+            <div class="job-stat-card">
+                <div class="job-stat-value">6</div>
+                <div class="job-stat-label">关联场景数</div>
+            </div>
+            <div class="job-stat-card">
+                <div class="job-stat-value">24</div>
+                <div class="job-stat-label">涉及任务数</div>
+            </div>
+            <div class="job-stat-card">
+                <div class="job-stat-value">32</div>
+                <div class="job-stat-label">能力点数</div>
+            </div>
+            <div class="job-stat-card">
+                <div class="job-stat-value">1,286</div>
+                <div class="job-stat-label">岗位浏览量</div>
+            </div>
+            <div class="job-stat-card">
+                <div class="job-stat-value">156</div>
+                <div class="job-stat-label">岗位收藏量</div>
             </div>
         </div>
 
