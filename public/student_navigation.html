@@ -381,6 +381,20 @@
   .progress-text { font-size: 12px; color: #64748b; min-width: 42px; text-align: right; }
   .job-list-meta { display: flex; justify-content: space-between; font-size: 12px; color: #94a3b8; margin-top: 8px; }
 
+  /* Panel empty state */
+  .panel-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 36px 16px;
+    color: #94a3b8;
+    text-align: center;
+  }
+  .panel-empty i { font-size: 42px; margin-bottom: 12px; color: #cbd5e1; }
+  .panel-empty-title { font-size: 14px; font-weight: 600; color: #475569; margin-bottom: 6px; }
+  .panel-empty-desc { font-size: 12px; color: #94a3b8; line-height: 1.5; }
+
   /* Ranking section */
   .ranking-section {
     background: #fff;
@@ -914,33 +928,9 @@
     "linear-gradient(135deg,#0f766e,#14b8a6)"
   ];
 
-  const TARGET_JOBS = [
-    { title: "Web前端开发工程师", badge: "老师推荐", badgeClass: "orange", tags: ["信息技术", "计算机应用"], progress: 65 },
-    { title: "UI/UX 设计师", badge: "老师推荐", badgeClass: "orange", tags: ["文化创意", "视觉传达", "DS-0205"], progress: 30 },
-    { title: "人工智能训练师", badge: "推荐", badgeClass: "red", tags: ["信息技术", "人工智能", "AI-0301"], progress: 0 },
-    { title: "Java 微服务架构师", badge: "推荐", badgeClass: "red", tags: ["信息技术", "软件开发"], progress: 0 },
-    { title: "数据分析师", badge: "老师推荐", badgeClass: "orange", tags: ["信息技术", "大数据"], progress: 45 },
-    { title: "跨境电商运营专员", badge: "推荐", badgeClass: "red", tags: ["财经商贸", "电子商务"], progress: 0 },
-    { title: "新媒体运营", badge: "老师推荐", badgeClass: "orange", tags: ["文化创意", "市场营销"], progress: 20 },
-    { title: "云计算运维工程师", badge: "推荐", badgeClass: "red", tags: ["信息技术", "云计算"], progress: 0 },
-    { title: "品牌营销策划", badge: "老师推荐", badgeClass: "orange", tags: ["市场营销", "品牌管理"], progress: 55 },
-    { title: "健康管理师", badge: "推荐", badgeClass: "red", tags: ["医药卫生", "健康管理"], progress: 0 },
-    { title: "工业机器人操作员", badge: "推荐", badgeClass: "red", tags: ["智能制造", "自动化"], progress: 0 }
-  ];
+  const TARGET_JOBS = [];
 
-  const MY_FAVORITE_JOBS = [
-    { title: "大数据分析工程师", tags: ["信息技术", "大数据技术"], date: "06-06", views: "10,455" },
-    { title: "跨境电商运营专员", tags: ["财经商贸", "电子商务", "EC-0410"], date: "06-07", views: "7,891" },
-    { title: "软件测试工程师", tags: ["信息技术", "软件技术", "SW-0815"], date: "06-03", views: "5,940" },
-    { title: "Web前端开发工程师", tags: ["信息技术", "计算机应用"], date: "06-01", views: "8,230" },
-    { title: "UI/UX 设计师", tags: ["文化创意", "视觉传达"], date: "05-28", views: "6,120" },
-    { title: "人工智能训练师", tags: ["信息技术", "人工智能"], date: "05-25", views: "9,880" },
-    { title: "Java 微服务架构师", tags: ["信息技术", "软件开发"], date: "05-20", views: "7,450" },
-    { title: "品牌营销策划", tags: ["市场营销", "品牌管理"], date: "05-18", views: "5,670" },
-    { title: "云计算运维工程师", tags: ["信息技术", "云计算"], date: "05-15", views: "6,890" },
-    { title: "健康管理师", tags: ["医药卫生", "健康管理"], date: "05-10", views: "4,560" },
-    { title: "工业机器人操作员", tags: ["智能制造", "自动化"], date: "05-08", views: "5,230" }
-  ];
+  const MY_FAVORITE_JOBS = [];
 
   const RANKING_JOBS = [
     { title: "游戏特效设计师", category: "文化创意", icon: "🎮", fav: "8,500" },
@@ -990,6 +980,16 @@
   // =================== 目标推荐岗位 ===================
   function renderTargetJobs() {
     const container = document.getElementById('targetJobList');
+    if (!TARGET_JOBS.length) {
+      container.innerHTML = `
+        <div class="panel-empty">
+          <i class="fa fa-flag-o"></i>
+          <div class="panel-empty-title">暂无目标推荐岗位</div>
+          <div class="panel-empty-desc">完成能力测评后，系统将为你推荐匹配岗位</div>
+        </div>
+      `;
+      return;
+    }
     container.innerHTML = TARGET_JOBS.map(job => `
       <div class="job-list-item">
         <div class="job-list-top">
@@ -1009,6 +1009,16 @@
   // =================== 我的收藏岗位 ===================
   function renderFavoriteJobList() {
     const container = document.getElementById('favoriteJobList');
+    if (!MY_FAVORITE_JOBS.length) {
+      container.innerHTML = `
+        <div class="panel-empty">
+          <i class="fa fa-heart-o"></i>
+          <div class="panel-empty-title">暂无我的心仪岗位</div>
+          <div class="panel-empty-desc">浏览岗位资源，收藏你感兴趣的岗位</div>
+        </div>
+      `;
+      return;
+    }
     container.innerHTML = MY_FAVORITE_JOBS.map(job => `
       <div class="job-list-item">
         <div class="job-list-top">
