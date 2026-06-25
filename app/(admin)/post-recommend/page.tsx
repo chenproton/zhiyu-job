@@ -142,27 +142,31 @@ export default function PostRecommendPage() {
 
       {/* 专业选择 */}
       <Card>
-        <CardContent className="p-4">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-            <div className="flex items-center gap-2 min-w-[120px]">
+        <CardContent className="p-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
               <GraduationCap className="h-5 w-5 text-muted-foreground" />
               <span className="text-sm font-medium">选择专业</span>
             </div>
-            <Select value={currentMajor} onValueChange={setSelectedMajor}>
-              <SelectTrigger className="w-full sm:w-72">
-                <SelectValue placeholder="请选择专业" />
-              </SelectTrigger>
-              <SelectContent>
-                {majorOptions.map((major) => (
-                  <SelectItem key={major} value={major}>
-                    {major}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <p className="text-sm text-muted-foreground sm:ml-auto">
+            <p className="text-sm text-muted-foreground">
               已配置 {majorRecommendations.length} 个推荐岗位
             </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {majorOptions.map((major) => (
+              <button
+                key={major}
+                onClick={() => setSelectedMajor(major)}
+                className={cn(
+                  "px-4 py-1.5 rounded-lg text-sm font-medium transition-colors",
+                  currentMajor === major
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                )}
+              >
+                {major}
+              </button>
+            ))}
           </div>
         </CardContent>
       </Card>
