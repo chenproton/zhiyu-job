@@ -86,322 +86,374 @@
   }
 
   /* Main */
-  .main { padding: 88px 32px 48px; max-width: 1600px; margin: 0 auto; }
+  .main { padding: 88px 32px 48px; max-width: 1400px; margin: 0 auto; }
 
-  /* Hero: left position map + right search/banner */
-  .hero-split {
-    display: grid;
-    grid-template-columns: 320px 1fr;
-    gap: 20px;
-    margin-bottom: 28px;
-    min-height: 420px;
-  }
-
-  /* Position Map (left) */
-  .position-map {
-    background: #fff;
-    border-radius: 16px;
-    border: 1px solid #e7e5e4;
-    box-shadow: 0 4px 20px rgba(69,26,3,0.06);
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    z-index: 20;
-  }
-  .position-map-header {
-    padding: 16px 18px;
-    border-bottom: 1px solid #f5f5f4;
-    font-size: 16px;
-    font-weight: 700;
-    color: #0f172a;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .position-map-header i { color: #3b82f6; }
-  .position-map-list {
-    flex: 1;
-    overflow-y: auto;
-    padding: 8px 0;
-  }
-  .map-category {
-    position: relative;
-    padding: 12px 18px;
-    cursor: pointer;
-    transition: all 0.2s;
-    border-bottom: 1px solid #fafaf9;
-  }
-  .map-category:hover, .map-category.active {
-    background: #eff6ff;
-  }
-  .map-category.active::before {
-    content: "";
-    position: absolute; left: 0; top: 8px; bottom: 8px;
-    width: 3px; background: #3b82f6; border-radius: 0 3px 3px 0;
-  }
-  .map-cat-main {
+  /* Hero Banner */
+  .hero-banner-new {
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 55%, #7c3aed 100%);
+    border-radius: 20px;
+    padding: 44px 48px;
+    margin-bottom: 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 14px;
-  }
-  .map-cat-name { font-weight: 600; color: #334155; }
-  .map-cat-arrow { color: #a8a29e; font-size: 12px; }
-  .map-cat-preview {
-    font-size: 12px;
-    color: #a8a29e;
-    margin-top: 4px;
-    line-height: 1.4;
+    gap: 40px;
+    position: relative;
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    min-height: 280px;
   }
-
-  /* Right-side expanded panel */
-  .map-detail-panel {
+  .hero-banner-new::before {
+    content: "";
     position: absolute;
-    left: calc(100% + 12px);
-    top: 0;
-    bottom: 0;
-    width: 520px;
-    background: #fff;
-    border-radius: 16px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.12);
-    border: 1px solid #bfdbfe;
-    z-index: 100;
-    padding: 20px;
-    display: none;
-    overflow-y: auto;
-    animation: panelFadeIn 0.2s ease;
+    right: -80px;
+    top: -80px;
+    width: 360px;
+    height: 360px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50%;
   }
-  .map-detail-panel.active { display: block; }
-  @keyframes panelFadeIn {
-    from { opacity: 0; transform: translateX(-8px); }
-    to { opacity: 1; transform: translateX(0); }
+  .hero-banner-new::after {
+    content: "";
+    position: absolute;
+    left: -60px;
+    bottom: -60px;
+    width: 240px;
+    height: 240px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 50%;
   }
-  .panel-header {
-    font-size: 16px; font-weight: 700; color: #0f172a;
-    margin-bottom: 16px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid #f5f5f4;
-    display: flex;
+  .hero-left { flex: 1; position: relative; z-index: 1; }
+  .focus-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.18);
+    backdrop-filter: blur(4px);
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    margin-bottom: 18px;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+  .focus-tag i { color: #fbbf24; font-size: 14px; }
+  .hero-title { font-size: 38px; font-weight: 800; color: #fff; line-height: 1.25; margin-bottom: 12px; }
+  .hero-subtitle { font-size: 15px; color: rgba(255,255,255,0.85); margin-bottom: 26px; }
+  .hero-cta {
+    display: inline-flex;
     align-items: center;
     gap: 8px;
+    background: #fff;
+    color: #2563eb;
+    padding: 11px 24px;
+    border-radius: 24px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.1);
   }
-  .panel-header i { color: #3b82f6; }
-  .panel-group { margin-bottom: 18px; }
-  .panel-group:last-child { margin-bottom: 0; }
-  .panel-group-name {
-    font-size: 13px; font-weight: 600; color: #78350f;
-    margin-bottom: 10px;
-    display: flex; align-items: center; gap: 6px;
+  .hero-cta:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+  .hero-dots { display: flex; gap: 8px; margin-top: 28px; }
+  .hero-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.35); cursor: pointer; transition: all 0.2s; }
+  .hero-dot.active { background: #fff; width: 22px; border-radius: 4px; }
+
+  .hero-info-panel {
+    width: 360px;
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 16px;
+    padding: 22px;
+    position: relative;
+    z-index: 1;
   }
-  .panel-tags { display: flex; flex-wrap: wrap; gap: 10px; }
-  .panel-tag {
-    font-size: 13px; color: #475569;
-    background: #fafaf9; border: 1px solid #e7e5e4;
-    padding: 6px 14px; border-radius: 16px;
-    cursor: pointer; transition: all 0.2s;
+  .hero-info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+    color: #fff;
   }
-  .panel-tag:hover {
-    background: #eff6ff; color: #2563eb; border-color: #bfdbfe;
+  .hero-info-title { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .hero-info-title i { font-size: 14px; color: rgba(255,255,255,0.8); }
+  .hero-info-more { font-size: 12px; color: rgba(255,255,255,0.7); cursor: pointer; }
+  .info-list { display: flex; flex-direction: column; gap: 14px; }
+  .info-item { display: flex; align-items: center; gap: 10px; color: #fff; font-size: 13px; }
+  .info-badge {
+    width: 18px; height: 18px;
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    flex-shrink: 0;
   }
-  .panel-empty {
-    color: #a8a29e; font-size: 13px;
-    padding: 20px 0;
+  .info-badge.hot { background: #ef4444; }
+  .info-badge.new { background: #22c55e; }
+  .info-badge.rec { background: #3b82f6; }
+  .info-text { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .info-date { color: rgba(255,255,255,0.6); font-size: 12px; }
+
+  /* Dashboard */
+  .dashboard {
+    display: grid;
+    grid-template-columns: 340px 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 24px;
   }
 
-  /* Right area */
-  .hero-right {
+  /* Assessment card */
+  .assess-card {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    border-radius: 16px;
+    padding: 24px;
+    color: #fff;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    justify-content: space-between;
+    min-height: 158px;
   }
-  .search-section {
-    background: #fff;
-    border-radius: 16px;
-    padding: 20px 24px;
-    border: 1px solid #e7e5e4;
-  }
-  .search-title {
-    font-size: 22px; font-weight: 800; color: #0f172a;
-    margin-bottom: 14px;
-  }
-  .search-title span { color: #3b82f6; }
-  .search-box-large {
-    display: flex; align-items: center;
-    background: #fafaf9; border: 1px solid #e7e5e4;
-    border-radius: 12px; padding: 6px 6px 6px 16px;
-  }
-  .search-box-large input {
-    flex: 1; border: none; outline: none;
-    background: transparent; font-size: 15px; color: #334155;
-  }
-  .search-box-large input::placeholder { color: #a8a29e; }
-  .search-box-large button {
-    background: linear-gradient(135deg, #3b82f6, #60a5fa);
-    color: #fff; border: none; border-radius: 10px;
-    padding: 10px 24px; font-size: 15px; cursor: pointer;
-    transition: all 0.2s;
-  }
-  .search-box-large button:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(245,158,11,0.3); }
-
-  .hot-keywords {
-    margin-top: 14px;
-    display: flex; align-items: center;
-    gap: 10px; flex-wrap: wrap;
-  }
-  .hot-keywords-label { font-size: 13px; color: #78716c; }
-  .hot-keyword {
-    font-size: 13px; color: #57534e;
-    background: #fff7ed; border: 1px solid #ffedd5;
-    padding: 4px 12px; border-radius: 16px;
-    cursor: pointer; transition: all 0.2s;
-  }
-  .hot-keyword:hover { background: #ffedd5; color: #c2410c; }
-
-  .hero-banner {
-    flex: 1;
-    border-radius: 16px;
-    overflow: hidden;
-    position: relative;
-    min-height: 220px;
-  }
-  .hero-banner img {
-    width: 100%; height: 100%; object-fit: cover;
-    position: absolute; inset: 0;
-  }
-  .hero-banner-overlay {
-    position: absolute; inset: 0;
-    background: linear-gradient(135deg, rgba(69,26,3,0.75) 0%, rgba(146,64,14,0.4) 100%);
-    display: flex; flex-direction: column; justify-content: center;
-    padding: 0 40px; color: #fff;
-  }
-  .hero-banner-title { font-size: 26px; font-weight: 800; margin-bottom: 10px; }
-  .hero-banner-subtitle { font-size: 14px; opacity: 0.9; }
-  .hero-banner-slide {
-    position: absolute; inset: 0;
-    opacity: 0;
-    transition: opacity 0.6s ease;
-    cursor: pointer;
-  }
-  .hero-banner-slide.active { opacity: 1; z-index: 1; }
-  .hero-banner-dots {
-    position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
-    display: flex; gap: 8px; z-index: 2;
-  }
-  .hero-banner-dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: rgba(255,255,255,0.4); cursor: pointer;
-    transition: all 0.2s;
-  }
-  .hero-banner-dot.active { background: rgba(255,255,255,0.95); width: 20px; border-radius: 4px; }
-  .hero-banner-nav {
-    position: absolute; top: 50%; transform: translateY(-50%);
-    width: 36px; height: 36px; border-radius: 50%;
-    background: rgba(255,255,255,0.15); color: #fff;
+  .assess-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .assess-icon {
+    width: 36px; height: 36px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 10px;
     display: flex; align-items: center; justify-content: center;
-    cursor: pointer; z-index: 2; opacity: 0; transition: opacity 0.2s;
-    font-size: 14px;
+    font-size: 18px;
   }
-  .hero-banner:hover .hero-banner-nav { opacity: 1; }
-  .hero-banner-nav:hover { background: rgba(255,255,255,0.3); }
-  .hero-banner-nav.prev { left: 12px; }
-  .hero-banner-nav.next { right: 12px; }
+  .assess-title { font-size: 17px; font-weight: 700; }
+  .assess-desc { font-size: 13px; color: rgba(255,255,255,0.85); line-height: 1.6; margin-bottom: 16px; }
+  .assess-btn {
+    align-self: flex-start;
+    background: #fff;
+    color: #6366f1;
+    border: none;
+    padding: 9px 18px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+  }
+  .assess-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(0,0,0,0.12); }
 
-  /* Stats */
-  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 28px; }
-  .stat-card {
-    background: #fff; border-radius: 16px;
-    padding: 24px; display: flex; align-items: center; justify-content: space-between;
+  /* Stat cards compact */
+  .stat-grid-2x2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-top: 16px;
+  }
+  .stat-card-sm {
+    background: #fff;
+    border-radius: 14px;
+    padding: 16px;
     border: 1px solid #e7e5e4;
+    display: flex;
+    align-items: center;
+    gap: 12px;
     transition: transform 0.2s, box-shadow 0.2s;
   }
-  .stat-card:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(69,26,3,0.08); }
-  .stat-label { font-size: 14px; color: #64748b; margin-bottom: 8px; }
-  .stat-value { font-size: 30px; font-weight: 800; color: #0f172a; }
-  .stat-icon {
-    width: 56px; height: 56px; border-radius: 14px;
+  .stat-card-sm:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(0,0,0,0.05); }
+  .stat-icon-sm {
+    width: 42px; height: 42px; border-radius: 12px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 26px;
+    font-size: 20px;
   }
-  .stat-icon.orange { background: linear-gradient(135deg, #ffedd5, #fed7aa); }
-  .stat-icon.blue { background: linear-gradient(135deg, #dbeafe, #bfdbfe); }
-  .stat-icon.green { background: linear-gradient(135deg, #dcfce7, #bbf7d0); }
-  .stat-icon.red { background: linear-gradient(135deg, #fee2e2, #fecaca); }
+  .stat-icon-sm.orange { background: linear-gradient(135deg, #ffedd5, #fed7aa); }
+  .stat-icon-sm.blue { background: linear-gradient(135deg, #dbeafe, #bfdbfe); }
+  .stat-icon-sm.green { background: linear-gradient(135deg, #dcfce7, #bbf7d0); }
+  .stat-icon-sm.red { background: linear-gradient(135deg, #fee2e2, #fecaca); }
+  .stat-value-sm { font-size: 19px; font-weight: 800; color: #0f172a; }
+  .stat-label-sm { font-size: 12px; color: #64748b; }
 
-  /* Favorite Positions */
-  .favorite-section {
-    background: #fff; border-radius: 16px;
+  /* Recommendation / Favorite list panels */
+  .panel-card {
+    background: #fff;
+    border-radius: 16px;
     border: 1px solid #e7e5e4;
-    padding: 20px 24px;
-    margin-bottom: 28px;
+    padding: 20px;
   }
-  .favorite-header {
-    display: flex; justify-content: space-between; align-items: center;
+  .panel-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 16px;
   }
-  .favorite-title {
-    font-size: 18px; font-weight: 700; color: #0f172a;
-    display: flex; align-items: center; gap: 8px;
+  .panel-title { font-size: 16px; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 8px; }
+  .panel-title i { color: #3b82f6; }
+  .panel-more { font-size: 13px; color: #94a3b8; cursor: pointer; }
+  .job-list { display: flex; flex-direction: column; gap: 12px; }
+  .job-list-item {
+    border: 1px solid #e7e5e4;
+    border-radius: 12px;
+    padding: 14px;
+    transition: all 0.2s;
+    cursor: pointer;
   }
-  .favorite-nav {
-    display: flex; gap: 8px;
+  .job-list-item:hover { border-color: #bfdbfe; background: #f8fafc; }
+  .job-list-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; gap: 8px; }
+  .job-list-title { font-size: 14px; font-weight: 700; color: #0f172a; }
+  .job-list-badge {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-weight: 500;
+    white-space: nowrap;
   }
-  .favorite-arrow {
-    width: 32px; height: 32px; border-radius: 50%;
-    border: 1px solid #e7e5e4; background: #fff;
-    color: #475569; cursor: pointer;
+  .job-list-badge.orange { background: #ffedd5; color: #c2410c; }
+  .job-list-badge.red { background: #fee2e2; color: #dc2626; }
+  .job-list-tags { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+  .job-list-tag {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: #eff6ff;
+    color: #2563eb;
+  }
+  .job-list-progress { display: flex; align-items: center; gap: 10px; }
+  .progress-bar-bg {
+    flex: 1;
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #3b82f6, #60a5fa); border-radius: 3px; }
+  .progress-bar-fill.zero { width: 0 !important; background: #e2e8f0; }
+  .progress-text { font-size: 12px; color: #64748b; min-width: 42px; text-align: right; }
+  .job-list-meta { display: flex; justify-content: space-between; font-size: 12px; color: #94a3b8; margin-top: 8px; }
+
+  /* Ranking section */
+  .ranking-section {
+    background: #fff;
+    border-radius: 16px;
+    border: 1px solid #e7e5e4;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+  }
+  .ranking-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+  }
+  .ranking-title { font-size: 16px; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 8px; }
+  .ranking-title i { color: #f59e0b; }
+  .ranking-nav { display: flex; align-items: center; gap: 10px; }
+  .ranking-page { font-size: 13px; color: #64748b; min-width: 36px; text-align: center; }
+  .ranking-arrow {
+    width: 28px; height: 28px;
+    border: 1px solid #e7e5e4;
+    border-radius: 50%;
+    background: #fff;
+    color: #475569;
+    cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     transition: all 0.2s;
   }
-  .favorite-arrow:hover:not(:disabled) {
-    border-color: #3b82f6; color: #3b82f6;
-  }
-  .favorite-arrow:disabled {
-    opacity: 0.4; cursor: not-allowed;
-  }
-  .favorite-carousel {
+  .ranking-arrow:hover:not(:disabled) { border-color: #3b82f6; color: #3b82f6; }
+  .ranking-arrow:disabled { opacity: 0.4; cursor: not-allowed; }
+  .ranking-carousel { position: relative; overflow: hidden; }
+  .ranking-track { display: flex; gap: 16px; transition: transform 0.35s ease; }
+  .ranking-card {
+    flex: 0 0 calc(20% - 12.8px);
+    min-width: calc(20% - 12.8px);
+    border: 1px solid #e7e5e4;
+    border-radius: 14px;
+    padding: 16px;
     position: relative;
-    overflow: hidden;
+    transition: all 0.2s;
+    cursor: pointer;
   }
-  .favorite-track {
+  .ranking-card:hover { transform: translateY(-3px); box-shadow: 0 12px 24px rgba(0,0,0,0.06); }
+  .rank-badge {
+    position: absolute;
+    top: 12px; right: 12px;
+    width: 24px; height: 24px;
+    border-radius: 6px;
+    background: #e2e8f0;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 700;
     display: flex;
-    gap: 20px;
-    transition: transform 0.35s ease;
+    align-items: center;
+    justify-content: center;
   }
-  .favorite-track .job-card {
-    flex: 0 0 calc(25% - 15px);
-    min-width: calc(25% - 15px);
+  .rank-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin-bottom: 12px;
+    background: #f1f5f9;
   }
-  .favorite-empty {
-    text-align: center; padding: 60px 20px; color: #94a3b8;
-  }
-  .favorite-empty i { font-size: 56px; margin-bottom: 16px; color: #cbd5e1; }
-  .favorite-empty div { font-size: 15px; }
+  .rank-title { font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 8px; }
+  .rank-tag { display: inline-block; font-size: 11px; padding: 3px 8px; border-radius: 4px; background: #eff6ff; color: #2563eb; margin-bottom: 10px; }
+  .rank-favorite { font-size: 12px; color: #ef4444; display: flex; align-items: center; gap: 4px; }
 
-  @media (max-width: 1200px) {
-    .favorite-track .job-card {
-      flex: 0 0 calc(33.333% - 13.333px);
-      min-width: calc(33.333% - 13.333px);
-    }
-  }
-  @media (max-width: 768px) {
-    .favorite-track .job-card {
-      flex: 0 0 calc(50% - 10px);
-      min-width: calc(50% - 10px);
-    }
-  }
-
-  /* Filter */
+  /* Filter / Search */
   .filter-box {
     background: #fff; border-radius: 16px;
-    padding: 20px 24px; margin-bottom: 20px;
+    padding: 24px; margin-bottom: 16px;
     border: 1px solid #e7e5e4;
   }
-  .filter-row { display: flex; align-items: flex-start; gap: 14px; padding: 10px 0; }
-  .filter-row + .filter-row { border-top: 1px dashed #e7e5e4; }
-  .filter-label { font-size: 14px; color: #64748b; font-weight: 500; min-width: 48px; padding-top: 6px; }
+  .filter-title {
+    font-size: 16px; font-weight: 700; color: #0f172a;
+    margin-bottom: 18px;
+    padding-left: 12px;
+    border-left: 4px solid #3b82f6;
+  }
+  .filter-search-row {
+    display: flex; gap: 12px;
+    margin-bottom: 12px;
+  }
+  .filter-search-box {
+    flex: 1;
+    display: flex; align-items: center; gap: 10px;
+    background: #f8fafc;
+    border: 1px solid #e7e5e4;
+    border-radius: 10px;
+    padding: 0 14px;
+  }
+  .filter-search-box i { color: #94a3b8; }
+  .filter-search-box input {
+    flex: 1;
+    border: none; outline: none;
+    background: transparent;
+    padding: 12px 0;
+    font-size: 14px;
+    color: #334155;
+  }
+  .filter-search-box input::placeholder { color: #a8a29e; }
+  .filter-search-btn {
+    background: linear-gradient(135deg, #3b82f6, #60a5fa);
+    color: #fff; border: none; border-radius: 10px;
+    padding: 10px 26px; font-size: 14px; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-search-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(59,130,246,0.25); }
+  .filter-reset-btn {
+    background: #f1f5f9;
+    color: #475569; border: none; border-radius: 10px;
+    padding: 10px 22px; font-size: 14px; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-reset-btn:hover { background: #e2e8f0; }
+  .filter-hint {
+    font-size: 12px; color: #94a3b8;
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .filter-hint span { color: #3b82f6; }
+  .filter-row { display: flex; align-items: flex-start; gap: 14px; padding: 14px 0; border-top: 1px dashed #e7e5e4; }
+  .filter-row:first-of-type { border-top: none; }
+  .filter-label { font-size: 13px; color: #64748b; font-weight: 500; min-width: 52px; padding-top: 7px; }
   .filter-tags-wrap { flex: 1; }
   .filter-tags { display: flex; gap: 10px; flex-wrap: wrap; }
   .tag {
@@ -519,20 +571,28 @@
   .empty-state div { font-size: 15px; }
 
   @media (max-width: 1200px) {
-    .hero-split { grid-template-columns: 260px 1fr; }
-    .map-detail-panel { width: 360px; }
+    .dashboard { grid-template-columns: 1fr; }
+    .hero-banner-new { flex-direction: column; align-items: flex-start; }
+    .hero-info-panel { width: 100%; }
     .card-grid { grid-template-columns: repeat(3, 1fr); }
+    .ranking-card {
+      flex: 0 0 calc(33.333% - 10.666px);
+      min-width: calc(33.333% - 10.666px);
+    }
   }
   @media (max-width: 768px) {
     .header { padding: 0 16px; }
     .header-nav { display: none; }
     .main { padding: 80px 16px 32px; }
-    .hero-split { grid-template-columns: 1fr; min-height: auto; }
-    .position-map { max-height: 320px; }
-    .map-detail-panel { position: static; width: 100%; margin-top: 12px; box-shadow: none; border: 1px solid #e7e5e4; }
-    .stats { grid-template-columns: repeat(2, 1fr); }
+    .hero-banner-new { padding: 28px; }
+    .hero-title { font-size: 26px; }
     .card-grid { grid-template-columns: 1fr; }
+    .ranking-card {
+      flex: 0 0 calc(50% - 8px);
+      min-width: calc(50% - 8px);
+    }
     .toolbar { flex-direction: column; gap: 12px; align-items: flex-start; }
+    .filter-search-row { flex-direction: column; }
     .footer { padding: 0 16px; }
     .footer-inner { flex-direction: column; gap: 4px; height: auto; padding: 8px 0; }
   }
@@ -590,117 +650,163 @@
 
 <div class="main">
 
-  <!-- 顶部左右分栏：岗位图谱 + 搜索/Banner -->
-  <div class="hero-split">
-    <!-- 左侧岗位图谱 -->
-    <div class="position-map">
-      <div class="position-map-header">
-        <i class="fa fa-sitemap"></i> 岗位分类图谱
-      </div>
-      <div class="position-map-list" id="positionMap">
-        <!-- 动态生成 -->
-      </div>
-      <!-- 右侧展开的岗位详情面板 -->
-      <div class="map-detail-panel" id="mapDetailPanel">
-        <!-- 动态生成 -->
+  <!-- 顶部 Banner -->
+  <div class="hero-banner-new">
+    <div class="hero-left">
+      <div class="focus-tag"><i class="fa fa-bullseye"></i> 平台焦点</div>
+      <div class="hero-title">对接产业前沿<br>开启岗位能力学习新征程</div>
+      <div class="hero-subtitle">汇聚千余真实职业岗位，构建从认知到精通的成长路径</div>
+      <button class="hero-cta">立即探索 <i class="fa fa-arrow-right"></i></button>
+      <div class="hero-dots">
+        <span class="hero-dot active"></span>
+        <span class="hero-dot"></span>
+        <span class="hero-dot"></span>
       </div>
     </div>
-
-    <!-- 右侧搜索与 Banner -->
-    <div class="hero-right">
-      <div class="search-section">
-        <div class="search-title">找岗位，就上<span>岗位化教学平台</span></div>
-        <div class="search-box-large">
-          <input type="text" id="heroSearchInput" placeholder="搜索岗位名称、岗位编码或关键词">
-          <button id="heroSearchBtn"><i class="fa fa-search"></i> 搜索岗位</button>
+    <div class="hero-info-panel">
+      <div class="hero-info-header">
+        <div class="hero-info-title"><i class="fa fa-newspaper-o"></i> 岗位前沿信息</div>
+        <div class="hero-info-more">更多 <i class="fa fa-angle-right"></i></div>
+      </div>
+      <div class="info-list">
+        <div class="info-item">
+          <span class="info-badge hot">热</span>
+          <span class="info-text">人工智能训练师岗位能力标准发布</span>
+          <span class="info-date">06-12</span>
         </div>
-        <div class="hot-keywords">
-          <span class="hot-keywords-label">热门搜索：</span>
-          <span class="hot-keyword">前端开发</span>
-          <span class="hot-keyword">数据分析师</span>
-          <span class="hot-keyword">电商运营</span>
-          <span class="hot-keyword">品牌经理</span>
-          <span class="hot-keyword">会计师</span>
-          <span class="hot-keyword">新媒体运营</span>
+        <div class="info-item">
+          <span class="info-badge new">新</span>
+          <span class="info-text">新增“低空经济”相关岗位资源 32 个</span>
+          <span class="info-date">06-10</span>
+        </div>
+        <div class="info-item">
+          <span class="info-badge rec">荐</span>
+          <span class="info-text">数字化转型背景下的复合型岗位解读</span>
+          <span class="info-date">06-08</span>
+        </div>
+        <div class="info-item">
+          <span class="info-badge rec">荐</span>
+          <span class="info-text">2024 智能制造行业人才需求白皮书</span>
+          <span class="info-date">06-05</span>
         </div>
       </div>
-
-      <div class="hero-banner" id="heroBanner">
-        <!-- 动态生成轮播图 -->
-      </div>
     </div>
   </div>
 
-  <!-- 统计卡片 -->
-  <div class="stats" id="statsRow">
-    <div class="stat-card">
-      <div>
-        <div class="stat-label">收录岗位数</div>
-        <div class="stat-value" id="statTotal">0</div>
+  <!-- 能力测评 / 推荐 / 收藏 -->
+  <div class="dashboard">
+    <!-- 左侧 -->
+    <div class="dashboard-left">
+      <div class="assess-card">
+        <div>
+          <div class="assess-header">
+            <div class="assess-icon"><i class="fa fa-crosshairs"></i></div>
+            <div class="assess-title">学前能力基线测评</div>
+          </div>
+          <div class="assess-desc">学习前先测一测，精准定位你的能力起点，量身规划学习路径</div>
+        </div>
+        <button class="assess-btn">开始测评 <i class="fa fa-arrow-right"></i></button>
       </div>
-      <div class="stat-icon orange">📚</div>
-    </div>
-    <div class="stat-card">
-      <div>
-        <div class="stat-label">覆盖专业数</div>
-        <div class="stat-value" id="statPublished">0</div>
+      <div class="stat-grid-2x2">
+        <div class="stat-card-sm">
+          <div class="stat-icon-sm orange">📁</div>
+          <div>
+            <div class="stat-value-sm" id="statTotal">0</div>
+            <div class="stat-label-sm">收录岗位数</div>
+          </div>
+        </div>
+        <div class="stat-card-sm">
+          <div class="stat-icon-sm blue">🎓</div>
+          <div>
+            <div class="stat-value-sm" id="statPublished">0</div>
+            <div class="stat-label-sm">覆盖专业数</div>
+          </div>
+        </div>
+        <div class="stat-card-sm">
+          <div class="stat-icon-sm green">🏭</div>
+          <div>
+            <div class="stat-value-sm" id="statTasks">0</div>
+            <div class="stat-label-sm">涉及行业</div>
+          </div>
+        </div>
+        <div class="stat-card-sm">
+          <div class="stat-icon-sm red">👁</div>
+          <div>
+            <div class="stat-value-sm" id="statPositions">0</div>
+            <div class="stat-label-sm">浏览人次</div>
+          </div>
+        </div>
       </div>
-      <div class="stat-icon blue">🎓</div>
     </div>
-    <div class="stat-card">
-      <div>
-        <div class="stat-label">涉及行业数</div>
-        <div class="stat-value" id="statTasks">0</div>
-      </div>
-      <div class="stat-icon green">🏭</div>
-    </div>
-    <div class="stat-card">
-      <div>
-        <div class="stat-label">浏览人数</div>
-        <div class="stat-value" id="statPositions">0</div>
-      </div>
-      <div class="stat-icon red">👁</div>
-    </div>
-  </div>
 
-  <!-- 心仪岗位 -->
-  <div class="favorite-section" id="favoriteSection">
-    <div class="favorite-header">
-      <div class="favorite-title">
-        <i class="fa fa-heart" style="color: #ef4444;"></i>
-        <span>心仪岗位</span>
+    <!-- 中间：目标推荐岗位 -->
+    <div class="panel-card">
+      <div class="panel-header-row">
+        <div class="panel-title"><i class="fa fa-flag"></i> 目标推荐岗位</div>
+        <div class="panel-more">全部 <i class="fa fa-angle-right"></i></div>
       </div>
-      <div class="favorite-nav">
-        <button class="favorite-arrow" id="favoritePrev" disabled><i class="fa fa-chevron-left"></i></button>
-        <button class="favorite-arrow" id="favoriteNext"><i class="fa fa-chevron-right"></i></button>
-      </div>
-    </div>
-    <div class="favorite-carousel">
-      <div class="favorite-track" id="favoriteTrack">
+      <div class="job-list" id="targetJobList">
         <!-- 动态生成 -->
       </div>
-      <div class="favorite-empty" id="favoriteEmpty" style="display:none;">
-        <i class="fa fa-heart-o"></i>
-        <div>暂无心仪岗位，快去添加吧</div>
+    </div>
+
+    <!-- 右侧：我的收藏岗位 -->
+    <div class="panel-card">
+      <div class="panel-header-row">
+        <div class="panel-title"><i class="fa fa-heart"></i> 我的收藏岗位</div>
+        <div class="panel-more">全部 <i class="fa fa-angle-right"></i></div>
+      </div>
+      <div class="job-list" id="favoriteJobList">
+        <!-- 动态生成 -->
       </div>
     </div>
   </div>
 
-  <!-- 筛选区 -->
+  <!-- 心仪岗位排行榜 -->
+  <div class="ranking-section">
+    <div class="ranking-header">
+      <div class="ranking-title"><i class="fa fa-trophy"></i> 心仪岗位排行榜</div>
+      <div class="ranking-nav">
+        <button class="ranking-arrow" id="rankingPrev"><i class="fa fa-chevron-left"></i></button>
+        <span class="ranking-page" id="rankingPage">1 / 3</span>
+        <button class="ranking-arrow" id="rankingNext"><i class="fa fa-chevron-right"></i></button>
+      </div>
+    </div>
+    <div class="ranking-carousel">
+      <div class="ranking-track" id="rankingTrack">
+        <!-- 动态生成 -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 岗位检索 -->
   <div class="filter-box">
+    <div class="filter-title">岗位检索</div>
+    <div class="filter-search-row">
+      <div class="filter-search-box">
+        <i class="fa fa-search"></i>
+        <input type="text" id="searchInput" placeholder="输入关键词搜索岗位...">
+      </div>
+      <button class="filter-search-btn" id="searchBtn">搜索</button>
+      <button class="filter-reset-btn" id="resetBtn">重置</button>
+    </div>
+    <div class="filter-hint">
+      <i class="fa fa-lightbulb-o" style="color: #f59e0b;"></i>
+      支持模糊搜索：可输入 <span>岗位名称</span> / <span>岗位编码</span> / <span>行业</span> / <span>专业</span> 任意关键词
+    </div>
     <div class="filter-row">
-      <span class="filter-label">行业</span>
+      <span class="filter-label">按行业</span>
       <div class="filter-tags-wrap">
         <div class="filter-tags" id="industryTags">
-          <span class="tag active" data-value="全部">全部</span>
+          <span class="tag active" data-value="全部">不限</span>
         </div>
       </div>
     </div>
     <div class="filter-row">
-      <span class="filter-label">专业</span>
+      <span class="filter-label">按专业</span>
       <div class="filter-tags-wrap">
         <div class="filter-tags" id="professionTags">
-          <span class="tag active" data-value="全部">全部</span>
+          <span class="tag active" data-value="全部">不限</span>
         </div>
       </div>
     </div>
@@ -718,10 +824,6 @@
       <span class="sort-btn" data-sort="recent">最近收录</span>
       <span class="sort-btn" data-sort="update">最近更新</span>
     </div>
-    <div class="search-box" style="display:none;">
-      <input type="text" id="searchInput" placeholder="请输入岗位名称">
-      <span class="count"><span id="searchCount">0</span></span>
-    </div>
   </div>
 
   <div class="result-tip">当前共展示 <b id="resultCount">0</b> 个岗位查看入口</div>
@@ -733,69 +835,11 @@
 
   <div class="empty-state" id="emptyState" style="display:none;">
     <i class="fa fa-search"></i>
-    <div>暂无匹配的岗位，试试调整筛选条件或从左侧岗位图谱选择</div>
+    <div>暂无匹配的岗位，试试调整筛选条件或搜索关键词</div>
   </div>
 </div>
 
 <script>
-  // =================== 岗位分类图谱数据 ===================
-  const POSITION_MAP = [
-    {
-      category: "互联网/IT",
-      icon: "fa-laptop",
-      groups: [
-        { name: "后端开发", positions: ["Java开发", "Python开发", "Go开发", "C++开发", "PHP开发"] },
-        { name: "前端/移动", positions: ["前端开发工程师", "Android开发", "iOS开发", "鸿蒙开发", "小程序开发"] },
-        { name: "测试", positions: ["测试工程师", "自动化测试", "性能测试", "测试开发"] },
-        { name: "数据/AI", positions: ["数据分析师", "数据开发", "算法工程师", "大模型工程师"] },
-        { name: "运维/网络安全", positions: ["运维工程师", "网络工程师", "网络安全工程师", "DevOps工程师"] }
-      ]
-    },
-    {
-      category: "电子商务",
-      icon: "fa-shopping-cart",
-      groups: [
-        { name: "电商运营", positions: ["电商运营专员", "淘宝/天猫运营", "京东运营", "跨境电商运营"] },
-        { name: "新媒体", positions: ["新媒体运营", "内容运营", "直播运营", "短视频运营"] },
-        { name: "产品", positions: ["电商产品经理", "商品运营", "品类运营"] }
-      ]
-    },
-    {
-      category: "金融",
-      icon: "fa-line-chart",
-      groups: [
-        { name: "财务", positions: ["会计师", "出纳", "财务分析师", "成本会计"] },
-        { name: "金融", positions: ["理财顾问", "投资经理", "证券分析师", "风控专员"] },
-        { name: "审计/税务", positions: ["审计师", "税务专员", "税务顾问"] }
-      ]
-    },
-    {
-      category: "服务业",
-      icon: "fa-handshake-o",
-      groups: [
-        { name: "市场", positions: ["品牌经理", "市场营销", "活动策划", "市场推广"] },
-        { name: "销售", positions: ["销售专员", "客户经理", "商务拓展", "渠道销售"] },
-        { name: "人力/行政", positions: ["人力资源专员", "招聘专员", "行政专员", "HRBP"] }
-      ]
-    },
-    {
-      category: "教育",
-      icon: "fa-graduation-cap",
-      groups: [
-        { name: "教学", positions: ["小学教师", "中学教师", "幼儿教师", "培训讲师"] },
-        { name: "教研", positions: ["课程设计师", "教研员", "教学管理"] }
-      ]
-    },
-    {
-      category: "制造/工程",
-      icon: "fa-cogs",
-      groups: [
-        { name: "机械/电气", positions: ["机械工程师", "电气工程师", "自动化工程师", "嵌入式工程师"] },
-        { name: "质量/生产", positions: ["质量工程师", "生产计划", "工艺工程师", "PMC"] }
-      ]
-    }
-  ];
-
   // =================== 岗位数据 ===================
   const JOBS = [
     { id: "job-1", name: "企业级前端项目开发实战", code: "JOB-2026-0001", version: "v2.1", industryName: "互联网/IT", professionName: "信息技术", positionName: "前端开发工程师", batchName: "2026春季前端开发岗位建设", creatorName: "张老师", difficulty: 5, status: "published", publishTime: "2024-03-15 10:30:00", updatedAt: "2024-01-15", tasksCount: 4, totalHours: 44, hot: true, coverImage: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=600&h=400&fit=crop" },
@@ -831,74 +875,35 @@
     "linear-gradient(135deg,#0f766e,#14b8a6)"
   ];
 
-  // =================== 初始化岗位图谱 ===================
-  function initPositionMap() {
-    const container = document.getElementById('positionMap');
-    const panel = document.getElementById('mapDetailPanel');
+  const TARGET_JOBS = [
+    { title: "Web前端开发工程师", badge: "老师推荐", badgeClass: "orange", tags: ["信息技术", "计算机应用", "IT-0102"], progress: 65 },
+    { title: "UI/UX 设计师", badge: "老师推荐", badgeClass: "orange", tags: ["文化创意", "视觉传达", "DS-0205"], progress: 30 },
+    { title: "人工智能训练师", badge: "推荐", badgeClass: "red", tags: ["信息技术", "人工智能", "AI-0301"], progress: 0 }
+  ];
 
-    container.innerHTML = POSITION_MAP.map((cat, idx) => {
-      const preview = cat.groups.slice(0, 2).map(g => g.positions.slice(0, 2).join('、')).join('、');
-      return `
-        <div class="map-category ${idx === 0 ? 'active' : ''}" data-category="${cat.category}" data-index="${idx}">
-          <div class="map-cat-main">
-            <span class="map-cat-name"><i class="fa ${cat.icon}"></i> ${cat.category}</span>
-            <span class="map-cat-arrow"><i class="fa fa-chevron-right"></i></span>
-          </div>
-          <div class="map-cat-preview">${preview}...</div>
-        </div>
-      `;
-    }).join('');
+  const MY_FAVORITE_JOBS = [
+    { title: "大数据分析工程师", tags: ["信息技术", "大数据技术", "DA-0506"], date: "06-06", views: "10,455" },
+    { title: "跨境电商运营专员", tags: ["财经商贸", "电子商务", "EC-0410"], date: "06-07", views: "7,891" },
+    { title: "软件测试工程师", tags: ["信息技术", "软件技术", "SW-0815"], date: "06-03", views: "5,940" }
+  ];
 
-    function showPanel(idx) {
-      const cat = POSITION_MAP[idx];
-      if(!cat) return;
-      panel.innerHTML = `
-        <div class="panel-header"><i class="fa ${cat.icon}"></i> ${cat.category}岗位</div>
-        ${cat.groups.map(g => `
-          <div class="panel-group">
-            <div class="panel-group-name"><i class="fa fa-circle" style="font-size:6px;color:#3b82f6;"></i> ${g.name}</div>
-            <div class="panel-tags">
-              ${g.positions.map(p => `<span class="panel-tag">${p}</span>`).join('')}
-            </div>
-          </div>
-        `).join('')}
-      `;
-      panel.classList.add('active');
-      panel.querySelectorAll('.panel-tag').forEach(tag => {
-        tag.addEventListener('click', () => {
-          window.location.href = "student.html";
-        });
-      });
-    }
-
-    // 默认显示第一个
-    showPanel(0);
-
-  // 点击一级分类：切换右侧面板
-    container.querySelectorAll('.map-category').forEach(item => {
-      item.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const idx = parseInt(item.dataset.index);
-        const isActive = item.classList.contains('active') && panel.classList.contains('active');
-        container.querySelectorAll('.map-category').forEach(c => c.classList.remove('active'));
-        if (isActive) {
-          panel.classList.remove('active');
-        } else {
-          item.classList.add('active');
-          showPanel(idx);
-          panel.classList.add('active');
-        }
-      });
-    });
-
-    // 点击页面其他区域：收起面板
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.position-map')) {
-        panel.classList.remove('active');
-        container.querySelectorAll('.map-category').forEach(c => c.classList.remove('active'));
-      }
-    });
-  }
+  const RANKING_JOBS = [
+    { title: "游戏特效设计师", category: "文化创意", icon: "🎮", fav: "8,500" },
+    { title: "供应链管理专员", category: "财经商贸", icon: "📦", fav: "8,100" },
+    { title: "健康管理师", category: "医药健康", icon: "🏥", fav: "7,800" },
+    { title: "无人机应用技术员", category: "交通运输", icon: "🚁", fav: "7,400" },
+    { title: "数字营养配餐师", category: "现代服务", icon: "🍎", fav: "7,000" },
+    { title: "工业机器人操作员", category: "智能制造", icon: "🤖", fav: "6,800" },
+    { title: "云计算运维工程师", category: "信息技术", icon: "☁️", fav: "6,500" },
+    { title: "跨境电商主播", category: "电子商务", icon: "🎥", fav: "6,200" },
+    { title: "财务数据分析师", category: "财经商贸", icon: "📊", fav: "5,900" },
+    { title: "新能源汽车技师", category: "智能制造", icon: "🚗", fav: "5,600" },
+    { title: "用户体验研究员", category: "文化创意", icon: "🔍", fav: "5,300" },
+    { title: "智慧养老护理员", category: "现代服务", icon: "👴", fav: "5,000" },
+    { title: "网络安全工程师", category: "信息技术", icon: "🔒", fav: "4,800" },
+    { title: "茶艺师", category: "现代服务", icon: "🍵", fav: "4,500" },
+    { title: "无人机测绘员", category: "交通运输", icon: "🗺️", fav: "4,200" }
+  ];
 
   // =================== 初始化统计 ===================
   function initStats() {
@@ -907,9 +912,9 @@
     const industries = new Set(JOBS.map(s => s.industryName).filter(Boolean)).size;
     const views = 1280 + Math.floor(Math.random() * 500);
 
-    animateNumber("statTotal", total);
-    animateNumber("statPublished", professions);
-    animateNumber("statTasks", industries);
+    animateNumber("statTotal", 1286);
+    animateNumber("statPublished", 328);
+    animateNumber("statTasks", 56);
     animateNumber("statPositions", views);
   }
 
@@ -927,6 +932,105 @@
     requestAnimationFrame(update);
   }
 
+  // =================== 目标推荐岗位 ===================
+  function renderTargetJobs() {
+    const container = document.getElementById('targetJobList');
+    container.innerHTML = TARGET_JOBS.map(job => `
+      <div class="job-list-item">
+        <div class="job-list-top">
+          <div class="job-list-title">${job.title}</div>
+          <span class="job-list-badge ${job.badgeClass}">${job.badge}</span>
+        </div>
+        <div class="job-list-tags">
+          ${job.tags.map(t => `<span class="job-list-tag">${t}</span>`).join('')}
+        </div>
+        <div class="job-list-progress">
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill ${job.progress === 0 ? 'zero' : ''}" style="width: ${job.progress}%"></div>
+          </div>
+          <span class="progress-text">${job.progress === 0 ? '未开始' : job.progress + '%'}</span>
+        </div>
+      </div>
+    `).join('');
+    container.querySelectorAll('.job-list-item').forEach(item => {
+      item.addEventListener('click', () => window.location.href = 'student.html');
+    });
+  }
+
+  // =================== 我的收藏岗位 ===================
+  function renderFavoriteJobList() {
+    const container = document.getElementById('favoriteJobList');
+    container.innerHTML = MY_FAVORITE_JOBS.map(job => `
+      <div class="job-list-item">
+        <div class="job-list-top">
+          <div class="job-list-title">${job.title}</div>
+          <span class="job-list-badge red"><i class="fa fa-heart" style="font-size:10px;"></i> 已收藏</span>
+        </div>
+        <div class="job-list-tags">
+          ${job.tags.map(t => `<span class="job-list-tag">${t}</span>`).join('')}
+        </div>
+        <div class="job-list-meta">
+          <span>更新于 ${job.date}</span>
+          <span><i class="fa fa-eye"></i> ${job.views}</span>
+        </div>
+      </div>
+    `).join('');
+    container.querySelectorAll('.job-list-item').forEach(item => {
+      item.addEventListener('click', () => window.location.href = 'student.html');
+    });
+  }
+
+  // =================== 心仪岗位排行榜 ===================
+  let rankingCurrentPage = 0;
+  const RANKING_PER_PAGE = 5;
+
+  function renderRanking() {
+    const track = document.getElementById('rankingTrack');
+    track.innerHTML = RANKING_JOBS.map((job, idx) => `
+      <div class="ranking-card" data-index="${idx}">
+        <div class="rank-badge">${idx + 1}</div>
+        <div class="rank-icon">${job.icon}</div>
+        <div class="rank-title">${job.title}</div>
+        <span class="rank-tag">${job.category}</span>
+        <div class="rank-favorite"><i class="fa fa-heart"></i> ${job.fav} 人心仪</div>
+      </div>
+    `).join('');
+    track.querySelectorAll('.ranking-card').forEach(card => {
+      card.addEventListener('click', () => window.location.href = 'student.html');
+    });
+    updateRankingCarousel();
+  }
+
+  function updateRankingCarousel() {
+    const track = document.getElementById('rankingTrack');
+    const cards = track.querySelectorAll('.ranking-card');
+    const prevBtn = document.getElementById('rankingPrev');
+    const nextBtn = document.getElementById('rankingNext');
+    const pageEl = document.getElementById('rankingPage');
+    if (!cards.length) return;
+
+    const cardWidth = cards[0].offsetWidth + 16;
+    const totalPages = Math.ceil(cards.length / RANKING_PER_PAGE);
+    rankingCurrentPage = Math.max(0, Math.min(rankingCurrentPage, totalPages - 1));
+    track.style.transform = `translateX(-${rankingCurrentPage * cardWidth * RANKING_PER_PAGE}px)`;
+    pageEl.textContent = `${rankingCurrentPage + 1} / ${totalPages}`;
+    prevBtn.disabled = rankingCurrentPage === 0;
+    nextBtn.disabled = rankingCurrentPage >= totalPages - 1;
+  }
+
+  function initRankingCarousel() {
+    const prevBtn = document.getElementById('rankingPrev');
+    const nextBtn = document.getElementById('rankingNext');
+    prevBtn.addEventListener('click', () => {
+      if (rankingCurrentPage > 0) { rankingCurrentPage--; updateRankingCarousel(); }
+    });
+    nextBtn.addEventListener('click', () => {
+      const totalPages = Math.ceil(RANKING_JOBS.length / RANKING_PER_PAGE);
+      if (rankingCurrentPage < totalPages - 1) { rankingCurrentPage++; updateRankingCarousel(); }
+    });
+    window.addEventListener('resize', updateRankingCarousel);
+  }
+
   // =================== 初始化筛选标签 ===================
   function initFilters() {
     const industries = ["全部", ...new Set(JOBS.map(s => s.industryName).filter(Boolean))];
@@ -934,12 +1038,12 @@
 
     const industryContainer = document.getElementById("industryTags");
     industryContainer.innerHTML = industries.map((item, idx) =>
-      `<span class="tag ${idx === 0 ? 'active' : ''}" data-value="${item}">${item}</span>`
+      `<span class="tag ${idx === 0 ? 'active' : ''}" data-value="${item}">${idx === 0 ? '不限' : item}</span>`
     ).join("");
 
     const professionContainer = document.getElementById("professionTags");
     professionContainer.innerHTML = professions.map((item, idx) =>
-      `<span class="tag ${idx === 0 ? 'active' : ''}" data-value="${item}">${item}</span>`
+      `<span class="tag ${idx === 0 ? 'active' : ''}" data-value="${item}">${idx === 0 ? '不限' : item}</span>`
     ).join("");
 
     [industryContainer, professionContainer].forEach(container => {
@@ -967,33 +1071,20 @@
 
   // =================== 搜索 ===================
   const searchInput = document.getElementById("searchInput");
-  const heroSearchInput = document.getElementById("heroSearchInput");
-  const heroSearchBtn = document.getElementById("heroSearchBtn");
+  const searchBtn = document.getElementById("searchBtn");
+  const resetBtn = document.getElementById("resetBtn");
 
-  heroSearchInput.addEventListener("input", () => {
-    searchInput.value = heroSearchInput.value;
+  searchBtn.addEventListener("click", () => {
     renderCards();
+    updateFilterSummary();
   });
-  heroSearchBtn.addEventListener("click", () => {
-    searchInput.value = heroSearchInput.value;
+  searchInput.addEventListener("keydown", e => { if(e.key === 'Enter') searchBtn.click(); });
+  resetBtn.addEventListener("click", () => {
+    searchInput.value = '';
+    document.querySelector('#industryTags .tag[data-value="全部"]')?.click();
+    document.querySelector('#professionTags .tag[data-value="全部"]')?.click();
     renderCards();
-  });
-  heroSearchInput.addEventListener("keydown", e => { if(e.key === 'Enter') heroSearchBtn.click(); });
-  searchInput.addEventListener("input", () => {
-    heroSearchInput.value = searchInput.value;
-    renderCards();
-  });
-
-  // 热门关键词
-  document.querySelectorAll('.hot-keyword').forEach(kw => {
-    kw.addEventListener('click', () => {
-      const text = kw.textContent;
-      searchInput.value = text;
-      heroSearchInput.value = text;
-      renderCards();
-      updateFilterSummary();
-      document.querySelector('.filter-box')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
+    updateFilterSummary();
   });
 
   // =================== 获取当前筛选条件 ===================
@@ -1031,7 +1122,7 @@
         const type = icon.closest('.chip').dataset.type;
         if(type === 'industry') document.querySelector('#industryTags .tag[data-value="全部"]')?.click();
         if(type === 'profession') document.querySelector('#professionTags .tag[data-value="全部"]')?.click();
-        if(type === 'keyword') { searchInput.value = ''; heroSearchInput.value = ''; renderCards(); updateFilterSummary(); }
+        if(type === 'keyword') { searchInput.value = ''; renderCards(); updateFilterSummary(); }
       });
     });
   }
@@ -1040,7 +1131,6 @@
     document.querySelector('#industryTags .tag[data-value="全部"]')?.click();
     document.querySelector('#professionTags .tag[data-value="全部"]')?.click();
     searchInput.value = '';
-    heroSearchInput.value = '';
     renderCards();
     updateFilterSummary();
   });
@@ -1138,230 +1228,14 @@
     });
   }
 
-  // =================== 轮播图展示 ===================
-  let bannerCarouselInterval = null;
-  let bannerCurrentIndex = 0;
-
-  function loadBannersFromStorage() {
-    try {
-      return JSON.parse(localStorage.getItem('zhiyu_banners') || '[]');
-    } catch (e) {
-      return [];
-    }
-  }
-
-  function renderBannerCarousel() {
-    const container = document.getElementById('heroBanner');
-    const banners = loadBannersFromStorage().filter(b => b.status !== 'hidden');
-
-    if (banners.length === 0) {
-      container.innerHTML = `
-        <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&h=400&fit=crop" alt="岗位Banner">
-        <div class="hero-banner-overlay">
-          <div class="hero-banner-title">岗位能力，精准对接</div>
-          <div class="hero-banner-subtitle">海量岗位能力模型，覆盖互联网、金融、电商、服务等热门行业</div>
-        </div>
-      `;
-      return;
-    }
-
-    container.innerHTML = `
-      ${banners.map((banner, idx) => `
-        <div class="hero-banner-slide ${idx === 0 ? 'active' : ''}" data-index="${idx}" data-jump="${banner.jumpPosition || ''}">
-          <img src="${banner.imageData}" alt="${banner.title || 'Banner'}">
-          <div class="hero-banner-overlay">
-            <div class="hero-banner-title">${banner.title || '岗位能力，精准对接'}</div>
-            <div class="hero-banner-subtitle">${banner.description || (banner.boundPosition ? '关联岗位：' + banner.boundPosition : '海量岗位能力模型，覆盖互联网、金融、电商、服务等热门行业')}</div>
-          </div>
-        </div>
-      `).join('')}
-      <div class="hero-banner-nav prev" id="bannerPrev"><i class="fa fa-chevron-left"></i></div>
-      <div class="hero-banner-nav next" id="bannerNext"><i class="fa fa-chevron-right"></i></div>
-      <div class="hero-banner-dots">
-        ${banners.map((_, idx) => `<div class="hero-banner-dot ${idx === 0 ? 'active' : ''}" data-index="${idx}"></div>`).join('')}
-      </div>
-    `;
-
-    bannerCurrentIndex = 0;
-    startBannerCarousel();
-
-    container.querySelectorAll('.hero-banner-slide').forEach(slide => {
-      slide.addEventListener('click', () => {
-        const jump = slide.dataset.jump;
-        if (jump) {
-          window.location.href = 'student.html?positionName=' + encodeURIComponent(jump);
-        }
-      });
-    });
-
-    document.getElementById('bannerPrev').addEventListener('click', (e) => {
-      e.stopPropagation();
-      const count = banners.length;
-      setBannerSlide((bannerCurrentIndex - 1 + count) % count);
-    });
-
-    document.getElementById('bannerNext').addEventListener('click', (e) => {
-      e.stopPropagation();
-      const count = banners.length;
-      setBannerSlide((bannerCurrentIndex + 1) % count);
-    });
-
-    container.querySelectorAll('.hero-banner-dot').forEach(dot => {
-      dot.addEventListener('click', (e) => {
-        e.stopPropagation();
-        setBannerSlide(parseInt(dot.dataset.index));
-      });
-    });
-  }
-
-  function setBannerSlide(index) {
-    const container = document.getElementById('heroBanner');
-    const slides = container.querySelectorAll('.hero-banner-slide');
-    const dots = container.querySelectorAll('.hero-banner-dot');
-    if (!slides.length) return;
-
-    slides.forEach((s, i) => s.classList.toggle('active', i === index));
-    dots.forEach((d, i) => d.classList.toggle('active', i === index));
-    bannerCurrentIndex = index;
-  }
-
-  function startBannerCarousel() {
-    if (bannerCarouselInterval) clearInterval(bannerCarouselInterval);
-    bannerCarouselInterval = setInterval(() => {
-      const banners = loadBannersFromStorage().filter(b => b.status !== 'hidden');
-      if (banners.length <= 1) return;
-      setBannerSlide((bannerCurrentIndex + 1) % banners.length);
-    }, 5000);
-  }
-
-  // =================== 心仪岗位 ===================
-  const FAVORITE_JOBS = [
-    JOBS[0], JOBS[1], JOBS[4], JOBS[8], JOBS[9], JOBS[10]
-  ];
-
-  function renderFavoriteJobs() {
-    const track = document.getElementById('favoriteTrack');
-    const empty = document.getElementById('favoriteEmpty');
-    const prevBtn = document.getElementById('favoritePrev');
-    const nextBtn = document.getElementById('favoriteNext');
-
-    if (!FAVORITE_JOBS.length) {
-      track.innerHTML = '';
-      empty.style.display = 'block';
-      prevBtn.disabled = true;
-      nextBtn.disabled = true;
-      return;
-    }
-
-    empty.style.display = 'none';
-    track.innerHTML = FAVORITE_JOBS.map((s, idx) => {
-      const status = STATUS_MAP[s.status] || STATUS_MAP.draft;
-      const dateStr = s.publishTime ? s.publishTime.split(' ')[0] : s.updatedAt;
-      const displayDate = dateStr || '2024-01-01';
-      const coverStyle = s.coverImage ? `background-image:url('${s.coverImage}')` : `background:${COVER_BACKUPS[idx % COVER_BACKUPS.length]}`;
-      const viewCount = 120 + Math.floor(Math.random() * 880);
-      const relatedScenes = Math.floor(Math.random() * 5) + 1;
-      const hotBadge = s.hot ? `<div class="hot-badge"><i class="fa fa-fire"></i> 热门</div>` : '';
-
-      return `
-        <div class="job-card" data-id="${s.id}">
-          <div class="card-cover" style="${coverStyle}">
-            ${hotBadge}
-            <div class="cover-tags">
-              <span class="cover-tag">${s.version}</span>
-              <span class="cover-tag">${status.label}</span>
-            </div>
-            <div class="card-cover-content">
-              <div class="cover-title">${s.positionName || s.name}</div>
-              <div class="cover-meta">岗位编码：${s.code} · ${displayDate}</div>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="card-title">${s.name}</div>
-            <div class="card-stats">
-              <div class="card-stat">
-                <div class="card-stat-num">${viewCount}</div>
-                <div class="card-stat-label">浏览次数</div>
-              </div>
-              <div class="card-stat">
-                <div class="card-stat-num">${relatedScenes}</div>
-                <div class="card-stat-label">关联场景</div>
-              </div>
-              <div class="card-stat">
-                <div class="card-stat-num">${s.totalHours || '-'}</div>
-                <div class="card-stat-label">课程任务</div>
-              </div>
-            </div>
-            <div class="card-tags">
-              <span class="card-tag orange">${s.industryName || '未指定'}</span>
-              <span class="card-tag blue">${s.professionName || '未分类'}</span>
-              <span class="card-tag green">${s.creatorName}</span>
-            </div>
-          </div>
-        </div>
-      `;
-    }).join('');
-
-    track.querySelectorAll('.job-card').forEach(card => {
-      card.addEventListener('click', () => {
-        window.location.href = 'student.html';
-      });
-    });
-
-    initFavoriteCarousel();
-  }
-
-  let favoriteCurrentIndex = 0;
-
-  function initFavoriteCarousel() {
-    const track = document.getElementById('favoriteTrack');
-    const prevBtn = document.getElementById('favoritePrev');
-    const nextBtn = document.getElementById('favoriteNext');
-    const cards = track.querySelectorAll('.job-card');
-    if (!cards.length) return;
-
-    function getVisibleCount() {
-      if (window.innerWidth <= 768) return 2;
-      if (window.innerWidth <= 1200) return 3;
-      return 4;
-    }
-
-    function updateCarousel() {
-      const cardWidth = cards[0].offsetWidth + 20;
-      const visibleCount = getVisibleCount();
-      const maxIndex = Math.max(0, cards.length - visibleCount);
-      favoriteCurrentIndex = Math.min(favoriteCurrentIndex, maxIndex);
-      track.style.transform = `translateX(-${favoriteCurrentIndex * cardWidth}px)`;
-      prevBtn.disabled = favoriteCurrentIndex === 0;
-      nextBtn.disabled = favoriteCurrentIndex >= maxIndex;
-    }
-
-    prevBtn.onclick = () => {
-      if (favoriteCurrentIndex > 0) {
-        favoriteCurrentIndex--;
-        updateCarousel();
-      }
-    };
-
-    nextBtn.onclick = () => {
-      const maxIndex = Math.max(0, cards.length - getVisibleCount());
-      if (favoriteCurrentIndex < maxIndex) {
-        favoriteCurrentIndex++;
-        updateCarousel();
-      }
-    };
-
-    window.addEventListener('resize', updateCarousel);
-    updateCarousel();
-  }
-
   // =================== 初始化 ===================
-  initPositionMap();
   initStats();
-  renderFavoriteJobs();
+  renderTargetJobs();
+  renderFavoriteJobList();
+  renderRanking();
+  initRankingCarousel();
   initFilters();
   renderCards();
-  renderBannerCarousel();
   updateFilterSummary();
 
   // 更新日期时间
