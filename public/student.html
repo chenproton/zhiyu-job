@@ -126,8 +126,8 @@
         .job-title { font-size: 24px; font-weight: 700; color: #0f172a; }
         .job-salary {
             position: absolute; top: 0; right: 0;
-            font-size: 100px; font-weight: 700;
-            color: var(--error-color);
+            font-size: 40px; font-weight: 700;
+            color: var(--primary-color);
             line-height: 1;
         }
         .job-version { padding: 2px 8px; background: var(--primary-bg); color: var(--primary-color); border-radius: var(--radius-sm); font-size: 12px; }
@@ -142,7 +142,8 @@
         .job-co-builders { display: flex; align-items: center; flex-wrap: nowrap; gap: 10px; margin-bottom: 12px; }
         .co-builder-tag { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; background: #fafafa; border: 1px solid #e7e5e4; border-radius: 20px; font-size: 13px; color: var(--text-primary); }
 
-        .job-meta { display: flex; flex-wrap: wrap; gap: 24px; margin-bottom: 12px; }
+        .job-meta { display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
+        .job-meta-row { display: flex; flex-wrap: wrap; gap: 24px; }
         .meta-item { display: flex; align-items: center; gap: 8px; color: var(--text-secondary); font-size: 14px; }
         .meta-item i { color: var(--text-tertiary); }
         .salary { color: var(--error-color); font-weight: 600; font-size: 16px; }
@@ -603,10 +604,14 @@
                     </div>
 
                     <div class="job-meta">
-                        <div class="meta-item"><i class="fas fa-user"></i><span>创建人：杭州知与未来科技有限公司</span></div>
-                        <div class="meta-item"><i class="fas fa-users"></i><span>共建人：知与未来</span></div>
-                        <div class="meta-item"><i class="fas fa-calendar"></i><span>创建时间：2024-12-20</span></div>
-                        <div class="meta-item"><i class="fas fa-edit"></i><span>更新时间：2025-01-10</span></div>
+                        <div class="job-meta-row">
+                            <div class="meta-item"><i class="fas fa-user"></i><span>创建人：杭州知与未来科技有限公司</span></div>
+                            <div class="meta-item"><i class="fas fa-users"></i><span>共建人：知与未来</span></div>
+                        </div>
+                        <div class="job-meta-row">
+                            <div class="meta-item"><i class="fas fa-calendar"></i><span>创建时间：2024-12-20</span></div>
+                            <div class="meta-item"><i class="fas fa-edit"></i><span>更新时间：2025-01-10</span></div>
+                        </div>
                     </div>
                     <div class="job-actions">
                         <button class="btn primary lg" onclick="window.location.href='/learning-route'">
