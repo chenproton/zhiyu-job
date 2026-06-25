@@ -34,6 +34,7 @@ import {
 import { StatusBadge } from '@/components/shared/status-badge'
 import { cn } from '@/lib/utils'
 import { useData } from '@/lib/stores/data-context'
+import { getUserById } from '@/lib/mock-data'
 import type { Position, PositionStatus } from '@/lib/types'
 
 interface Task {
@@ -318,6 +319,10 @@ export default function LearnRoadsPage() {
               <TableRow>
                 <TableHead>岗位名称</TableHead>
                 <TableHead>所属批次</TableHead>
+                <TableHead>所属行业</TableHead>
+                <TableHead>所属专业</TableHead>
+                <TableHead>创建人</TableHead>
+                <TableHead>共建人</TableHead>
                 <TableHead>状态</TableHead>
                 <TableHead>场景数</TableHead>
                 <TableHead>任务数</TableHead>
@@ -327,7 +332,7 @@ export default function LearnRoadsPage() {
             <TableBody>
               {filteredPositions.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="h-32 text-center">
+                  <TableCell colSpan={10} className="h-32 text-center">
                     <div className="flex flex-col items-center justify-center text-muted-foreground">
                       <FolderOpen className="h-10 w-10 mb-2" />
                       <p>暂无岗位数据</p>
@@ -338,6 +343,11 @@ export default function LearnRoadsPage() {
                 filteredPositions.map((position) => {
                   const batch = batches.find((b) => b.id === position.batchId)
                   const { sceneCount, taskCount } = countScenesAndTasks(position.id)
+                  const creator = getUserById(position.createdBy)
+                  const collaborators = position.collaborators
+                    .map((id) => getUserById(id)?.name)
+                    .filter(Boolean)
+                    .join('，')
 
                   return (
                     <TableRow key={position.id} className="group">
@@ -346,6 +356,12 @@ export default function LearnRoadsPage() {
                         <p className="text-xs text-muted-foreground mt-0.5">{position.shortName}</p>
                       </TableCell>
                       <TableCell>{batch ? batch.name : '-'}</TableCell>
+                      <TableCell>{position.industry || '-'}</TableCell>
+                      <TableCell>
+                        {position.majors.length > 0 ? position.majors.join('，') : '-'}
+                      </TableCell>
+                      <TableCell>{creator?.name || '-'}</TableCell>
+                      <TableCell>{collaborators || '-'}</TableCell>
                       <TableCell>
                         <StatusBadge status={position.status} type="position" />
                       </TableCell>
