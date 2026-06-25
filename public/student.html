@@ -120,13 +120,20 @@
         .job-header { display: flex; gap: 24px; }
         .job-cover { width: 280px; min-height: 180px; border-radius: var(--radius-md); background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; overflow: hidden; align-self: stretch; }
         .job-cover-text { color: white; font-size: 48px; font-weight: bold; opacity: 0.25; }
+        .job-cover-version {
+            position: absolute; top: 12px; left: 12px;
+            background: rgba(255,255,255,0.25);
+            color: white; padding: 4px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 14px; font-weight: 600;
+            backdrop-filter: blur(4px);
+        }
         .job-code { position: absolute; bottom: 12px; right: 12px; background: rgba(0,0,0,0.4); color: white; padding: 4px 12px; border-radius: var(--radius-sm); font-size: 12px; }
         .job-info { flex: 1; position: relative; }
         .job-title-row { display: flex; align-items: center; gap: 16px; margin-bottom: 10px; }
         .job-title { font-size: 24px; font-weight: 700; color: #0f172a; }
         .job-salary {
-            position: absolute; top: 0; right: 0;
-            font-size: 40px; font-weight: 700;
+            font-size: 24px; font-weight: 700;
             color: var(--primary-color);
             line-height: 1;
         }
@@ -586,21 +593,21 @@
         <div class="page-header-card fade-in">
             <div class="job-header">
                 <div class="job-cover">
+                    <span class="job-cover-version">V1.2</span>
                     <span class="job-cover-text">前端</span>
                     <span class="job-code">JOB-2024-001</span>
                 </div>
                 <div class="job-info">
                     <div class="job-title-row">
                         <h1 class="job-title">前端开发工程师</h1>
-                        <span class="job-version">V1.2</span>
+                        <span class="job-salary">8K-15K</span>
                     </div>
                     <p class="job-alias">别名：Web前端工程师、H5开发工程师</p>
-                    <div class="job-salary">8K-15K</div>
 
                     <div class="job-tags">
-                        <span class="tag industry"><i class="fas fa-industry"></i> 信息技术</span>
-                        <span class="tag major"><i class="fas fa-graduation-cap"></i> 软件技术</span>
-                        <span class="tag major"><i class="fas fa-graduation-cap"></i> 计算机应用</span>
+                        <span class="tag industry"><i class="fas fa-industry"></i> 面向行业：信息技术</span>
+                        <span class="tag major"><i class="fas fa-graduation-cap"></i> 适用专业：软件技术</span>
+                        <span class="tag major"><i class="fas fa-graduation-cap"></i> 适用专业：计算机应用</span>
                     </div>
 
                     <div class="job-meta">
