@@ -2,18 +2,14 @@
 
 import { useEffect, useMemo, useState } from "react"
 import {
-  Building2,
-  Calendar,
-  GraduationCap,
   Heart,
-  MapPin,
   Search,
   Trash2,
   TrendingUp,
   Trophy,
   Medal,
+  Fire,
 } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -151,6 +147,26 @@ function formatDate(dateStr: string) {
   ).padStart(2, "0")}`
 }
 
+function hashFromId(id: string) {
+  let h = 0
+  for (let i = 0; i < id.length; i++) {
+    h = (h << 5) - h + id.charCodeAt(i)
+    h |= 0
+  }
+  return Math.abs(h)
+}
+
+function getCardStats(job: HeartJob) {
+  const h = hashFromId(job.id)
+  return {
+    viewCount: 120 + (h % 880),
+    relatedScenes: 1 + (h % 6),
+    totalHours: 1 + (h % 8),
+    version: `v${(1 + (h % 30) / 10).toFixed(1)}`,
+    creator: ["张老师", "李老师", "王老师", "陈老师"][h % 4],
+  }
+}
+
 export default function HeartJobsPage() {
   const [jobs, setJobs] = useState<HeartJob[]>([])
   const [mounted, setMounted] = useState(false)
@@ -204,7 +220,8 @@ export default function HeartJobsPage() {
       .slice(0, 5)
   }, [jobs])
 
-  const handleToggleFavorite = (job: HeartJob) => {
+  const handleToggleFavorite = (job: HeartJob, e: React.MouseEvent) => {
+    e.stopPropagation()
     const list = loadHeartJobs().map((j) =>
       j.id === job.id ? { ...j, isFavorite: !j.isFavorite } : j
     )
@@ -212,7 +229,8 @@ export default function HeartJobsPage() {
     setJobs(list)
   }
 
-  const handleRemove = (id: string) => {
+  const handleRemove = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation()
     const list = loadHeartJobs().filter((j) => j.id !== id)
     saveHeartJobs(list)
     setJobs(list)
@@ -293,93 +311,113 @@ export default function HeartJobsPage() {
             </Card>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {filteredJobs.map((job, idx) => (
-                <Card
-                  key={job.id}
-                  className="group overflow-hidden cursor-pointer transition-all hover:shadow-lg hover:-translate-y-1"
-                  onClick={handleCardClick}
-                >
+              {filteredJobs.map((job, idx) => {
+                const stats = getCardStats(job)
+                const coverStyle = job.coverImage
+                  ? { backgroundImage: `url(${job.coverImage})` }
+                  : { background: COVER_BACKUPS[idx % COVER_BACKUPS.length] }
+
+                return (
                   <div
-                    className="h-36 relative p-4 flex flex-col justify-end text-white"
-                    style={{
-                      background: job.coverImage || COVER_BACKUPS[idx % COVER_BACKUPS.length],
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                    }}
+                    key={job.id}
+                    className="group bg-white rounded-2xl overflow-hidden border border-[#e7e5e4] cursor-pointer transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_20px_40px_rgba(69,26,3,0.1)]"
+                    onClick={handleCardClick}
                   >
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-                    <div className="relative z-10">
-                      <div className="flex items-start justify-between">
-                        <h3 className="font-bold text-lg leading-tight">{job.name}</h3>
+                    <div
+                      className="h-[160px] relative p-4 flex flex-col justify-end text-white bg-cover bg-center"
+                      style={coverStyle}
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-t from-[rgba(69,26,3,0.85)] via-[rgba(69,26,3,0.2)] to-transparent" />
+
+                      <div className="absolute top-3 left-3 right-3 flex justify-between z-10">
+                        <div className="flex gap-1.5">
+                          <span className="bg-black/40 backdrop-blur-sm text-white text-[11px] px-2.5 py-1 rounded-md">
+                            {stats.version}
+                          </span>
+                          <span className="bg-black/40 backdrop-blur-sm text-white text-[11px] px-2.5 py-1 rounded-md">
+                            {formatDate(job.addedAt)} 收录
+                          </span>
+                        </div>
+                        <span className="bg-black/40 backdrop-blur-sm text-white text-[11px] px-2.5 py-1 rounded-md">
+                          已发布
+                        </span>
+                      </div>
+
+                      <div className="absolute top-3 right-3 z-20">
                         <button
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            handleToggleFavorite(job)
-                          }}
+                          onClick={(e) => handleToggleFavorite(job, e)}
                           className={cn(
-                            "p-1.5 rounded-full transition-colors",
+                            "flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-md transition-colors",
                             job.isFavorite
-                              ? "text-red-400 hover:text-red-300"
-                              : "text-white/60 hover:text-white"
+                              ? "bg-gradient-to-br from-red-500 to-red-400 text-white"
+                              : "bg-black/40 backdrop-blur-sm text-white hover:bg-black/50"
                           )}
                           title={job.isFavorite ? "取消收藏" : "收藏"}
                         >
-                          <Heart
-                            className="h-5 w-5"
-                            fill={job.isFavorite ? "currentColor" : "none"}
-                          />
+                          <Fire className="h-3 w-3" />
+                          {job.isFavorite ? "热门" : "收藏"}
                         </button>
                       </div>
-                      <p className="text-xs text-white/80 mt-1">{job.code}</p>
+
+                      <div className="relative z-10">
+                        <div className="text-lg font-bold leading-snug mb-1.5">{job.name}</div>
+                        <div className="text-xs text-white/90">
+                          岗位编码：{job.code} · {formatDate(job.addedAt)}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="p-5">
+                      <div className="grid grid-cols-3 gap-2 mb-5">
+                        <div className="text-center">
+                          <div className="text-[26px] font-extrabold text-[#0f172a] leading-none">{stats.viewCount}</div>
+                          <div className="text-sm text-[#94a3b8] mt-1">浏览次数</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-[26px] font-extrabold text-[#0f172a] leading-none">{stats.relatedScenes}</div>
+                          <div className="text-sm text-[#94a3b8] mt-1">关联场景</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-[26px] font-extrabold text-[#0f172a] leading-none">{stats.totalHours}</div>
+                          <div className="text-sm text-[#94a3b8] mt-1">场景任务</div>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        <span className="text-sm px-3 py-1 rounded-full bg-[#ffedd5] text-[#c2410c]">
+                          面向行业：{job.industry}
+                        </span>
+                        <span className="text-sm px-3 py-1 rounded-full bg-[#dbeafe] text-[#1d4ed8]">
+                          适用专业：{job.major}
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-x-8 gap-y-2 mb-4">
+                        <span className="text-sm text-[#64748b]">创建人：{stats.creator}</span>
+                        <span className="text-sm text-[#64748b]">共建人：{job.location || "知与未来"}</span>
+                        <span className="text-sm text-[#64748b]">浏览量：{stats.viewCount}</span>
+                        <span className="text-sm text-[#64748b]">更新时间：{formatDate(job.addedAt)}</span>
+                      </div>
+
+                      <div className="flex items-center justify-between pt-3 border-t border-[#f1f5f9]">
+                        <div className="flex items-center gap-1.5 text-red-600 font-bold text-base">
+                          <TrendingUp className="h-5 w-5" />
+                          {job.salary}
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 px-2 text-sm text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={(e) => handleRemove(job.id, e)}
+                        >
+                          <Trash2 className="mr-1.5 h-4 w-4" />
+                          移除
+                        </Button>
+                      </div>
                     </div>
                   </div>
-
-                  <CardContent className="p-4 space-y-3">
-                    <div className="flex flex-wrap gap-2">
-                      <Badge variant="secondary" className="bg-orange-50 text-orange-600 text-sm px-2.5 py-0.5">
-                        <Building2 className="mr-1.5 h-4 w-4" />
-                        {job.industry}
-                      </Badge>
-                      <Badge variant="secondary" className="bg-blue-50 text-blue-600 text-sm px-2.5 py-0.5">
-                        <GraduationCap className="mr-1.5 h-4 w-4" />
-                        {job.major}
-                      </Badge>
-                    </div>
-
-                    <p className="text-base text-slate-600 line-clamp-2 leading-relaxed">{job.description}</p>
-
-                    <div className="flex items-center gap-3 text-sm text-slate-500">
-                      <span className="flex items-center gap-1.5">
-                        <MapPin className="h-4 w-4" />
-                        {job.location || '-'}
-                      </span>
-                      <span className="flex items-center gap-1.5">
-                        <Calendar className="h-4 w-4" />
-                        {formatDate(job.addedAt)}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center justify-between pt-2 border-t border-slate-100">
-                      <div className="flex items-center gap-1.5 text-red-600 font-bold text-base">
-                        <TrendingUp className="h-5 w-5" />
-                        {job.salary}
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 px-2 text-sm text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handleRemove(job.id)
-                        }}
-                      >
-                        <Trash2 className="mr-1.5 h-4 w-4" />
-                        移除
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                )
+              })}
             </div>
           )}
         </div>
