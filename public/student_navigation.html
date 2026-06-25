@@ -618,6 +618,14 @@
   .card-tag.orange { background: #ffedd5; color: #c2410c; }
   .card-tag.blue { background: #dbeafe; color: #1d4ed8; }
   .card-tag.green { background: #dcfce7; color: #15803d; }
+  .card-meta-text {
+    font-size: 12px;
+    color: #64748b;
+    padding: 4px 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
 
   .empty-state {
     text-align: center; padding: 80px 20px; color: #94a3b8;
@@ -1302,8 +1310,8 @@
             <div class="card-tags">
               <span class="card-tag orange">面向行业：${s.industryName || "未指定"}</span>
               <span class="card-tag blue">适用专业：${s.professionName || "未分类"}</span>
-              <span class="card-tag">创建人：${s.creatorName}</span>
-              <span class="card-tag">共建人：${s.coBuilders || "知与未来"}</span>
+              <span class="card-meta-text">创建人：${s.creatorName}</span>
+              <span class="card-meta-text">共建人：${s.coBuilders || "知与未来"}</span>
             </div>
           </div>
         </div>
