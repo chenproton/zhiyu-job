@@ -86,21 +86,29 @@
   }
 
   /* Main */
-  .main { padding: 88px 32px 48px; max-width: 1400px; margin: 0 auto; }
+  .main { padding: 24px 32px 48px; max-width: 1400px; margin: 0 auto; }
 
   /* Hero Banner */
   .hero-banner-new {
     background: linear-gradient(135deg, #1e40af 0%, #3b82f6 55%, #7c3aed 100%);
-    border-radius: 20px;
-    padding: 44px 48px;
+    width: 100%;
+    margin-top: 64px;
     margin-bottom: 24px;
+    padding: 44px 0;
+    position: relative;
+    overflow: hidden;
+    min-height: 280px;
+  }
+  .hero-banner-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 32px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 40px;
     position: relative;
-    overflow: hidden;
-    min-height: 280px;
+    z-index: 1;
   }
   .hero-banner-new::before {
     content: "";
@@ -572,7 +580,7 @@
 
   @media (max-width: 1200px) {
     .dashboard { grid-template-columns: 1fr; }
-    .hero-banner-new { flex-direction: column; align-items: flex-start; }
+    .hero-banner-inner { flex-direction: column; align-items: flex-start; }
     .hero-info-panel { width: 100%; }
     .card-grid { grid-template-columns: repeat(3, 1fr); }
     .ranking-card {
@@ -583,8 +591,9 @@
   @media (max-width: 768px) {
     .header { padding: 0 16px; }
     .header-nav { display: none; }
-    .main { padding: 80px 16px 32px; }
-    .hero-banner-new { padding: 28px; }
+    .main { padding: 20px 16px 32px; }
+    .hero-banner-new { padding: 28px 0; }
+    .hero-banner-inner { padding: 0 16px; }
     .hero-title { font-size: 26px; }
     .card-grid { grid-template-columns: 1fr; }
     .ranking-card {
@@ -648,10 +657,9 @@
   </div>
 </div>
 
-<div class="main">
-
-  <!-- 顶部 Banner -->
-  <div class="hero-banner-new">
+<!-- 顶部 Banner -->
+<div class="hero-banner-new">
+  <div class="hero-banner-inner">
     <div class="hero-left">
       <div class="focus-tag"><i class="fa fa-bullseye"></i> 平台焦点</div>
       <div class="hero-title">对接产业前沿<br>开启岗位能力学习新征程</div>
@@ -692,6 +700,9 @@
       </div>
     </div>
   </div>
+</div>
+
+<div class="main">
 
   <!-- 能力测评 / 推荐 / 收藏 -->
   <div class="dashboard">
