@@ -365,6 +365,95 @@
   .rank-tag { display: inline-block; font-size: 11px; padding: 3px 8px; border-radius: 4px; background: #eff6ff; color: #2563eb; }
   .rank-favorite { font-size: 11px; color: #ef4444; display: flex; align-items: center; gap: 4px; }
 
+  /* Filter / Search */
+  .filter-box {
+    background: #fff; border-radius: 16px;
+    padding: 24px; margin-bottom: 16px;
+    border: 1px solid #e7e5e4;
+  }
+  .filter-title {
+    font-size: 16px; font-weight: 700; color: #0f172a;
+    margin-bottom: 18px;
+    padding-left: 12px;
+    border-left: 4px solid #3b82f6;
+  }
+  .filter-search-row {
+    display: flex; gap: 12px;
+    margin-bottom: 12px;
+  }
+  .filter-search-box {
+    flex: 1;
+    display: flex; align-items: center; gap: 10px;
+    background: #f8fafc;
+    border: 1px solid #e7e5e4;
+    border-radius: 10px;
+    padding: 0 14px;
+  }
+  .filter-search-box i { color: #94a3b8; }
+  .filter-search-box input {
+    flex: 1;
+    border: none; outline: none;
+    background: transparent;
+    padding: 12px 0;
+    font-size: 14px;
+    color: #334155;
+  }
+  .filter-search-box input::placeholder { color: #a8a29e; }
+  .filter-search-btn {
+    background: linear-gradient(135deg, #3b82f6, #60a5fa);
+    color: #fff; border: none; border-radius: 10px;
+    padding: 10px 26px; font-size: 14px; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-search-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(59,130,246,0.25); }
+  .filter-reset-btn {
+    background: #f1f5f9;
+    color: #475569; border: none; border-radius: 10px;
+    padding: 10px 22px; font-size: 14px; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-reset-btn:hover { background: #e2e8f0; }
+  .filter-hint {
+    font-size: 12px; color: #94a3b8;
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-hint span { color: #3b82f6; }
+  .hot-keyword {
+    font-size: 12px; color: #3b82f6;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  .hot-keyword:hover { color: #2563eb; text-decoration: underline; }
+  .filter-row { display: flex; align-items: flex-start; gap: 14px; padding: 14px 0; border-top: 1px dashed #e7e5e4; }
+  .filter-row:first-of-type { border-top: none; }
+  .filter-label { font-size: 13px; color: #64748b; font-weight: 500; min-width: 52px; padding-top: 7px; }
+  .filter-tags-wrap { flex: 1; }
+  .filter-tags { display: flex; gap: 10px; flex-wrap: wrap; }
+  .tag {
+    padding: 6px 14px; border-radius: 20px;
+    font-size: 13px; color: #475569; cursor: pointer;
+    background: #fafaf9; border: 1px solid #e7e5e4;
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .tag:hover { background: #eff6ff; color: #2563eb; border-color: #bfdbfe; }
+  .tag.active { background: linear-gradient(135deg, #3b82f6, #60a5fa); color: #fff; border-color: transparent; }
+  .filter-summary {
+    display: flex; align-items: center; gap: 12px;
+    padding-top: 14px; margin-top: 10px;
+    border-top: 1px dashed #e7e5e4;
+    font-size: 13px; color: #64748b;
+  }
+  .filter-summary .chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: #eff6ff; color: #2563eb;
+    padding: 4px 10px; border-radius: 12px;
+  }
+  .filter-summary .chip i { cursor: pointer; font-size: 11px; }
+  .clear-btn { color: #2563eb; cursor: pointer; font-size: 13px; }
+  .clear-btn:hover { text-decoration: underline; }
+
   /* Toolbar */
   .toolbar {
     display: flex; justify-content: space-between; align-items: center;
@@ -479,6 +568,7 @@
       min-width: calc(50% - 8px);
     }
     .toolbar { flex-direction: column; gap: 12px; align-items: flex-start; }
+    .filter-search-row { flex-direction: column; }
     .footer { padding: 0 16px; }
     .footer-inner { flex-direction: column; gap: 4px; height: auto; padding: 8px 0; }
   }
@@ -664,6 +754,49 @@
     </div>
   </div>
 
+  <!-- 岗位检索 -->
+  <div class="filter-box">
+    <div class="filter-title">岗位检索</div>
+    <div class="filter-search-row">
+      <div class="filter-search-box">
+        <i class="fa fa-search"></i>
+        <input type="text" id="searchInput" placeholder="搜索岗位名称、岗位编码或关键词">
+      </div>
+      <button class="filter-search-btn" id="searchBtn">搜索</button>
+      <button class="filter-reset-btn" id="resetBtn">重置</button>
+    </div>
+    <div class="filter-hint">
+      <span>热门搜索：</span>
+      <span class="hot-keyword">前端开发</span>
+      <span class="hot-keyword">数据分析师</span>
+      <span class="hot-keyword">电商运营</span>
+      <span class="hot-keyword">品牌经理</span>
+      <span class="hot-keyword">会计师</span>
+      <span class="hot-keyword">新媒体运营</span>
+    </div>
+    <div class="filter-row">
+      <span class="filter-label">按行业</span>
+      <div class="filter-tags-wrap">
+        <div class="filter-tags" id="industryTags">
+          <span class="tag active" data-value="全部">不限</span>
+        </div>
+      </div>
+    </div>
+    <div class="filter-row">
+      <span class="filter-label">按专业</span>
+      <div class="filter-tags-wrap">
+        <div class="filter-tags" id="professionTags">
+          <span class="tag active" data-value="全部">不限</span>
+        </div>
+      </div>
+    </div>
+    <div class="filter-summary" id="filterSummary" style="display:none;">
+      <span>已选条件：</span>
+      <span id="activeFilters"></span>
+      <span class="clear-btn" id="clearFilters"><i class="fa fa-trash-o"></i> 清空筛选</span>
+    </div>
+  </div>
+
   <!-- 排序+结果提示 -->
   <div class="toolbar">
     <div class="sort-group">
@@ -682,7 +815,7 @@
 
   <div class="empty-state" id="emptyState" style="display:none;">
     <i class="fa fa-search"></i>
-    <div>暂无岗位数据</div>
+    <div>暂无匹配的岗位，试试调整筛选条件或搜索关键词</div>
   </div>
 </div>
 
@@ -881,6 +1014,33 @@
     window.addEventListener('resize', updateRankingCarousel);
   }
 
+  // =================== 初始化筛选标签 ===================
+  function initFilters() {
+    const industries = ["全部", ...new Set(JOBS.map(s => s.industryName).filter(Boolean))];
+    const professions = ["全部", ...new Set(JOBS.map(s => s.professionName).filter(Boolean))];
+
+    const industryContainer = document.getElementById("industryTags");
+    industryContainer.innerHTML = industries.map((item, idx) =>
+      `<span class="tag ${idx === 0 ? 'active' : ''}" data-value="${item}">${idx === 0 ? '不限' : item}</span>`
+    ).join("");
+
+    const professionContainer = document.getElementById("professionTags");
+    professionContainer.innerHTML = professions.map((item, idx) =>
+      `<span class="tag ${idx === 0 ? 'active' : ''}" data-value="${item}">${idx === 0 ? '不限' : item}</span>`
+    ).join("");
+
+    [industryContainer, professionContainer].forEach(container => {
+      container.addEventListener("click", e => {
+        if (e.target.classList.contains("tag")) {
+          container.querySelectorAll(".tag").forEach(t => t.classList.remove("active"));
+          e.target.classList.add("active");
+          renderCards();
+          updateFilterSummary();
+        }
+      });
+    });
+  }
+
   // =================== 排序 ===================
   let currentSort = "default";
   document.querySelectorAll(".sort-btn").forEach(btn => {
@@ -892,14 +1052,80 @@
     });
   });
 
+  // =================== 搜索 ===================
+  const searchInput = document.getElementById("searchInput");
+  const searchBtn = document.getElementById("searchBtn");
+  const resetBtn = document.getElementById("resetBtn");
+
+  searchBtn.addEventListener("click", () => {
+    renderCards();
+    updateFilterSummary();
+  });
+  searchInput.addEventListener("keydown", e => { if(e.key === 'Enter') searchBtn.click(); });
+  resetBtn.addEventListener("click", () => {
+    searchInput.value = '';
+    document.querySelector('#industryTags .tag[data-value="全部"]')?.click();
+    document.querySelector('#professionTags .tag[data-value="全部"]')?.click();
+    renderCards();
+    updateFilterSummary();
+  });
+
+  // 热门关键词
+  document.querySelectorAll('.hot-keyword').forEach(kw => {
+    kw.addEventListener('click', () => {
+      searchInput.value = kw.textContent;
+      renderCards();
+      updateFilterSummary();
+    });
+  });
+
   // =================== 获取当前筛选条件 ===================
   function getFilterValues() {
+    const activeIndustry = document.querySelector("#industryTags .tag.active");
+    const activeProfession = document.querySelector("#professionTags .tag.active");
     return {
-      industry: "全部",
-      profession: "全部",
-      keyword: ""
+      industry: activeIndustry ? activeIndustry.dataset.value : "全部",
+      profession: activeProfession ? activeProfession.dataset.value : "全部",
+      keyword: searchInput.value.trim().toLowerCase()
     };
   }
+
+  function updateFilterSummary() {
+    const { industry, profession, keyword } = getFilterValues();
+    const filters = [];
+    if(industry !== '全部') filters.push({ type:'industry', label:`行业：${industry}` });
+    if(profession !== '全部') filters.push({ type:'profession', label:`专业：${profession}` });
+    if(keyword) filters.push({ type:'keyword', label:`关键词：${keyword}` });
+
+    const summary = document.getElementById('filterSummary');
+    const activeFilters = document.getElementById('activeFilters');
+    if(filters.length === 0) {
+      summary.style.display = 'none';
+      return;
+    }
+    summary.style.display = 'flex';
+    activeFilters.innerHTML = filters.map(f =>
+      `<span class="chip" data-type="${f.type}">${f.label} <i class="fa fa-times"></i></span>`
+    ).join('');
+
+    activeFilters.querySelectorAll('.chip i').forEach(icon => {
+      icon.addEventListener('click', e => {
+        e.stopPropagation();
+        const type = icon.closest('.chip').dataset.type;
+        if(type === 'industry') document.querySelector('#industryTags .tag[data-value="全部"]')?.click();
+        if(type === 'profession') document.querySelector('#professionTags .tag[data-value="全部"]')?.click();
+        if(type === 'keyword') { searchInput.value = ''; renderCards(); updateFilterSummary(); }
+      });
+    });
+  }
+
+  document.getElementById('clearFilters').addEventListener('click', () => {
+    document.querySelector('#industryTags .tag[data-value="全部"]')?.click();
+    document.querySelector('#professionTags .tag[data-value="全部"]')?.click();
+    searchInput.value = '';
+    renderCards();
+    updateFilterSummary();
+  });
 
   // =================== 渲染卡片 ===================
   function renderCards() {
@@ -1000,7 +1226,9 @@
   renderFavoriteJobList();
   renderRanking();
   initRankingCarousel();
+  initFilters();
   renderCards();
+  updateFilterSummary();
 
   // 更新日期时间
   function updateDateTime() {
