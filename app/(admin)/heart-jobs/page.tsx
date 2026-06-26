@@ -442,6 +442,10 @@ export default function HeartJobsPage() {
                             {formatDate(job.addedAt)} 收录
                           </span>
                         </div>
+                        <span className="flex items-center gap-1 bg-black/40 backdrop-blur-sm text-white text-[11px] px-2.5 py-1 rounded-md">
+                          <Heart className="h-3 w-3 fill-red-500 text-red-500" />
+                          心仪岗位
+                        </span>
                       </div>
 
                       <div className="relative z-10">
