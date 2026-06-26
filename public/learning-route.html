@@ -92,6 +92,57 @@
             font-weight: 500;
         }
 
+        /* 岗位切换标签 */
+        .header-position-tab {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 20px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background: var(--bg-white);
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            user-select: none;
+        }
+
+        .header-position-tab:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(74, 107, 229, 0.12);
+        }
+
+        .header-position-tab.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 14px rgba(74, 107, 229, 0.25);
+        }
+
+        .header-position-tab.active::before {
+            content: '●';
+            font-size: 8px;
+            opacity: 0.9;
+        }
+
+        /* 内容切换动画 */
+        .path-title,
+        .timeline-wrapper,
+        .tasks-section {
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+
+        .switching .path-title,
+        .switching .timeline-wrapper,
+        .switching .tasks-section {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
         /* 学习路径标题 */
         .path-title {
             text-align: center;
@@ -406,8 +457,8 @@
                         <span class="value header-position-tab" data-position="backend">后端开发</span>
                     </div>
                     <div class="header-meta-item">
-                        <span class="label">心仪岗位：</span>
-                        <span class="value">前端架构工程师</span>
+                        <span class="label">当前路径：</span>
+                        <span class="value" id="currentPathName">前端开发工程师学习路径</span>
                     </div>
                 </div>
             </div>
@@ -1299,32 +1350,42 @@
             updateArrowState();
         }
 
-        function renderPath(position) {
+        function renderPath(position, skipAnimation = false) {
             const path = learningPaths[position];
             if (!path) return;
 
-            pathTitle.textContent = path.title;
+            const mainContent = document.querySelector('.main-content');
+            if (mainContent && !skipAnimation) mainContent.classList.add('switching');
 
-            timelineTrack.innerHTML = path.stages.map((stage, i) => {
-                const label = i === 0 ? 'START · 第1站' : (i === path.stages.length - 1 ? 'GOAL · 终点' : `第${i + 1}站`);
-                return `
-                    <div class="timeline-node ${i === 0 ? 'active' : ''}" data-stage="${i}">
-                        <div class="node-label-top">${label}</div>
-                        <div class="node-circle"><i class="fas ${stage.icon}"></i></div>
-                        <div class="node-title">${stage.title}</div>
-                        <div class="node-meta">${stage.meta}</div>
-                    </div>
-                `;
-            }).join('');
+            setTimeout(() => {
+                pathTitle.textContent = path.title;
 
-            tasksSection.innerHTML = path.stages.map((stage, i) => {
-                const cardsHtml = stage.tasks.map((task, idx) => createTaskCard(task, idx)).join('');
-                return `<div class="stage-cards ${i === 0 ? 'active' : ''}" data-stage="${i}">${cardsHtml}</div>`;
-            }).join('');
+                const currentPathName = document.getElementById('currentPathName');
+                if (currentPathName) currentPathName.textContent = path.title;
 
-            currentTranslate = 0;
-            timelineTrack.style.transform = 'translateX(0)';
-            updateArrowState();
+                timelineTrack.innerHTML = path.stages.map((stage, i) => {
+                    const label = i === 0 ? 'START · 第1站' : (i === path.stages.length - 1 ? 'GOAL · 终点' : `第${i + 1}站`);
+                    return `
+                        <div class="timeline-node ${i === 0 ? 'active' : ''}" data-stage="${i}">
+                            <div class="node-label-top">${label}</div>
+                            <div class="node-circle"><i class="fas ${stage.icon}"></i></div>
+                            <div class="node-title">${stage.title}</div>
+                            <div class="node-meta">${stage.meta}</div>
+                        </div>
+                    `;
+                }).join('');
+
+                tasksSection.innerHTML = path.stages.map((stage, i) => {
+                    const cardsHtml = stage.tasks.map((task, idx) => createTaskCard(task, idx)).join('');
+                    return `<div class="stage-cards ${i === 0 ? 'active' : ''}" data-stage="${i}">${cardsHtml}</div>`;
+                }).join('');
+
+                currentTranslate = 0;
+                timelineTrack.style.transform = 'translateX(0)';
+                updateArrowState();
+
+                if (mainContent) mainContent.classList.remove('switching');
+            }, 200);
         }
 
         timelineTrack.addEventListener('click', e => {
@@ -1356,7 +1417,7 @@
             });
         });
 
-        renderPath('frontend');
+        renderPath('frontend', true);
     </script>
 
 </body>
