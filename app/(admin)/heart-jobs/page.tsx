@@ -8,6 +8,7 @@ import {
   Medal,
 } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 
@@ -320,7 +321,7 @@ export default function HeartJobsPage() {
           j.description.toLowerCase().includes(q)
       )
     }
-    return result
+    return result.slice(0, 5)
   }, [jobs, activeIndustry, searchQuery])
 
   const stats = useMemo(() => {
@@ -340,17 +341,16 @@ export default function HeartJobsPage() {
       .slice(0, 5)
   }, [jobs])
 
-  const handleToggleFavorite = (job: HeartJob, e: React.MouseEvent) => {
+  const handleRemoveFavorite = (job: HeartJob, e: React.MouseEvent) => {
     e.stopPropagation()
-    const list = loadHeartJobs().map((j) =>
-      j.id === job.id ? { ...j, isFavorite: !j.isFavorite } : j
-    )
+    const list = loadHeartJobs().filter((j) => j.id !== job.id)
     saveHeartJobs(list)
     setJobs(list)
   }
 
-  const handleCardClick = () => {
-    window.location.href = "/student.html"
+  const handleGoLearn = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    window.location.href = "/learning-route"
   }
 
   if (!mounted) {
@@ -423,96 +423,48 @@ export default function HeartJobsPage() {
               </CardContent>
             </Card>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
-              {filteredJobs.map((job, idx) => {
-                const stats = getCardStats(job)
-                const coverStyle = job.coverImage
-                  ? { backgroundImage: `url(${job.coverImage})` }
-                  : { background: COVER_BACKUPS[idx % COVER_BACKUPS.length] }
-
-                return (
-                  <div
-                    key={job.id}
-                    className="group bg-white rounded-2xl overflow-hidden border border-[#e7e5e4] cursor-pointer transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_20px_40px_rgba(69,26,3,0.1)]"
-                    onClick={handleCardClick}
-                  >
-                    <div
-                      className="h-[160px] relative p-4 flex flex-col justify-end text-white bg-cover bg-center"
-                      style={coverStyle}
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-t from-[rgba(69,26,3,0.85)] via-[rgba(69,26,3,0.2)] to-transparent" />
-
-                      <div className="absolute top-3 left-3 right-3 flex justify-between z-10">
-                        <div className="flex gap-1.5">
-                          <span className="bg-black/40 backdrop-blur-sm text-white text-[11px] px-2.5 py-1 rounded-md">
-                            {stats.version}
-                          </span>
-                          <span className="bg-black/40 backdrop-blur-sm text-white text-[11px] px-2.5 py-1 rounded-md">
-                            {formatDate(job.addedAt)} 收录
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <button
-                            onClick={(e) => handleToggleFavorite(job, e)}
-                            className="flex items-center justify-center bg-black/40 backdrop-blur-sm text-white hover:bg-black/50 p-1.5 rounded-md transition-colors"
-                            title={job.isFavorite ? "取消心仪" : "设为心仪"}
-                          >
-                            <Heart
-                              className={cn(
-                                "h-3.5 w-3.5",
-                                job.isFavorite ? "fill-red-500 text-red-500" : "text-slate-300"
-                              )}
-                            />
-                          </button>
-                          <span className="bg-black/40 backdrop-blur-sm text-white text-[11px] px-2.5 py-1 rounded-md">
-                            已发布
-                          </span>
-                        </div>
+            <div
+              className="grid gap-4"
+              style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))' }}
+            >
+              {filteredJobs.map((job) => (
+                <Card
+                  key={job.id}
+                  className="flex flex-col transition-all hover:shadow-md"
+                >
+                  <CardContent className="flex flex-1 flex-col p-5">
+                    <h3 className="text-lg font-bold text-slate-900 mb-4 line-clamp-2">
+                      {job.name}
+                    </h3>
+                    <div className="space-y-2 mb-5">
+                      <div className="text-sm px-3 py-1.5 rounded-md bg-[#ffedd5] text-[#c2410c] truncate">
+                        面向行业：{job.industry}
                       </div>
-
-                      <div className="relative z-10">
-                        <div className="text-lg font-bold leading-snug mb-1.5">{job.name}</div>
-                        <div className="text-xs text-white/90">
-                          岗位编码：{job.code} · {formatDate(job.publishDate || job.addedAt)}
-                        </div>
+                      <div className="text-sm px-3 py-1.5 rounded-md bg-[#dbeafe] text-[#1d4ed8] truncate">
+                        适用专业：{job.major}
                       </div>
                     </div>
-
-                    <div className="p-5">
-                      <div className="grid grid-cols-3 gap-2 mb-5">
-                        <div className="text-center">
-                          <div className="text-[26px] font-extrabold text-[#0f172a] leading-none">{stats.viewCount}</div>
-                          <div className="text-sm text-[#94a3b8] mt-1">浏览次数</div>
-                        </div>
-                        <div className="text-center">
-                          <div className="text-[26px] font-extrabold text-[#0f172a] leading-none">{stats.relatedScenes}</div>
-                          <div className="text-sm text-[#94a3b8] mt-1">关联场景</div>
-                        </div>
-                        <div className="text-center">
-                          <div className="text-[26px] font-extrabold text-[#0f172a] leading-none">{stats.totalHours}</div>
-                          <div className="text-sm text-[#94a3b8] mt-1">场景任务</div>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-x-8 gap-y-2 mb-4">
-                        <span className="text-sm px-2.5 py-1 rounded-md bg-[#ffedd5] text-[#c2410c] truncate whitespace-nowrap">
-                          面向行业：{job.industry}
-                        </span>
-                        <span className="text-sm px-2.5 py-1 rounded-md bg-[#dbeafe] text-[#1d4ed8] truncate whitespace-nowrap">
-                          适用专业：{job.major}
-                        </span>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-x-8 gap-y-2">
-                        <span className="text-sm text-[#64748b]">创建人：{stats.creator}</span>
-                        <span className="text-sm text-[#64748b]">共建人：{job.location || "知与未来"}</span>
-                        <span className="text-sm text-[#64748b]">浏览量：{stats.viewCount}</span>
-                        <span className="text-sm text-[#64748b]">更新时间：{formatDate(job.updateDate || job.addedAt)}</span>
-                      </div>
+                    <div className="mt-auto flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1 text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
+                        onClick={(e) => handleRemoveFavorite(job, e)}
+                      >
+                        <Heart className="mr-1 h-4 w-4 fill-current" />
+                        取消收藏
+                      </Button>
+                      <Button
+                        size="sm"
+                        className="flex-1"
+                        onClick={handleGoLearn}
+                      >
+                        去学习
+                      </Button>
                     </div>
-                  </div>
-                )
-              })}
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           )}
         </div>
