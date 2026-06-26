@@ -432,29 +432,31 @@ export default function HeartJobsPage() {
                   key={job.id}
                   className="flex flex-col transition-all hover:shadow-md"
                 >
-                  <CardContent className="relative flex flex-1 flex-col p-5">
-                    <button
-                      onClick={(e) => handleRemoveFavorite(job, e)}
-                      className="absolute top-3 right-3 p-1 rounded-full hover:bg-red-50 transition-colors z-10"
-                      title="取消收藏"
-                    >
-                      <Heart className="h-8 w-8 text-red-500 fill-red-500" />
-                    </button>
-                    <h3 className="text-lg font-bold text-slate-900 mb-4 pr-10 line-clamp-2">
+                  <CardContent className="flex flex-1 flex-col p-5">
+                    <h3 className="text-lg font-bold text-slate-900 mb-4 line-clamp-2">
                       {job.name}
                     </h3>
                     <div className="flex gap-2 mb-5">
-                      <div className="flex-1 text-xs px-3 py-0.5 rounded-md bg-white text-[#c2410c] border border-[#c2410c] truncate">
+                      <div className="flex-1 text-xs px-3 py-1.5 rounded-md bg-white text-[#c2410c] border border-[#c2410c] truncate">
                         面向行业：{job.industry}
                       </div>
-                      <div className="flex-1 text-xs px-3 py-0.5 rounded-md bg-white text-[#1d4ed8] border border-[#1d4ed8] truncate">
+                      <div className="flex-1 text-xs px-3 py-1.5 rounded-md bg-white text-[#1d4ed8] border border-[#1d4ed8] truncate">
                         适用专业：{job.major}
                       </div>
                     </div>
-                    <div className="mt-10">
+                    <div className="mt-auto flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1 text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
+                        onClick={(e) => handleRemoveFavorite(job, e)}
+                      >
+                        <Heart className="mr-1 h-4 w-4 fill-current" />
+                        取消收藏
+                      </Button>
                       <Button
                         size="sm"
-                        className="w-full"
+                        className="flex-1"
                         onClick={handleGoLearn}
                       >
                         去学习
