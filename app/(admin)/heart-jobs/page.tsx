@@ -340,15 +340,6 @@ export default function HeartJobsPage() {
       .slice(0, 5)
   }, [jobs])
 
-  const handleToggleFavorite = (job: HeartJob, e: React.MouseEvent) => {
-    e.stopPropagation()
-    const list = loadHeartJobs().map((j) =>
-      j.id === job.id ? { ...j, isFavorite: !j.isFavorite } : j
-    )
-    saveHeartJobs(list)
-    setJobs(list)
-  }
-
   const handleCardClick = () => {
     window.location.href = "/student.html"
   }
@@ -449,23 +440,6 @@ export default function HeartJobsPage() {
                           </span>
                           <span className="bg-black/40 backdrop-blur-sm text-white text-[11px] px-2.5 py-1 rounded-md">
                             {formatDate(job.addedAt)} 收录
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <button
-                            onClick={(e) => handleToggleFavorite(job, e)}
-                            className="flex items-center justify-center bg-black/40 backdrop-blur-sm text-white hover:bg-black/50 p-1.5 rounded-md transition-colors"
-                            title={job.isFavorite ? "取消心仪" : "设为心仪"}
-                          >
-                            <Heart
-                              className={cn(
-                                "h-3.5 w-3.5",
-                                job.isFavorite ? "fill-red-500 text-red-500" : "text-slate-300"
-                              )}
-                            />
-                          </button>
-                          <span className="bg-black/40 backdrop-blur-sm text-white text-[11px] px-2.5 py-1 rounded-md">
-                            已发布
                           </span>
                         </div>
                       </div>
