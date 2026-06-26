@@ -23,13 +23,6 @@ import {
   CommandList,
 } from '@/components/ui/command'
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -58,6 +51,7 @@ import {
   Check,
   ChevronsUpDown,
   ExternalLink,
+  Search,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { PositionType } from '@/lib/types'
@@ -84,7 +78,6 @@ export default function PostRecommendPage() {
   const [selectedMajor, setSelectedMajor] = useState<string>('')
   const [isAddOpen, setIsAddOpen] = useState(false)
   const [selectedPositionId, setSelectedPositionId] = useState<string>('')
-  const [selectedType, setSelectedType] = useState<PositionType>('enterprise')
   const [reason, setReason] = useState('')
   const [isVisibleNew, setIsVisibleNew] = useState(true)
   const [positionSearchOpen, setPositionSearchOpen] = useState(false)
@@ -144,13 +137,12 @@ export default function PostRecommendPage() {
     addRecommendation({
       major: currentMajor,
       positionId: position.id,
-      positionType: selectedType,
+      positionType: position.positionType,
       reason: reason.trim() || undefined,
       isVisible: isVisibleNew,
       createdBy: user.id,
     })
     setSelectedPositionId('')
-    setSelectedType('enterprise')
     setReason('')
     setIsVisibleNew(true)
     setIsAddOpen(false)
@@ -246,19 +238,22 @@ export default function PostRecommendPage() {
                           className="w-full justify-between font-normal h-10 px-3 bg-background hover:bg-background border-input"
                           disabled={availablePositions.length === 0}
                         >
-                          <span className={cn("truncate", !selectedPosition && "text-muted-foreground")}>
-                            {selectedPosition
-                              ? `${selectedPosition.name}（${selectedPosition.shortName}）`
-                              : availablePositions.length === 0
-                              ? '暂无可添加的岗位'
-                              : '请选择岗位'}
-                          </span>
+                          <div className="flex items-center gap-2 min-w-0">
+                            <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
+                            <span className={cn("truncate", !selectedPosition && "text-muted-foreground")}>
+                              {selectedPosition
+                                ? `${selectedPosition.name}（${selectedPosition.shortName}）`
+                                : availablePositions.length === 0
+                                ? '暂无可添加的岗位'
+                                : '搜索或选择岗位'}
+                            </span>
+                          </div>
                           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="p-0 w-[var(--radix-popover-trigger-width)]">
                         <Command>
-                          <CommandInput placeholder="搜索岗位名称、行业..." />
+                          <CommandInput placeholder="搜索岗位名称、简称、行业..." />
                           <CommandList>
                             <CommandEmpty>未找到匹配岗位</CommandEmpty>
                             <CommandGroup>
@@ -268,7 +263,6 @@ export default function PostRecommendPage() {
                                   value={`${position.name} ${position.shortName} ${position.industry}`}
                                   onSelect={() => {
                                     setSelectedPositionId(position.id)
-                                    setSelectedType(position.positionType)
                                     setPositionSearchOpen(false)
                                   }}
                                 >
@@ -312,22 +306,6 @@ export default function PostRecommendPage() {
                       </div>
                     </div>
                   )}
-
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">岗位类型</label>
-                    <Select
-                      value={selectedType}
-                      onValueChange={(v) => setSelectedType(v as PositionType)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="enterprise">企业岗位</SelectItem>
-                        <SelectItem value="teaching">教学岗位</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
 
                   <div className="space-y-2">
                     <label className="text-sm font-medium">推荐原因（选填）</label>
