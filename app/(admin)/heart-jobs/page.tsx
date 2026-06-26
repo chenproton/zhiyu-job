@@ -40,6 +40,7 @@ const SAMPLE_JOBS: Omit<HeartJob, "id">[] = [
     location: "北京",
     description: "负责网站、Web应用、移动端H5页面等用户界面开发，使用HTML、CSS、JavaScript及Vue、React等现代前端框架。",
     isFavorite: true,
+    coverImage: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=800&q=80",
     addedAt: "2024-01-12T08:00:00.000Z",
     publishDate: "2024-01-08",
     updateDate: "2024-01-03",
@@ -53,6 +54,7 @@ const SAMPLE_JOBS: Omit<HeartJob, "id">[] = [
     location: "上海",
     description: "使用Java语言进行企业级后端系统开发，熟悉Spring Boot、微服务架构及数据库设计。",
     isFavorite: true,
+    coverImage: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80",
     addedAt: "2024-01-13T08:00:00.000Z",
     publishDate: "2024-01-09",
     updateDate: "2024-01-04",
@@ -66,6 +68,7 @@ const SAMPLE_JOBS: Omit<HeartJob, "id">[] = [
     location: "深圳",
     description: "通过数据采集、清洗、分析与可视化，为业务决策提供数据支持，掌握Python、SQL及BI工具。",
     isFavorite: true,
+    coverImage: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80",
     addedAt: "2024-01-14T08:00:00.000Z",
     publishDate: "2024-01-10",
     updateDate: "2024-01-05",
@@ -79,6 +82,7 @@ const SAMPLE_JOBS: Omit<HeartJob, "id">[] = [
     location: "杭州",
     description: "负责电商平台店铺日常运营、活动策划、流量推广及销售数据分析，提升店铺转化率。",
     isFavorite: true,
+    coverImage: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=80",
     addedAt: "2024-01-15T08:00:00.000Z",
     publishDate: "2024-01-11",
     updateDate: "2024-01-06",
@@ -92,6 +96,7 @@ const SAMPLE_JOBS: Omit<HeartJob, "id">[] = [
     location: "广州",
     description: "负责企业财务核算、报表编制、税务申报及成本管理，熟悉会计准则与财务软件操作。",
     isFavorite: true,
+    coverImage: "https://images.unsplash.com/photo-1554224154-26032ffc0d07?auto=format&fit=crop&w=800&q=80",
     addedAt: "2024-01-19T08:00:00.000Z",
     publishDate: "2024-01-10",
     updateDate: "2024-01-05",
@@ -105,6 +110,7 @@ const SAMPLE_JOBS: Omit<HeartJob, "id">[] = [
     location: "成都",
     description: "负责品牌定位、传播策略制定、市场推广活动策划及品牌形象维护，提升品牌影响力。",
     isFavorite: true,
+    coverImage: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=800&q=80",
     addedAt: "2024-01-16T08:00:00.000Z",
     publishDate: "2024-01-12",
     updateDate: "2024-01-07",
@@ -118,6 +124,7 @@ const SAMPLE_JOBS: Omit<HeartJob, "id">[] = [
     location: "武汉",
     description: "负责小学阶段学科教学、班级管理及学生综合素质培养，具备良好的沟通能力与教学热情。",
     isFavorite: true,
+    coverImage: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=800&q=80",
     addedAt: "2024-01-17T08:00:00.000Z",
     publishDate: "2024-01-13",
     updateDate: "2024-01-08",
@@ -238,6 +245,16 @@ export default function HeartJobsPage() {
       .slice(0, 5)
   }, [jobs])
 
+  const handleToggleFavorite = (job: HeartJob, e: React.MouseEvent) => {
+    e.stopPropagation()
+    const stored = loadHeartJobs()
+    const list = job.isFavorite
+      ? stored.filter((j) => j.id !== job.id)
+      : stored.map((j) => (j.id === job.id ? { ...j, isFavorite: !j.isFavorite } : j))
+    saveHeartJobs(list)
+    setJobs(list)
+  }
+
   const handleCardClick = () => {
     window.location.href = "/student.html"
   }
@@ -312,7 +329,7 @@ export default function HeartJobsPage() {
               </CardContent>
             </Card>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
               {filteredJobs.map((job, idx) => {
                 const stats = getCardStats(job)
                 const coverStyle = job.coverImage
@@ -340,9 +357,23 @@ export default function HeartJobsPage() {
                             {formatDate(job.addedAt)} 收录
                           </span>
                         </div>
-                        <span className="bg-black/40 backdrop-blur-sm text-white text-[11px] px-2.5 py-1 rounded-md">
-                          已发布
-                        </span>
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            onClick={(e) => handleToggleFavorite(job, e)}
+                            className="flex items-center justify-center bg-black/40 backdrop-blur-sm text-white hover:bg-black/50 p-1.5 rounded-md transition-colors"
+                            title={job.isFavorite ? "取消心仪" : "设为心仪"}
+                          >
+                            <Heart
+                              className={cn(
+                                "h-3.5 w-3.5",
+                                job.isFavorite ? "fill-red-500 text-red-500" : "text-white"
+                              )}
+                            />
+                          </button>
+                          <span className="bg-black/40 backdrop-blur-sm text-white text-[11px] px-2.5 py-1 rounded-md">
+                            已发布
+                          </span>
+                        </div>
                       </div>
 
                       <div className="relative z-10">
@@ -369,11 +400,11 @@ export default function HeartJobsPage() {
                         </div>
                       </div>
 
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        <span className="text-sm px-2.5 py-1 rounded-md bg-[#ffedd5] text-[#c2410c]">
+                      <div className="grid grid-cols-2 gap-x-8 gap-y-2 mb-4">
+                        <span className="text-sm px-2.5 py-1 rounded-md bg-[#ffedd5] text-[#c2410c] truncate whitespace-nowrap">
                           面向行业：{job.industry}
                         </span>
-                        <span className="text-sm px-2.5 py-1 rounded-md bg-[#dbeafe] text-[#1d4ed8]">
+                        <span className="text-sm px-2.5 py-1 rounded-md bg-[#dbeafe] text-[#1d4ed8] truncate whitespace-nowrap">
                           适用专业：{job.major}
                         </span>
                       </div>
