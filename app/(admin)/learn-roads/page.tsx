@@ -414,73 +414,9 @@ export default function LearnRoadsPage() {
     if (!editingPosition) return null
     const batch = batches.find((b) => b.id === editingPosition.batchId)
     const timelineRef = useRef<HTMLDivElement>(null)
-    const [canScrollLeft, setCanScrollLeft] = useState(false)
-    const [canScrollRight, setCanScrollRight] = useState(false)
-    const [isDragging, setIsDragging] = useState(false)
-    const dragStart = useRef<{ x: number; scrollLeft: number } | null>(null)
-    const dragged = useRef(false)
-
-    const updateScrollState = () => {
-      const el = timelineRef.current
-      if (!el) return
-      setCanScrollLeft(el.scrollLeft > 0)
-      setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 1)
-    }
-
-    useEffect(() => {
-      updateScrollState()
-      const el = timelineRef.current
-      if (!el) return
-      el.addEventListener('scroll', updateScrollState, { passive: true })
-      window.addEventListener('resize', updateScrollState)
-      return () => {
-        el.removeEventListener('scroll', updateScrollState)
-        window.removeEventListener('resize', updateScrollState)
-      }
-    }, [scenes])
 
     const scrollTimeline = (direction: -1 | 1) => {
-      timelineRef.current?.scrollBy({ left: direction * 240, behavior: 'smooth' })
-    }
-
-    const handleMouseDown = (e: React.MouseEvent) => {
-      const el = timelineRef.current
-      if (!el) return
-      dragged.current = false
-      dragStart.current = { x: e.clientX, scrollLeft: el.scrollLeft }
-      setIsDragging(true)
-    }
-
-    const handleMouseMove = (e: React.MouseEvent) => {
-      if (!isDragging || !dragStart.current || !timelineRef.current) return
-      const dx = dragStart.current.x - e.clientX
-      if (Math.abs(dx) > 5) dragged.current = true
-      timelineRef.current.scrollLeft = dragStart.current.scrollLeft + dx
-    }
-
-    const handleMouseUp = () => {
-      setIsDragging(false)
-      dragStart.current = null
-    }
-
-    const handleTouchStart = (e: React.TouchEvent) => {
-      const el = timelineRef.current
-      if (!el) return
-      dragged.current = false
-      dragStart.current = { x: e.touches[0].clientX, scrollLeft: el.scrollLeft }
-      setIsDragging(true)
-    }
-
-    const handleTouchMove = (e: React.TouchEvent) => {
-      if (!isDragging || !dragStart.current || !timelineRef.current) return
-      const dx = dragStart.current.x - e.touches[0].clientX
-      if (Math.abs(dx) > 5) dragged.current = true
-      timelineRef.current.scrollLeft = dragStart.current.scrollLeft + dx
-    }
-
-    const handleTouchEnd = () => {
-      setIsDragging(false)
-      dragStart.current = null
+      timelineRef.current?.scrollBy({ left: direction * 200, behavior: 'smooth' })
     }
 
     return (
@@ -527,40 +463,21 @@ export default function LearnRoadsPage() {
               点击上方阶段图标，查看该阶段的学习任务
             </p>
             <div className="relative mt-8">
-              {canScrollLeft && (
-                <div className="pointer-events-none absolute left-0 top-0 bottom-4 w-12 z-10 bg-gradient-to-r from-[#f8f5f0] to-transparent" />
-              )}
-              {canScrollRight && (
-                <div className="pointer-events-none absolute right-0 top-0 bottom-4 w-12 z-10 bg-gradient-to-l from-[#f8f5f0] to-transparent" />
-              )}
               <button
                 onClick={() => scrollTimeline(-1)}
-                disabled={!canScrollLeft}
-                className="absolute left-2 top-1/2 -translate-y-1/2 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-white text-slate-600 shadow-md hover:bg-white disabled:opacity-30 disabled:cursor-not-allowed transition-opacity"
+                className="absolute left-0 top-1/2 -translate-y-1/2 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-white/80 text-slate-500 shadow-sm hover:bg-white"
               >
                 <ChevronLeft className="h-5 w-5" />
               </button>
               <button
                 onClick={() => scrollTimeline(1)}
-                disabled={!canScrollRight}
-                className="absolute right-2 top-1/2 -translate-y-1/2 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-white text-slate-600 shadow-md hover:bg-white disabled:opacity-30 disabled:cursor-not-allowed transition-opacity"
+                className="absolute right-0 top-1/2 -translate-y-1/2 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-white/80 text-slate-500 shadow-sm hover:bg-white"
               >
                 <ChevronRight className="h-5 w-5" />
               </button>
               <div
                 ref={timelineRef}
-                onMouseDown={handleMouseDown}
-                onMouseMove={handleMouseMove}
-                onMouseUp={handleMouseUp}
-                onMouseLeave={handleMouseUp}
-                onTouchStart={handleTouchStart}
-                onTouchMove={handleTouchMove}
-                onTouchEnd={handleTouchEnd}
-                className={cn(
-                  'overflow-x-auto pb-4 px-8 select-none',
-                  isDragging ? 'cursor-grabbing' : 'cursor-grab'
-                )}
-                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                className="overflow-x-auto pb-4 px-8"
               >
                 <div className="relative flex items-start justify-between min-w-max">
                   <div className="absolute top-14 left-0 right-0 h-1.5 rounded-full bg-gradient-to-r from-blue-400 via-green-400 via-amber-400 via-pink-400 via-purple-500 to-rose-500" />
@@ -571,10 +488,7 @@ export default function LearnRoadsPage() {
                     return (
                       <button
                         key={scene.id}
-                        onClick={() => {
-                          if (dragged.current) return
-                          setSelectedSceneId(scene.id)
-                        }}
+                        onClick={() => setSelectedSceneId(scene.id)}
                         className="relative z-10 flex flex-col items-center min-w-[150px] mx-3 first:ml-4 last:mr-4"
                       >
                         <div className="h-5 text-xs text-slate-400">
