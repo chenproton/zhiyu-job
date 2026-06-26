@@ -40,6 +40,7 @@ import {
   Users,
   Layers,
   ChevronLeft,
+  GripVertical,
 } from 'lucide-react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
@@ -414,9 +415,41 @@ export default function LearnRoadsPage() {
     if (!editingPosition) return null
     const batch = batches.find((b) => b.id === editingPosition.batchId)
     const timelineRef = useRef<HTMLDivElement>(null)
+    const [draggingIndex, setDraggingIndex] = useState<number | null>(null)
+    const [dragOverIndex, setDragOverIndex] = useState<number | null>(null)
 
     const scrollTimeline = (direction: -1 | 1) => {
       timelineRef.current?.scrollBy({ left: direction * 200, behavior: 'smooth' })
+    }
+
+    const handleDragStart = (index: number) => {
+      setDraggingIndex(index)
+    }
+
+    const handleDragOver = (e: React.DragEvent, index: number) => {
+      e.preventDefault()
+      setDragOverIndex(index)
+    }
+
+    const handleDrop = (e: React.DragEvent, targetIndex: number) => {
+      e.preventDefault()
+      if (draggingIndex === null || draggingIndex === targetIndex) {
+        setDraggingIndex(null)
+        setDragOverIndex(null)
+        return
+      }
+      const newScenes = [...scenes]
+      const [moved] = newScenes.splice(draggingIndex, 1)
+      newScenes.splice(targetIndex, 0, moved)
+      setScenes(newScenes)
+      setSaved(false)
+      setDraggingIndex(null)
+      setDragOverIndex(null)
+    }
+
+    const handleDragEnd = () => {
+      setDraggingIndex(null)
+      setDragOverIndex(null)
     }
 
     return (
@@ -526,7 +559,7 @@ export default function LearnRoadsPage() {
           <Card>
             <CardHeader>
               <CardTitle className="text-base">场景顺序</CardTitle>
-              <CardDescription>点击下方场景查看任务，或调整场景展示顺序</CardDescription>
+              <CardDescription>拖拽场景卡片可调整顺序，点击场景查看任务</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
               {scenes.map((scene, index) => {
@@ -534,15 +567,29 @@ export default function LearnRoadsPage() {
                 return (
                   <div
                     key={scene.id}
+                    draggable
+                    onDragStart={() => handleDragStart(index)}
+                    onDragOver={(e) => handleDragOver(e, index)}
+                    onDrop={(e) => handleDrop(e, index)}
+                    onDragLeave={() => setDragOverIndex(null)}
+                    onDragEnd={handleDragEnd}
                     onClick={() => setSelectedSceneId(scene.id)}
                     className={cn(
                       'group flex cursor-pointer items-center justify-between rounded-lg border p-4 transition-all',
                       isSelected
                         ? 'border-blue-500 bg-blue-50 shadow-sm'
-                        : 'border-slate-200 bg-white hover:bg-slate-50'
+                        : 'border-slate-200 bg-white hover:bg-slate-50',
+                      draggingIndex === index && 'opacity-40',
+                      dragOverIndex === index && dragOverIndex !== draggingIndex && 'border-blue-400 bg-blue-50/60'
                     )}
                   >
                     <div className="flex items-center gap-3">
+                      <span
+                        className="cursor-grab text-slate-400 hover:text-slate-600 active:cursor-grabbing"
+                        onMouseDown={(e) => e.stopPropagation()}
+                      >
+                        <GripVertical className="h-5 w-5" />
+                      </span>
                       <span
                         className={cn(
                           'flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium transition-colors',
