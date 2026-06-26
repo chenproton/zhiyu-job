@@ -80,6 +80,7 @@
         .header-meta-item {
             display: flex;
             align-items: center;
+            flex-wrap: wrap;
             gap: 10px;
         }
 
@@ -452,13 +453,12 @@
                 <h1>岗位学习路径</h1>
                 <div class="header-meta">
                     <div class="header-meta-item">
-                        <span class="label">目标岗位：</span>
+                        <span class="label">心仪岗位：</span>
                         <span class="value header-position-tab active" data-position="frontend">前端开发</span>
                         <span class="value header-position-tab" data-position="backend">后端开发</span>
-                    </div>
-                    <div class="header-meta-item">
-                        <span class="label">当前路径：</span>
-                        <span class="value" id="currentPathName">前端开发工程师学习路径</span>
+                        <span class="value header-position-tab" data-position="data-analyst">数据分析师</span>
+                        <span class="value header-position-tab" data-position="product-manager">产品经理</span>
+                        <span class="value header-position-tab" data-position="ui-designer">UI设计师</span>
                     </div>
                 </div>
             </div>
@@ -1305,6 +1305,318 @@
                             "运维"
                         ]
                     }
+                ]
+            }
+        ]
+    },
+    "data-analyst": {
+        "title": "数据分析师学习路径",
+        "stages": [
+            {
+                "title": "基础学习",
+                "meta": "8 任务 · 16 课时",
+                "icon": "fa-table",
+                "tasks": [
+                    { "name": "数据分析思维", "tags": ["数据思维", "业务"] },
+                    { "name": "Excel 数据处理", "tags": ["Excel", "函数"] },
+                    { "name": "SQL 基础查询", "tags": ["SQL", "查询"] },
+                    { "name": "统计学基础", "tags": ["统计", "概率"] },
+                    { "name": "数据可视化原则", "tags": ["图表", "设计"] },
+                    { "name": "业务指标体系", "tags": ["指标", "KPI"] },
+                    { "name": "数据分析流程", "tags": ["流程", "方法"] },
+                    { "name": "基础综合实战", "tags": ["实战", "报告"] }
+                ]
+            },
+            {
+                "title": "数据清洗与处理",
+                "meta": "5 任务 · 12 课时",
+                "icon": "fa-broom",
+                "tasks": [
+                    { "name": "Python 数据分析环境", "tags": ["Python", "Jupyter"] },
+                    { "name": "Pandas 数据清洗", "tags": ["Pandas", "清洗"] },
+                    { "name": "数据类型与缺失值", "tags": ["数据质量"] },
+                    { "name": "数据合并与转换", "tags": ["Merge", "Pivot"] },
+                    { "name": "时间序列处理", "tags": ["日期", "趋势"] },
+                    { "name": "数据异常检测", "tags": ["异常", "规则"] },
+                    { "name": "清洗流程自动化", "tags": ["脚本", "ETL"] }
+                ]
+            },
+            {
+                "title": "数据可视化",
+                "meta": "4 任务 · 8 课时",
+                "icon": "fa-chart-pie",
+                "tasks": [
+                    { "name": "可视化工具入门", "tags": ["Tableau", "PowerBI"] },
+                    { "name": "常用图表类型", "tags": ["柱状图", "折线图"] },
+                    { "name": "仪表盘设计", "tags": ["Dashboard", "布局"] },
+                    { "name": "Python 可视化库", "tags": ["Matplotlib", "Seaborn"] },
+                    { "name": "报表自动更新", "tags": ["定时", "刷新"] },
+                    { "name": "可视化配色规范", "tags": ["配色", "规范"] },
+                    { "name": "数据故事表达", "tags": ["叙事", "PPT"] }
+                ]
+            },
+            {
+                "title": "业务分析",
+                "meta": "4 任务 · 8 课时",
+                "icon": "fa-briefcase",
+                "tasks": [
+                    { "name": "用户行为分析", "tags": ["行为", "漏斗"] },
+                    { "name": "AARRR 增长模型", "tags": ["增长", "海盗指标"] },
+                    { "name": "留存与流失分析", "tags": ["留存", "流失"] },
+                    { "name": "竞品数据分析", "tags": ["竞品", "市场"] },
+                    { "name": "ROI 与成本分析", "tags": ["ROI", "成本"] },
+                    { "name": "AB 测试分析", "tags": ["AB测试", "显著性"] },
+                    { "name": "分析报告撰写", "tags": ["报告", "洞察"] }
+                ]
+            },
+            {
+                "title": "机器学习基础",
+                "meta": "4 任务 · 8 课时",
+                "icon": "fa-brain",
+                "tasks": [
+                    { "name": "机器学习概览", "tags": ["ML", "算法"] },
+                    { "name": "特征工程基础", "tags": ["特征", "预处理"] },
+                    { "name": "回归与分类模型", "tags": ["回归", "分类"] },
+                    { "name": "模型评估指标", "tags": ["准确率", "召回率"] },
+                    { "name": "聚类分析", "tags": ["聚类", "KMeans"] },
+                    { "name": "Scikit-learn 实战", "tags": ["SKlearn", "调参"] },
+                    { "name": "预测模型部署", "tags": ["部署", "API"] }
+                ]
+            },
+            {
+                "title": "大数据分析",
+                "meta": "4 任务 · 8 课时",
+                "icon": "fa-database",
+                "tasks": [
+                    { "name": "大数据生态概览", "tags": ["Hadoop", "Spark"] },
+                    { "name": "Hive 数据仓库", "tags": ["Hive", "SQL"] },
+                    { "name": "Spark SQL 分析", "tags": ["Spark", "大数据"] },
+                    { "name": "实时数据处理", "tags": ["Flink", "实时"] },
+                    { "name": "数据调度平台", "tags": ["Airflow", "调度"] },
+                    { "name": "数据治理基础", "tags": ["治理", "元数据"] },
+                    { "name": "海量数据优化", "tags": ["优化", "性能"] }
+                ]
+            },
+            {
+                "title": "项目实战",
+                "meta": "4 任务 · 认证",
+                "icon": "fa-trophy",
+                "tasks": [
+                    { "name": "业务问题定义", "tags": ["问题", "目标"] },
+                    { "name": "数据采集与清洗", "tags": ["采集", "清洗"] },
+                    { "name": "分析与可视化报告", "tags": ["分析", "报告"] },
+                    { "name": "项目答辩", "tags": ["答辩", "认证"] },
+                    { "name": "分析方案落地", "tags": ["落地", "迭代"] },
+                    { "name": "数据驱动决策", "tags": ["决策", "价值"] },
+                    { "name": "职业发展路径", "tags": ["规划", "成长"] }
+                ]
+            }
+        ]
+    },
+    "product-manager": {
+        "title": "产品经理学习路径",
+        "stages": [
+            {
+                "title": "产品基础",
+                "meta": "8 任务 · 16 课时",
+                "icon": "fa-lightbulb",
+                "tasks": [
+                    { "name": "产品思维入门", "tags": ["产品思维", "用户"] },
+                    { "name": "互联网产品概览", "tags": ["产品类型", "商业模式"] },
+                    { "name": "用户研究方法", "tags": ["访谈", "问卷"] },
+                    { "name": "竞品分析方法", "tags": ["竞品", "SWOT"] },
+                    { "name": "产品生命周期", "tags": ["生命周期", "MVP"] },
+                    { "name": "需求收集与管理", "tags": ["需求池", "优先级"] },
+                    { "name": "产品文档基础", "tags": ["BRD", "MRD"] },
+                    { "name": "基础综合实战", "tags": ["实战", "方案"] }
+                ]
+            },
+            {
+                "title": "需求分析",
+                "meta": "5 任务 · 12 课时",
+                "icon": "fa-search",
+                "tasks": [
+                    { "name": "用户需求洞察", "tags": ["痛点", "场景"] },
+                    { "name": "需求分层模型", "tags": ["KANO", "马斯洛"] },
+                    { "name": "产品需求文档 PRD", "tags": ["PRD", "文档"] },
+                    { "name": "用户故事与用例", "tags": ["UserStory", "用例"] },
+                    { "name": "功能清单设计", "tags": ["Feature", "清单"] },
+                    { "name": "需求评审技巧", "tags": ["评审", "沟通"] },
+                    { "name": "需求变更管理", "tags": ["变更", "迭代"] }
+                ]
+            },
+            {
+                "title": "原型设计",
+                "meta": "4 任务 · 8 课时",
+                "icon": "fa-pen-ruler",
+                "tasks": [
+                    { "name": "原型设计工具", "tags": ["Axure", "Figma"] },
+                    { "name": "信息架构设计", "tags": ["IA", "导航"] },
+                    { "name": "交互设计原则", "tags": ["交互", "可用性"] },
+                    { "name": "移动端原型设计", "tags": ["APP", "响应式"] },
+                    { "name": "Web 端原型设计", "tags": ["Web", "B端"] },
+                    { "name": "高保真原型", "tags": ["高保真", "动效"] },
+                    { "name": "设计走查与交付", "tags": ["走查", "标注"] }
+                ]
+            },
+            {
+                "title": "项目管理",
+                "meta": "4 任务 · 8 课时",
+                "icon": "fa-tasks",
+                "tasks": [
+                    { "name": "敏捷开发 Scrum", "tags": ["Scrum", "敏捷"] },
+                    { "name": "项目排期与里程碑", "tags": ["排期", "甘特图"] },
+                    { "name": "看板与进度跟踪", "tags": ["看板", "Jira"] },
+                    { "name": "跨部门协作", "tags": ["协作", "沟通"] },
+                    { "name": "风险管理", "tags": ["风险", "预案"] },
+                    { "name": "版本发布管理", "tags": ["发布", "版本"] },
+                    { "name": "项目复盘方法", "tags": ["复盘", "改进"] }
+                ]
+            },
+            {
+                "title": "数据驱动",
+                "meta": "4 任务 · 8 课时",
+                "icon": "fa-chart-line",
+                "tasks": [
+                    { "name": "产品指标体系", "tags": ["指标", "OSM"] },
+                    { "name": "埋点设计与治理", "tags": ["埋点", "事件"] },
+                    { "name": "漏斗与路径分析", "tags": ["漏斗", "路径"] },
+                    { "name": "AB 测试产品设计", "tags": ["AB测试", "假设"] },
+                    { "name": "数据看板搭建", "tags": ["Dashboard", "BI"] },
+                    { "name": "增长实验设计", "tags": ["增长", "实验"] },
+                    { "name": "数据驱动决策", "tags": ["决策", "迭代"] }
+                ]
+            },
+            {
+                "title": "产品运营",
+                "meta": "4 任务 · 8 课时",
+                "icon": "fa-rocket",
+                "tasks": [
+                    { "name": "用户增长策略", "tags": ["增长", "获客"] },
+                    { "name": "用户留存提升", "tags": ["留存", "活跃"] },
+                    { "name": "内容运营配合", "tags": ["内容", "运营"] },
+                    { "name": "活动策划与执行", "tags": ["活动", "复盘"] },
+                    { "name": "用户反馈闭环", "tags": ["反馈", "NPS"] },
+                    { "name": "商业化产品设计", "tags": ["变现", "会员"] },
+                    { "name": "产品运营数据分析", "tags": ["数据", "运营"] }
+                ]
+            },
+            {
+                "title": "项目实战",
+                "meta": "4 任务 · 认证",
+                "icon": "fa-trophy",
+                "tasks": [
+                    { "name": "产品定位与规划", "tags": ["定位", "Roadmap"] },
+                    { "name": "完整 PRD 输出", "tags": ["PRD", "原型"] },
+                    { "name": "评审与迭代落地", "tags": ["评审", "迭代"] },
+                    { "name": "项目答辩", "tags": ["答辩", "认证"] },
+                    { "name": "产品上线方案", "tags": ["上线", "运营"] },
+                    { "name": "数据复盘报告", "tags": ["复盘", "数据"] },
+                    { "name": "产品职业发展", "tags": ["规划", "成长"] }
+                ]
+            }
+        ]
+    },
+    "ui-designer": {
+        "title": "UI设计师学习路径",
+        "stages": [
+            {
+                "title": "设计基础",
+                "meta": "8 任务 · 16 课时",
+                "icon": "fa-palette",
+                "tasks": [
+                    { "name": "设计原则与排版", "tags": ["排版", "对齐"] },
+                    { "name": "色彩理论与应用", "tags": ["色彩", "配色"] },
+                    { "name": "字体与字阶系统", "tags": ["字体", "字阶"] },
+                    { "name": "构图与视觉层级", "tags": ["构图", "层级"] },
+                    { "name": "图标设计基础", "tags": ["图标", "风格"] },
+                    { "name": "设计规范入门", "tags": ["规范", "栅格"] },
+                    { "name": "设计软件操作", "tags": ["Figma", "Sketch"] },
+                    { "name": "基础综合实战", "tags": ["实战", "作品"] }
+                ]
+            },
+            {
+                "title": "界面设计",
+                "meta": "5 任务 · 12 课时",
+                "icon": "fa-mobile-screen",
+                "tasks": [
+                    { "name": "移动端界面设计", "tags": ["APP", "iOS"] },
+                    { "name": "Web 端界面设计", "tags": ["Web", "B端"] },
+                    { "name": "表单与组件设计", "tags": ["表单", "组件"] },
+                    { "name": "导航与布局设计", "tags": ["导航", "布局"] },
+                    { "name": "空状态与异常页", "tags": ["空状态", "异常"] },
+                    { "name": "暗黑模式设计", "tags": ["DarkMode", "主题"] },
+                    { "name": "多设备适配", "tags": ["适配", "响应式"] }
+                ]
+            },
+            {
+                "title": "交互设计",
+                "meta": "4 任务 · 8 课时",
+                "icon": "fa-hand-pointer",
+                "tasks": [
+                    { "name": "交互设计原则", "tags": ["交互", "可用性"] },
+                    { "name": "用户流程图", "tags": ["流程", "泳道图"] },
+                    { "name": "线框图与低保真", "tags": ["Wireframe", "低保真"] },
+                    { "name": "交互动效设计", "tags": ["动效", "Principle"] },
+                    { "name": "微交互设计", "tags": ["微交互", "反馈"] },
+                    { "name": "手势与操作设计", "tags": ["手势", "触控"] },
+                    { "name": "原型演示与测试", "tags": ["原型", "测试"] }
+                ]
+            },
+            {
+                "title": "设计系统",
+                "meta": "4 任务 · 8 课时",
+                "icon": "fa-layer-group",
+                "tasks": [
+                    { "name": "组件库搭建", "tags": ["组件", "Variant"] },
+                    { "name": "Design Token", "tags": ["Token", "变量"] },
+                    { "name": "图标库与插画系统", "tags": ["图标库", "插画"] },
+                    { "name": "设计规范文档", "tags": ["规范", "文档"] },
+                    { "name": "协作与版本管理", "tags": ["协作", "版本"] },
+                    { "name": "设计系统维护", "tags": ["维护", "迭代"] },
+                    { "name": "设计系统落地", "tags": ["落地", "开发"] }
+                ]
+            },
+            {
+                "title": "用户体验",
+                "meta": "4 任务 · 8 课时",
+                "icon": "fa-users",
+                "tasks": [
+                    { "name": "用户研究方法", "tags": ["用户研究", "访谈"] },
+                    { "name": "用户画像与旅程", "tags": ["画像", "旅程图"] },
+                    { "name": "可用性测试", "tags": ["可用性", "测试"] },
+                    { "name": "信息架构优化", "tags": ["IA", "导航"] },
+                    { "name": "无障碍设计", "tags": ["无障碍", "WCAG"] },
+                    { "name": "情感化设计", "tags": ["情感", "品牌"] },
+                    { "name": "体验度量指标", "tags": ["NPS", "SUS"] }
+                ]
+            },
+            {
+                "title": "视觉进阶",
+                "meta": "4 任务 · 8 课时",
+                "icon": "fa-wand-magic-sparkles",
+                "tasks": [
+                    { "name": "视觉风格探索", "tags": ["风格", "趋势"] },
+                    { "name": "品牌视觉语言", "tags": ["品牌", "VI"] },
+                    { "name": "插画与3D元素", "tags": ["插画", "3D"] },
+                    { "name": "运营物料设计", "tags": ["Banner", "H5"] },
+                    { "name": "AIGC 辅助设计", "tags": ["AI", "Midjourney"] },
+                    { "name": "作品集包装", "tags": ["作品集", "包装"] },
+                    { "name": "设计趋势洞察", "tags": ["趋势", "创新"] }
+                ]
+            },
+            {
+                "title": "项目实战",
+                "meta": "4 任务 · 认证",
+                "icon": "fa-trophy",
+                "tasks": [
+                    { "name": "设计需求分析", "tags": ["需求", "目标"] },
+                    { "name": "完整界面设计", "tags": ["界面", "组件"] },
+                    { "name": "交互原型输出", "tags": ["原型", "交互"] },
+                    { "name": "项目答辩", "tags": ["答辩", "认证"] },
+                    { "name": "设计走查与交付", "tags": ["走查", "交付"] },
+                    { "name": "作品集整理", "tags": ["作品集", "求职"] },
+                    { "name": "设计师职业发展", "tags": ["规划", "成长"] }
                 ]
             }
         ]
