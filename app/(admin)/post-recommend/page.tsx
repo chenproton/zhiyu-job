@@ -157,7 +157,7 @@ export default function PostRecommendPage() {
         <div>
           <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
             <Sparkles className="h-6 w-6 text-primary" />
-            目标岗位推荐
+            岗位目标推荐管理
           </h1>
           <p className="text-muted-foreground mt-1">
             按专业配置前台"为你推荐"模块展示的岗位及顺序，支持企业岗位与教学岗位混合推荐
@@ -221,7 +221,7 @@ export default function PostRecommendPage() {
               </DialogTrigger>
               <DialogContent className="sm:max-w-lg">
                 <DialogHeader>
-                  <DialogTitle>添加目标岗位推荐</DialogTitle>
+                  <DialogTitle>添加岗位目标推荐</DialogTitle>
                   <DialogDescription>
                     为「{currentMajor}」专业选择一个岗位并配置推荐类型与原因
                   </DialogDescription>
