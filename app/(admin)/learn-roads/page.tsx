@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -32,10 +32,16 @@ import {
   GraduationCap,
   Eye,
   ChevronRight,
-  ListTodo,
+  Flag,
+  ShoppingCart,
+  Smartphone,
+  BarChart3,
+  GitBranch,
+  Users,
+  Layers,
+  ChevronLeft,
 } from 'lucide-react'
 import Link from 'next/link'
-import { StatusBadge } from '@/components/shared/status-badge'
 import { cn } from '@/lib/utils'
 import { useData } from '@/lib/stores/data-context'
 import { getUserById } from '@/lib/mock-data'
@@ -53,6 +59,17 @@ interface Scene {
 }
 
 const STORAGE_KEY_PREFIX = 'learn-roads-scenes'
+
+const NODE_ICONS = [Flag, ShoppingCart, Smartphone, BarChart3, GitBranch, Users, Layers]
+const NODE_COLORS = [
+  { bg: 'bg-blue-500' },
+  { bg: 'bg-green-500' },
+  { bg: 'bg-amber-400' },
+  { bg: 'bg-pink-500' },
+  { bg: 'bg-purple-500' },
+  { bg: 'bg-indigo-500' },
+  { bg: 'bg-rose-500' },
+]
 
 const defaultScenes: Scene[] = [
   {
@@ -222,27 +239,12 @@ export default function LearnRoadsPage() {
     setSaved(false)
   }
 
-  const selectedScene = scenes.find((s) => s.id === selectedSceneId) || scenes[0]
-
   const moveScene = (index: number, direction: -1 | 1) => {
     const newIndex = index + direction
     if (newIndex < 0 || newIndex >= scenes.length) return
     const newScenes = [...scenes]
     const [moved] = newScenes.splice(index, 1)
     newScenes.splice(newIndex, 0, moved)
-    setScenes(newScenes)
-    setSaved(false)
-  }
-
-  const moveTask = (sceneIndex: number, taskIndex: number, direction: -1 | 1) => {
-    const newTaskIndex = taskIndex + direction
-    const scene = scenes[sceneIndex]
-    if (newTaskIndex < 0 || newTaskIndex >= scene.tasks.length) return
-    const newScenes = [...scenes]
-    const newTasks = [...scene.tasks]
-    const [moved] = newTasks.splice(taskIndex, 1)
-    newTasks.splice(newTaskIndex, 0, moved)
-    newScenes[sceneIndex] = { ...scene, tasks: newTasks }
     setScenes(newScenes)
     setSaved(false)
   }
@@ -269,7 +271,7 @@ export default function LearnRoadsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">学习路径管理</h1>
+          <h1 className="text-2xl font-bold text-foreground">岗位学习路径管理</h1>
           <p className="text-muted-foreground mt-1">按岗位管理学习路径中场景与任务的展示顺序</p>
         </div>
         <div className="flex items-center gap-2">
@@ -335,7 +337,7 @@ export default function LearnRoadsPage() {
                 <TableHead>所属专业</TableHead>
                 <TableHead>创建人</TableHead>
                 <TableHead>共建人</TableHead>
-                <TableHead>状态</TableHead>
+
                 <TableHead>场景数</TableHead>
                 <TableHead>任务数</TableHead>
                 <TableHead className="text-right">操作</TableHead>
@@ -344,7 +346,7 @@ export default function LearnRoadsPage() {
             <TableBody>
               {filteredPositions.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={10} className="h-32 text-center">
+                  <TableCell colSpan={9} className="h-32 text-center">
                     <div className="flex flex-col items-center justify-center text-muted-foreground">
                       <FolderOpen className="h-10 w-10 mb-2" />
                       <p>暂无岗位数据</p>
@@ -374,9 +376,6 @@ export default function LearnRoadsPage() {
                       </TableCell>
                       <TableCell>{creator?.name || '-'}</TableCell>
                       <TableCell>{collaborators || '-'}</TableCell>
-                      <TableCell>
-                        <StatusBadge status={position.status} type="position" />
-                      </TableCell>
                       <TableCell>
                         <Badge variant="secondary" className="bg-blue-50 text-blue-600 hover:bg-blue-50">
                           {sceneCount}
@@ -414,6 +413,11 @@ export default function LearnRoadsPage() {
   const EditView = () => {
     if (!editingPosition) return null
     const batch = batches.find((b) => b.id === editingPosition.batchId)
+    const timelineRef = useRef<HTMLDivElement>(null)
+
+    const scrollTimeline = (direction: -1 | 1) => {
+      timelineRef.current?.scrollBy({ left: direction * 200, behavior: 'smooth' })
+    }
 
     return (
       <div className="space-y-6">
@@ -449,12 +453,80 @@ export default function LearnRoadsPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          {/* 场景顺序 */}
+        <div className="space-y-6">
+          {/* Upper: path timeline */}
+          <div className="rounded-2xl bg-[#f8f5f0] p-6 sm:p-8 relative overflow-hidden">
+            <h2 className="text-center text-xl sm:text-2xl font-bold text-slate-800">
+              {editingPosition.name}学习路径
+            </h2>
+            <p className="text-center text-sm text-slate-500 mt-2">
+              点击上方阶段图标，查看该阶段的学习任务
+            </p>
+            <div className="relative mt-8">
+              <button
+                onClick={() => scrollTimeline(-1)}
+                className="absolute left-0 top-1/2 -translate-y-1/2 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-white/80 text-slate-500 shadow-sm hover:bg-white"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+              <button
+                onClick={() => scrollTimeline(1)}
+                className="absolute right-0 top-1/2 -translate-y-1/2 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-white/80 text-slate-500 shadow-sm hover:bg-white"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </button>
+              <div
+                ref={timelineRef}
+                className="overflow-x-auto pb-4 px-8"
+              >
+                <div className="relative flex items-start justify-between min-w-max">
+                  <div className="absolute top-14 left-0 right-0 h-1.5 rounded-full bg-gradient-to-r from-blue-400 via-green-400 via-amber-400 via-pink-400 via-purple-500 to-rose-500" />
+                  {scenes.map((scene, idx) => {
+                    const Icon = NODE_ICONS[idx % NODE_ICONS.length]
+                    const color = NODE_COLORS[idx % NODE_COLORS.length]
+                    const isSelected = selectedSceneId === scene.id
+                    return (
+                      <button
+                        key={scene.id}
+                        onClick={() => setSelectedSceneId(scene.id)}
+                        className="relative z-10 flex flex-col items-center min-w-[150px] mx-3 first:ml-4 last:mr-4"
+                      >
+                        <div className="h-5 text-xs text-slate-400">
+                          {idx === 0 ? 'START · 第1站' : `第${idx + 1}站`}
+                        </div>
+                        <div
+                          className={cn(
+                            'mt-2 flex h-14 w-14 items-center justify-center rounded-full text-white shadow-lg transition-transform',
+                            color.bg,
+                            isSelected && 'ring-4 ring-white scale-110'
+                          )}
+                        >
+                          <Icon className="h-6 w-6" />
+                        </div>
+                        <div
+                          className={cn(
+                            'mt-3 text-sm font-bold text-center max-w-[140px]',
+                            isSelected ? 'text-blue-600' : 'text-slate-800'
+                          )}
+                        >
+                          {scene.name}
+                        </div>
+                        <div className="text-xs text-slate-500 mt-1">
+                          {scene.tasks.length} 任务 · {scene.tasks.length * 2} 课时
+                        </div>
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Lower: scene order list */}
           <Card>
             <CardHeader>
               <CardTitle className="text-base">场景顺序</CardTitle>
-              <CardDescription>点击场景查看并编辑其任务</CardDescription>
+              <CardDescription>点击下方场景查看任务，或调整场景展示顺序</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
               {scenes.map((scene, index) => {
@@ -513,61 +585,6 @@ export default function LearnRoadsPage() {
                           e.stopPropagation()
                           moveScene(index, 1)
                         }}
-                      >
-                        <ArrowDown className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                )
-              })}
-            </CardContent>
-          </Card>
-
-          {/* 任务顺序 */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base flex items-center gap-2">
-                <ListTodo className="h-4 w-4 text-blue-500" />
-                任务顺序
-                <Badge variant="secondary" className="bg-blue-50 text-blue-600 hover:bg-blue-50">
-                  {selectedScene?.name}
-                </Badge>
-              </CardTitle>
-              <CardDescription>
-                以下任务属于当前选中的场景「{selectedScene?.name}」
-              </CardDescription>
-            </CardHeader>
-            <CardContent
-              key={selectedScene?.id}
-              className="space-y-3 animate-in fade-in slide-in-from-right-2 duration-300"
-            >
-              {selectedScene?.tasks.map((task, taskIndex) => {
-                const sceneIndex = scenes.findIndex((s) => s.id === selectedScene.id)
-                return (
-                  <div
-                    key={task.id}
-                    className="flex items-center justify-between rounded-lg border border-blue-100 bg-white p-4 shadow-sm"
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-sm font-medium text-blue-700">
-                        {taskIndex + 1}
-                      </span>
-                      <span className="font-medium text-slate-900">{task.name}</span>
-                    </div>
-                    <div className="flex gap-1">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        disabled={taskIndex === 0}
-                        onClick={() => moveTask(sceneIndex, taskIndex, -1)}
-                      >
-                        <ArrowUp className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        disabled={taskIndex === selectedScene.tasks.length - 1}
-                        onClick={() => moveTask(sceneIndex, taskIndex, 1)}
                       >
                         <ArrowDown className="h-4 w-4" />
                       </Button>
