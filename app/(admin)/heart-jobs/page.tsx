@@ -452,18 +452,7 @@ export default function HeartJobsPage() {
                       </div>
                     </div>
 
-                    <div className="p-5">
-                      <div className="grid grid-cols-2 gap-x-8 gap-y-2 mb-4">
-                        <span className="text-sm px-2.5 py-1 rounded-md bg-[#ffedd5] text-[#c2410c] truncate whitespace-nowrap">
-                          面向行业：{job.industry}
-                        </span>
-                        <span className="text-sm px-2.5 py-1 rounded-md bg-[#dbeafe] text-[#1d4ed8] truncate whitespace-nowrap">
-                          适用专业：{job.major}
-                        </span>
-                      </div>
 
-
-                    </div>
                   </div>
                 )
               })}
