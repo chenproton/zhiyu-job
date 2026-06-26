@@ -423,7 +423,7 @@ export default function HeartJobsPage() {
               </CardContent>
             </Card>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-5 gap-5">
               {filteredJobs.map((job, idx) => {
                 const stats = getCardStats(job)
                 const coverStyle = job.coverImage
