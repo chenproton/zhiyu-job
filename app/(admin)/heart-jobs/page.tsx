@@ -340,6 +340,15 @@ export default function HeartJobsPage() {
       .slice(0, 5)
   }, [jobs])
 
+  const handleToggleFavorite = (job: HeartJob, e: React.MouseEvent) => {
+    e.stopPropagation()
+    const list = loadHeartJobs().map((j) =>
+      j.id === job.id ? { ...j, isFavorite: !j.isFavorite } : j
+    )
+    saveHeartJobs(list)
+    setJobs(list)
+  }
+
   const handleCardClick = () => {
     window.location.href = "/student.html"
   }
@@ -442,6 +451,23 @@ export default function HeartJobsPage() {
                             {formatDate(job.addedAt)} 收录
                           </span>
                         </div>
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            onClick={(e) => handleToggleFavorite(job, e)}
+                            className="flex items-center justify-center bg-black/40 backdrop-blur-sm text-white hover:bg-black/50 p-1.5 rounded-md transition-colors"
+                            title={job.isFavorite ? "取消心仪" : "设为心仪"}
+                          >
+                            <Heart
+                              className={cn(
+                                "h-3.5 w-3.5",
+                                job.isFavorite ? "fill-red-500 text-red-500" : "text-slate-300"
+                              )}
+                            />
+                          </button>
+                          <span className="bg-black/40 backdrop-blur-sm text-white text-[11px] px-2.5 py-1 rounded-md">
+                            已发布
+                          </span>
+                        </div>
                       </div>
 
                       <div className="relative z-10">
@@ -453,24 +479,16 @@ export default function HeartJobsPage() {
                     </div>
 
                     <div className="p-5">
-                      <div className="flex gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="flex-1 text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
-                          onClick={(e) => handleRemoveFavorite(job, e)}
-                        >
-                          <Heart className="mr-1 h-4 w-4 fill-current" />
-                          取消收藏
-                        </Button>
-                        <Button
-                          size="sm"
-                          className="flex-1"
-                          onClick={(e) => handleGoLearn(e)}
-                        >
-                          去学习
-                        </Button>
+                      <div className="grid grid-cols-2 gap-x-8 gap-y-2 mb-4">
+                        <span className="text-sm px-2.5 py-1 rounded-md bg-[#ffedd5] text-[#c2410c] truncate whitespace-nowrap">
+                          面向行业：{job.industry}
+                        </span>
+                        <span className="text-sm px-2.5 py-1 rounded-md bg-[#dbeafe] text-[#1d4ed8] truncate whitespace-nowrap">
+                          适用专业：{job.major}
+                        </span>
                       </div>
+
+
                     </div>
                   </div>
                 )
