@@ -4,13 +4,9 @@ import { useEffect, useMemo, useState } from "react"
 import {
   Heart,
   Search,
-  Trash2,
-  TrendingUp,
   Trophy,
   Medal,
-  Flame,
 } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
@@ -27,12 +23,14 @@ interface HeartJob {
   coverImage?: string
   isFavorite: boolean
   addedAt: string
+  publishDate?: string
+  updateDate?: string
 }
 
 const STORAGE_KEY = "zhiyu_heart_jobs"
-const SEED_KEY = "zhiyu_heart_jobs_seeded"
+const SEED_KEY = "zhiyu_heart_jobs_seeded_v2"
 
-const SAMPLE_JOBS: Omit<HeartJob, "id" | "addedAt">[] = [
+const SAMPLE_JOBS: Omit<HeartJob, "id">[] = [
   {
     name: "前端开发工程师",
     code: "JOB-2024-001",
@@ -42,6 +40,9 @@ const SAMPLE_JOBS: Omit<HeartJob, "id" | "addedAt">[] = [
     location: "北京",
     description: "负责网站、Web应用、移动端H5页面等用户界面开发，使用HTML、CSS、JavaScript及Vue、React等现代前端框架。",
     isFavorite: true,
+    addedAt: "2024-01-12T08:00:00.000Z",
+    publishDate: "2024-01-08",
+    updateDate: "2024-01-03",
   },
   {
     name: "Java开发",
@@ -52,6 +53,9 @@ const SAMPLE_JOBS: Omit<HeartJob, "id" | "addedAt">[] = [
     location: "上海",
     description: "使用Java语言进行企业级后端系统开发，熟悉Spring Boot、微服务架构及数据库设计。",
     isFavorite: true,
+    addedAt: "2024-01-13T08:00:00.000Z",
+    publishDate: "2024-01-09",
+    updateDate: "2024-01-04",
   },
   {
     name: "数据分析师",
@@ -62,6 +66,9 @@ const SAMPLE_JOBS: Omit<HeartJob, "id" | "addedAt">[] = [
     location: "深圳",
     description: "通过数据采集、清洗、分析与可视化，为业务决策提供数据支持，掌握Python、SQL及BI工具。",
     isFavorite: true,
+    addedAt: "2024-01-14T08:00:00.000Z",
+    publishDate: "2024-01-10",
+    updateDate: "2024-01-05",
   },
   {
     name: "电商运营专员",
@@ -72,16 +79,22 @@ const SAMPLE_JOBS: Omit<HeartJob, "id" | "addedAt">[] = [
     location: "杭州",
     description: "负责电商平台店铺日常运营、活动策划、流量推广及销售数据分析，提升店铺转化率。",
     isFavorite: true,
+    addedAt: "2024-01-15T08:00:00.000Z",
+    publishDate: "2024-01-11",
+    updateDate: "2024-01-06",
   },
   {
     name: "会计师",
-    code: "JOB-2024-005",
+    code: "JOB-2025-0005",
     industry: "金融",
     major: "财务管理",
     salary: "7K-13K",
     location: "广州",
     description: "负责企业财务核算、报表编制、税务申报及成本管理，熟悉会计准则与财务软件操作。",
     isFavorite: true,
+    addedAt: "2024-01-19T08:00:00.000Z",
+    publishDate: "2024-01-10",
+    updateDate: "2024-01-05",
   },
   {
     name: "品牌经理",
@@ -92,6 +105,9 @@ const SAMPLE_JOBS: Omit<HeartJob, "id" | "addedAt">[] = [
     location: "成都",
     description: "负责品牌定位、传播策略制定、市场推广活动策划及品牌形象维护，提升品牌影响力。",
     isFavorite: true,
+    addedAt: "2024-01-16T08:00:00.000Z",
+    publishDate: "2024-01-12",
+    updateDate: "2024-01-07",
   },
   {
     name: "小学教师",
@@ -102,6 +118,9 @@ const SAMPLE_JOBS: Omit<HeartJob, "id" | "addedAt">[] = [
     location: "武汉",
     description: "负责小学阶段学科教学、班级管理及学生综合素质培养，具备良好的沟通能力与教学热情。",
     isFavorite: true,
+    addedAt: "2024-01-17T08:00:00.000Z",
+    publishDate: "2024-01-13",
+    updateDate: "2024-01-08",
   },
 ]
 
@@ -134,7 +153,6 @@ function seedSampleJobs() {
   const list: HeartJob[] = SAMPLE_JOBS.map((j, idx) => ({
     ...j,
     id: `heart_job_sample_${idx}`,
-    addedAt: new Date(Date.now() - idx * 86400000).toISOString(),
   }))
   saveHeartJobs(list)
   localStorage.setItem(SEED_KEY, "1")
@@ -161,7 +179,7 @@ function getCardStats(job: HeartJob) {
   return {
     viewCount: 120 + (h % 880),
     relatedScenes: 1 + (h % 6),
-    totalHours: 1 + (h % 8),
+    totalHours: "-",
     version: `v${(1 + (h % 30) / 10).toFixed(1)}`,
     creator: ["张老师", "李老师", "王老师", "陈老师"][h % 4],
   }
@@ -219,22 +237,6 @@ export default function HeartJobsPage() {
       .sort((a, b) => parseMaxSalary(b.salary) - parseMaxSalary(a.salary))
       .slice(0, 5)
   }, [jobs])
-
-  const handleToggleFavorite = (job: HeartJob, e: React.MouseEvent) => {
-    e.stopPropagation()
-    const list = loadHeartJobs().map((j) =>
-      j.id === job.id ? { ...j, isFavorite: !j.isFavorite } : j
-    )
-    saveHeartJobs(list)
-    setJobs(list)
-  }
-
-  const handleRemove = (id: string, e: React.MouseEvent) => {
-    e.stopPropagation()
-    const list = loadHeartJobs().filter((j) => j.id !== id)
-    saveHeartJobs(list)
-    setJobs(list)
-  }
 
   const handleCardClick = () => {
     window.location.href = "/student.html"
@@ -343,26 +345,10 @@ export default function HeartJobsPage() {
                         </span>
                       </div>
 
-                      <div className="absolute top-3 right-3 z-20">
-                        <button
-                          onClick={(e) => handleToggleFavorite(job, e)}
-                          className={cn(
-                            "flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-md transition-colors",
-                            job.isFavorite
-                              ? "bg-gradient-to-br from-red-500 to-red-400 text-white"
-                              : "bg-black/40 backdrop-blur-sm text-white hover:bg-black/50"
-                          )}
-                          title={job.isFavorite ? "取消收藏" : "收藏"}
-                        >
-                          <Flame className="h-3 w-3" />
-                          {job.isFavorite ? "热门" : "收藏"}
-                        </button>
-                      </div>
-
                       <div className="relative z-10">
                         <div className="text-lg font-bold leading-snug mb-1.5">{job.name}</div>
                         <div className="text-xs text-white/90">
-                          岗位编码：{job.code} · {formatDate(job.addedAt)}
+                          岗位编码：{job.code} · {formatDate(job.publishDate || job.addedAt)}
                         </div>
                       </div>
                     </div>
@@ -384,35 +370,19 @@ export default function HeartJobsPage() {
                       </div>
 
                       <div className="flex flex-wrap gap-2 mb-4">
-                        <span className="text-sm px-3 py-1 rounded-full bg-[#ffedd5] text-[#c2410c]">
+                        <span className="text-sm px-2.5 py-1 rounded-md bg-[#ffedd5] text-[#c2410c]">
                           面向行业：{job.industry}
                         </span>
-                        <span className="text-sm px-3 py-1 rounded-full bg-[#dbeafe] text-[#1d4ed8]">
+                        <span className="text-sm px-2.5 py-1 rounded-md bg-[#dbeafe] text-[#1d4ed8]">
                           适用专业：{job.major}
                         </span>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-x-8 gap-y-2 mb-4">
+                      <div className="grid grid-cols-2 gap-x-8 gap-y-2">
                         <span className="text-sm text-[#64748b]">创建人：{stats.creator}</span>
                         <span className="text-sm text-[#64748b]">共建人：{job.location || "知与未来"}</span>
                         <span className="text-sm text-[#64748b]">浏览量：{stats.viewCount}</span>
-                        <span className="text-sm text-[#64748b]">更新时间：{formatDate(job.addedAt)}</span>
-                      </div>
-
-                      <div className="flex items-center justify-between pt-3 border-t border-[#f1f5f9]">
-                        <div className="flex items-center gap-1.5 text-red-600 font-bold text-base">
-                          <TrendingUp className="h-5 w-5" />
-                          {job.salary}
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-8 px-2 text-sm text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity"
-                          onClick={(e) => handleRemove(job.id, e)}
-                        >
-                          <Trash2 className="mr-1.5 h-4 w-4" />
-                          移除
-                        </Button>
+                        <span className="text-sm text-[#64748b]">更新时间：{formatDate(job.updateDate || job.addedAt)}</span>
                       </div>
                     </div>
                   </div>
