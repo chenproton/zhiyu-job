@@ -436,11 +436,11 @@ export default function HeartJobsPage() {
                     <h3 className="text-lg font-bold text-slate-900 mb-4 line-clamp-2">
                       {job.name}
                     </h3>
-                    <div className="space-y-2 mb-5">
-                      <div className="text-sm px-3 py-1.5 rounded-md bg-[#ffedd5] text-[#c2410c] truncate">
+                    <div className="flex gap-2 mb-5">
+                      <div className="flex-1 text-xs px-3 py-1.5 rounded-md bg-white text-[#c2410c] border border-[#c2410c] truncate">
                         面向行业：{job.industry}
                       </div>
-                      <div className="text-sm px-3 py-1.5 rounded-md bg-[#dbeafe] text-[#1d4ed8] truncate">
+                      <div className="flex-1 text-xs px-3 py-1.5 rounded-md bg-white text-[#1d4ed8] border border-[#1d4ed8] truncate">
                         适用专业：{job.major}
                       </div>
                     </div>
