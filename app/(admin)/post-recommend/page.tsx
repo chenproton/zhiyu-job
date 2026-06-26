@@ -213,12 +213,6 @@ export default function PostRecommendPage() {
               </CardDescription>
             </div>
             <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
-              <DialogTrigger asChild>
-                <Button>
-                  <Plus className="mr-2 h-4 w-4" />
-                  添加推荐
-                </Button>
-              </DialogTrigger>
               <DialogContent className="sm:max-w-lg">
                 <DialogHeader>
                   <DialogTitle>添加岗位目标推荐</DialogTitle>
