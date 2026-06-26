@@ -423,7 +423,7 @@ export default function HeartJobsPage() {
               </CardContent>
             </Card>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-5 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-5 gap-5 items-start">
               {filteredJobs.map((job, idx) => {
                 const stats = getCardStats(job)
                 const coverStyle = job.coverImage
@@ -481,15 +481,15 @@ export default function HeartJobsPage() {
                     <div className="p-5">
                       <div className="grid grid-cols-3 gap-2 mb-5">
                         <div className="text-center">
-                          <div className="text-[26px] font-extrabold text-[#0f172a] leading-none">{stats.viewCount}</div>
+                          <div className="text-[26px] text-[#0f172a] leading-none">{stats.viewCount}</div>
                           <div className="text-sm text-[#94a3b8] mt-1">浏览次数</div>
                         </div>
                         <div className="text-center">
-                          <div className="text-[26px] font-extrabold text-[#0f172a] leading-none">{stats.relatedScenes}</div>
+                          <div className="text-[26px] text-[#0f172a] leading-none">{stats.relatedScenes}</div>
                           <div className="text-sm text-[#94a3b8] mt-1">关联场景</div>
                         </div>
                         <div className="text-center">
-                          <div className="text-[26px] font-extrabold text-[#0f172a] leading-none">{stats.totalHours}</div>
+                          <div className="text-[26px] text-[#0f172a] leading-none">{stats.totalHours}</div>
                           <div className="text-sm text-[#94a3b8] mt-1">场景任务</div>
                         </div>
                       </div>
@@ -503,12 +503,7 @@ export default function HeartJobsPage() {
                         </span>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-x-8 gap-y-2">
-                        <span className="text-sm text-[#64748b]">创建人：{stats.creator}</span>
-                        <span className="text-sm text-[#64748b]">共建人：{job.location || "知与未来"}</span>
-                        <span className="text-sm text-[#64748b]">浏览量：{stats.viewCount}</span>
-                        <span className="text-sm text-[#64748b]">更新时间：{formatDate(job.updateDate || job.addedAt)}</span>
-                      </div>
+
                     </div>
                   </div>
                 )
