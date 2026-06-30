@@ -1813,28 +1813,47 @@
                 links.push({ source:'core', target:abId });
             });
 
-            // 扩充知识点挂接
-            const kMap = {
-                a01:['SEO最佳实践','ARIA属性','文档流'], 
-                a02:['Flexbox','Grid','媒体查询','CSS变量'],
-                a03:['移动端适配','vw/vh','流式布局'],
-                a05:['闭包与作用域','事件循环','原型链','ES6+语法'],
-                a06:['TCP/IP','跨域方案','缓存策略'],
-                a08:['事件委托','BOM操作','IntersectionObserver'],
-                a09:['虚拟DOM','生命周期','Hooks原理','跨组件通信'],
-                a10:['Vuex/Pinia','Redux','状态持久化'],
-                a11:['懒加载','TreeShaking','Web Vitals','防抖节流'],
-                a12:['Vite/Webpack','CI/CD流程','模块化规范'],
-                a13:['XSS防御','CSRF防御','CSP策略'],
-                a14:['Jest','Cypress','单元测试']
+            // 知识点定义（独立定义，可被多个能力点共享 —— 多对多关系）
+            const knowledgePointDefs = {
+                'k-seo':'SEO最佳实践', 'k-aria':'ARIA属性', 'k-flow':'文档流',
+                'k-flexbox':'Flexbox', 'k-grid':'Grid', 'k-media':'媒体查询', 'k-cssvar':'CSS变量',
+                'k-mobile':'移动端适配', 'k-vwvh':'vw/vh', 'k-liquid':'流式布局',
+                'k-closure':'闭包与作用域', 'k-eventloop':'事件循环', 'k-prototype':'原型链', 'k-es6':'ES6+语法',
+                'k-tcpip':'TCP/IP', 'k-cors':'跨域方案', 'k-cache':'缓存策略',
+                'k-delegation':'事件委托', 'k-bom':'BOM操作', 'k-intersection':'IntersectionObserver',
+                'k-virtualdom':'虚拟DOM', 'k-lifecycle':'生命周期', 'k-hooks':'Hooks原理', 'k-crosscomp':'跨组件通信',
+                'k-vuex':'Vuex/Pinia', 'k-redux':'Redux', 'k-persist':'状态持久化',
+                'k-lazyload':'懒加载', 'k-treeshaking':'TreeShaking', 'k-webvitals':'Web Vitals', 'k-debounce':'防抖节流',
+                'k-build':'Vite/Webpack', 'k-cicd':'CI/CD流程', 'k-module':'模块化规范',
+                'k-xss':'XSS防御', 'k-csrf':'CSRF防御', 'k-csp':'CSP策略',
+                'k-jest':'Jest', 'k-cypress':'Cypress', 'k-unittest':'单元测试',
             };
 
-            let kId = 1;
-            Object.entries(kMap).forEach(([abId, kns]) => {
-                kns.forEach(kName => {
-                    const id = 'k'+kId++;
-                    nodes.push({ id:id, name:kName, type:'knowledge' });
-                    links.push({ source:abId, target:id });
+            // 能力点 -> 知识点关联（多对多：同一个知识点可被多个能力点引用）
+            const abilityKnowledgeMap = {
+                a01:['k-seo','k-aria','k-flow'],
+                a02:['k-flexbox','k-grid','k-media','k-cssvar'],
+                a03:['k-mobile','k-vwvh','k-liquid','k-media','k-lazyload'],
+                a05:['k-closure','k-eventloop','k-prototype','k-es6','k-delegation','k-debounce'],
+                a06:['k-tcpip','k-cors','k-cache'],
+                a08:['k-delegation','k-bom','k-intersection','k-eventloop'],
+                a09:['k-virtualdom','k-lifecycle','k-hooks','k-crosscomp','k-module'],
+                a10:['k-vuex','k-redux','k-persist','k-crosscomp'],
+                a11:['k-lazyload','k-treeshaking','k-webvitals','k-debounce','k-cache','k-virtualdom'],
+                a12:['k-build','k-cicd','k-module','k-es6'],
+                a13:['k-xss','k-csrf','k-csp','k-cors'],
+                a14:['k-jest','k-cypress','k-unittest','k-cicd'],
+            };
+
+            // 构造知识点节点（去重：同一知识点只创建一个节点，多个能力点可连接同一个知识点）
+            const knowledgeNodeMap = new Map();
+            Object.entries(abilityKnowledgeMap).forEach(([abId, kIds]) => {
+                kIds.forEach(kId => {
+                    if (!knowledgeNodeMap.has(kId)) {
+                        nodes.push({ id:kId, name:knowledgePointDefs[kId], type:'knowledge' });
+                        knowledgeNodeMap.set(kId, true);
+                    }
+                    links.push({ source:abId, target:kId });
                 });
             });
 
